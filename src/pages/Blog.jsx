@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock } from 'lucide-react';
 import { blogPosts, categories } from '../mock';
@@ -13,6 +13,20 @@ const Blog = () => {
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  // Group posts by category to support the 'All' view that shows categorized sections
+  const groupedPosts = useMemo(() => {
+    return blogPosts.reduce((acc, post) => {
+      const cat = post.category || 'Uncategorized';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(post);
+      return acc;
+    }, {});
+  }, [blogPosts]);
+
+  const categoriesToShow = (categories && categories.length > 0)
+    ? categories.filter(c => c !== 'All')
+    : Object.keys(groupedPosts);
 
   return (
     <div className="pt-16">
@@ -65,7 +79,51 @@ const Blog = () => {
       {/* Blog Posts Grid */}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          {filteredPosts.length === 0 ? (
+          {selectedCategory === 'All' ? (
+            // Render categorized sections (Home-style) when 'All' is selected
+            categoriesToShow.map((cat) => {
+              const posts = (groupedPosts[cat] || []).slice(0, 3);
+              if (!posts || posts.length === 0) return null;
+              return (
+                <div key={cat} className="mb-16">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-8">{cat}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {posts.map((post) => (
+                      <Link
+                        key={post.id}
+                        to={`/blog/${post.slug}`}
+                        className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:scale-105"
+                      >
+                        <div className="aspect-video overflow-hidden">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-3 py-1 rounded-full">
+                              {post.category}
+                            </span>
+                            <span className="text-xs text-gray-500">{post.readTime}</span>
+                          </div>
+                          <h3 className="text-xl font-bold mb-3 group-hover:text-yellow-500 transition-colors duration-200">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-400 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-500">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span className="text-yellow-500 group-hover:translate-x-1 transition-transform duration-200">→</span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          ) : filteredPosts.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-xl text-gray-400">No articles found. Try adjusting your search or filter.</p>
             </div>
