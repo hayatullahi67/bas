@@ -399,7 +399,7 @@ const Home = () => {
         {/* Hero Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
           <div className="inline-block mt-[30px] mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
-            <span className="text-yellow-500 text-sm font-semibold">2+ Years of Bitcoin Education</span>
+            <span className="text-yellow-500 text-sm font-semibold">2+ Years of Spreading High Quality Signal from the Noise</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
             Learn Bitcoin.
