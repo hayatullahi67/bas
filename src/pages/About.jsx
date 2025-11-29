@@ -60,7 +60,7 @@ const About = () => {
             </div>
             <div className="space-y-6">
               <img
-                src="assets/communities.jpg"
+                src="assets/commities.jpg"
                 alt="Community"
                 className="w-full rounded-2xl shadow-2xl"
               />
