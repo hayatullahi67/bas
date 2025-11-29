@@ -908,26 +908,26 @@ export const resources = [
 export const features = [
   {
     id: '1',
-    title: 'Freedom',
-    description: 'Take control of your money without banks or intermediaries. Bitcoin gives you true financial sovereignty.',
-    image: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600&q=80'
+    title: 'Education',
+    description: 'We provide practical Bitcoin training for schools, youth, merchants, and communities, helping people understand and use Bitcoin confidently.',
+    image: 'assets/education.jpg'
   },
   {
     id: '2',
-    title: 'Savings',
-    description: 'Protect your wealth from inflation and currency devaluation. Build a secure financial future.',
-    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&q=80'
+    title: 'Storytelling',
+    description: 'We document and share real stories of Bitcoin adoption across Africa, highlighting the people, challenges, and progress in each community.',
+    image: 'assets/story.jpg'
   },
   {
     id: '3',
-    title: 'Ownership',
-    description: 'You hold your own keys, you own your Bitcoin. No one can freeze or seize your funds.',
-    image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&q=80'
+    title: 'Community Development ',
+    description: 'We support communities in building sustainable Bitcoin circular economies through merchant onboarding, local spending, and hands-on guidance.',
+    image: 'assets/communities.jpg'
   },
   {
     id: '4',
-    title: 'Opportunity',
-    description: 'Access global financial opportunities. Bitcoin opens doors to economic participation for everyone.',
-    image: 'https://images.unsplash.com/photo-1635305587352-d8d25f4d1661?w=600&q=80'
+    title: 'Research and Insights',
+    description: 'We study Bitcoin usage, community needs, adoption patterns, and emerging trends to guide our programs and share valuable insights with the ecosystem.',
+    image: 'assets/research.jpg'
   }
 ];

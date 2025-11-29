@@ -60,7 +60,7 @@ const About = () => {
             </div>
             <div className="space-y-6">
               <img
-                src="https://images.unsplash.com/photo-1594058823798-2f15b332a414?w=800&q=80"
+                src="assets/communities.jpg"
                 alt="Community"
                 className="w-full rounded-2xl shadow-2xl"
               />

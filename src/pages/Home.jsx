@@ -399,7 +399,7 @@ const Home = () => {
         {/* Hero Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
           <div className="inline-block mt-[30px] mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
-            <span className="text-yellow-500 text-sm font-semibold">2+ Years of Spreading High Quality Signal from the Noise</span>
+            <span className="text-yellow-500 text-sm font-semibold">Spreading High Quality Signal from the Noise</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
             Learn Bitcoin.
@@ -453,7 +453,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Why Bitcoin <span className="text-yellow-500">Matters</span>
+             4 Pillars of   <span className="text-yellow-500"> Bitcoin Africa Story (BAS)</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Discover how Bitcoin is transforming lives and creating opportunities across Africa

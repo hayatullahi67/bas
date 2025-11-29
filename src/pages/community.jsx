@@ -59,7 +59,7 @@ const Community = () => {
             </div>
           </div>
 
-          <div className="bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-800">
+          {/* <div className="bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-800">
             <h3 className="text-xl font-semibold text-gray-100 mb-2">African Bitcoin Communities</h3>
             <p className="text-gray-400 mb-6">Discover other amazing Bitcoin communities across Africa</p>
 
@@ -90,7 +90,7 @@ const Community = () => {
             <div className="text-center mt-6">
               <button className="inline-flex items-center gap-2 px-5 py-2 border border-yellow-500 text-yellow-500 rounded-full hover:bg-yellow-500/10">Submit Community <ArrowRight size={16} /></button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right column */}
