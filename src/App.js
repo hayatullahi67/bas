@@ -7,6 +7,7 @@ import BlogPost from './pages/BlogPost';
 import Resources from './pages/Resources';
 import Community from './pages/community';
 import Contact from './pages/Contact';
+import Education from './pages/Education';
 import Admin from './pages/Admin';
 import Dashboard from './dashboard/Dashboard';
 import UploadNews from './dashboard/UploadNews';
@@ -27,6 +28,7 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/education" element={<Education />} />
         <Route path="/community" element={<Community />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/contact" element={<Contact />} />

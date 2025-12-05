@@ -9,28 +9,34 @@ const Header = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
+    { name: 'Education', path: '/education' },
     { name: 'News & Story', path: '/blog' },
     { name: 'Community', path: '/community' },
-    { name: 'Resources', path: '/resources' },
+    // { name: 'Resources', path: '/resources' },
     { name: 'Contact', path: '/contact' }
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
+    <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800 h-[100px]">
       <nav className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_orange-education/artifacts/o5w3l51g_baslogo.jpg" 
+            {/* <img 
+              src="assets/BASlogo.png" 
               alt="Bitcoin Africa Story" 
-              className="h-12 w-12 rounded-full object-cover border-2 border-yellow-500 group-hover:border-yellow-400 transition-colors duration-300"
+              className="w-[100px] h-[100px] group-hover:border-yellow-400 transition-colors duration-300"
+            /> */}
+            <img 
+              src="assets/BASlogo.png" 
+              alt="Bitcoin Africa Story" 
+              className="w-[100px] h-[78px] group-hover:border-yellow-400 transition-colors duration-300"
             />
-            <span className="text-xl font-bold text-white hidden sm:block">
+            {/* <span className="text-xl font-bold text-white hidden sm:block">
               Bitcoin <span className="text-yellow-500">Africa</span>
-            </span>
+            </span> */}
           </Link>
 
           {/* Desktop Navigation */}
