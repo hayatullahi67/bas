@@ -15,6 +15,7 @@ import UploadEvent from './dashboard/UploadEvent';
 import SubmittedStories from './dashboard/SubmittedStories';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Donate from './pages/Donate';
 
 function AppContent() {
   const location = useLocation();
@@ -31,6 +32,7 @@ function AppContent() {
         <Route path="/education" element={<Education />} />
         <Route path="/community" element={<Community />} />
         <Route path="/resources" element={<Resources />} />
+        <Route path="/donate" element={<Donate />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/dashboard/*" element={<Dashboard />}>

@@ -18,7 +18,7 @@ const ProgramCard = () => {
         {/* Main Content Grid */}
         <div className="flex flex-col lg:flex-row gap-[170px] items-start mb-20">
           {/* Left - Image */}
-          <div className="relative flex-shrink-0">
+          <div className="hidden md:relative flex-shrink-0">
             <div className="rounded-[25px] overflow-hidden shadow-lg w-[367px] h-[412px]">
               <img 
                 src="https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=600&h=700&fit=crop" 

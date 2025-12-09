@@ -37,7 +37,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-             4 Pillars of   <span className="text-yellow-500"> Bitcoin Africa Story (BAS)</span>
+            Pillars of   <span className="text-yellow-500"> Bitcoin Africa Story </span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Discover how Bitcoin is transforming lives and creating opportunities across Africa
@@ -48,7 +48,7 @@ const Home = () => {
             {features.map((feature) => (
               <div
                 key={feature.id}
-                className="group relative overflow-hidden rounded-xl bg-gray-900 border border-gray-800 hover:border-yellow-500 transition-all duration-300 hover:scale-105"
+                className="group relative overflow-hidden  bg-gray-900 border border-gray-800 hover:border-yellow-500 transition-all duration-300 hover:scale-105"
               >
                 <div className="aspect-video overflow-hidden">
                   <img
@@ -133,7 +133,7 @@ const Home = () => {
       {/* Communities Card (replaces Newsletter CTA) */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-lg">
+          <div className="bg-gray-900 border border-gray-800  p-8 shadow-lg">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-white">African Bitcoin Communities</h2>
               <p className="text-sm text-gray-400 mt-2">Discover other amazing Bitcoin communities across Africa</p>

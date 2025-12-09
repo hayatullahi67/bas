@@ -4,12 +4,13 @@ import { ArrowRight } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 z-0"
           style={{
-           
+            backgroundImage: "url('/assets/basbg.jpg')",
+            backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -20,42 +21,39 @@ const Hero = () => {
 
         {/* Hero Content - two column layout */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
             {/* Left: Text content */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <div className="inline-block mt-[30px] mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
-                <span className="text-yellow-500 text-sm font-semibold">Spreading High Quality Signal from the Noise</span>
+            <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+              <div className="inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+                <span className="text-yellow-500 text-sm font-semibold">Bringing Signal to the Noise</span>
               </div>
 
-              <h1 className="text-2xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
-                Learn Bitcoin.
-                <br />
-                <span className="text-yellow-500">Change Your Life.</span>
-              </h1>
+              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+             <span>  Showing  </span> <br className="sm:hidden"/> <span> Africa’s </span>  <br className="sm:hidden"/> <span>  Bitcoin </span> <br className=""/> <span className="text-[#FAD604]">  Proof-of-Work.  </span>               
+            </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-                Empowering Africans through Bitcoin education and financial freedom.
-                Join the movement towards self-sovereignty.
+               Driving Bitcoin Adoption Through Education, Community Building, and Real Stories!
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
+              <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
                 <Link
                   to="/blog"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-yellow-500 text-black font-bold text-lg rounded-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
                 >
-                  Start Learning
-                  <ArrowRight className="ml-2" size={20} />
+                  View Stories
+                  <ArrowRight className="ml-2" size={18} />
                 </Link>
                 <Link
-                  to="/about"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg rounded-lg hover:bg-yellow-500 hover:text-black transition-all duration-200"
+                  to="/education"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg  hover:bg-yellow-500 hover:text-black transition-all duration-200"
                 >
-                  Our Mission
+                  Study Bitcoin
                 </Link>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
+              <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
                 <div>
                   <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">2+</div>
                   <div className="text-gray-400 text-sm">Years Teaching</div>
@@ -76,7 +74,7 @@ const Hero = () => {
             </div>
 
             {/* Right: Image collage */}
-            <div className="w-full max-md:hidden lg:w-1/2 flex items-center justify-center">
+            <div className="w-full hidden lg:w-1/2 flex items-center justify-center">
               <div className="relative w-[460px] h-[300px] lg:w-[520px] lg:h-[360px]">
                 {/* Large top-right image */}
                 <div className="absolute right-0 top-0 w-[320px] h-[240px] lg:w-[360px] lg:h-[270px] rounded-2xl overflow-hidden border border-gray-800 shadow-lg">

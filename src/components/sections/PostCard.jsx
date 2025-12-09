@@ -5,7 +5,7 @@ const PostCard = ({ post }) => {
   return (
     <Link
       to={`/blog/${post.slug}`}
-      className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:scale-105"
+      className="group bg-gray-900 border border-gray-800  overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:scale-105"
     >
       <div className="aspect-video overflow-hidden relative">
         <img

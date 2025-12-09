@@ -12,31 +12,38 @@ const Header = () => {
     { name: 'Education', path: '/education' },
     { name: 'News & Story', path: '/blog' },
     { name: 'Community', path: '/community' },
-    // { name: 'Resources', path: '/resources' },
+    { name: 'Donate', path: '/donate' },
     { name: 'Contact', path: '/contact' }
+  ];
+
+  const subheadernavLinks = [
+    { name: 'Donate', path: '/donate' },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800 h-[100px]">
-      <nav className="max-w-7xl mx-auto px-6 py-4">
+    <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800 h-[100px] ">
+   
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-40"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <nav className="max-w-7xl mx-auto px-6 pb-4 pt-[10px]">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            {/* <img 
-              src="assets/BASlogo.png" 
-              alt="Bitcoin Africa Story" 
-              className="w-[100px] h-[100px] group-hover:border-yellow-400 transition-colors duration-300"
-            /> */}
+          <Link to="/" className="flex items-center  group">
+           
             <img 
-              src="assets/BASlogo.png" 
+              src="assets/BitcoinAfricaStoryLogo.png" 
               alt="Bitcoin Africa Story" 
-              className="w-[100px] h-[78px] group-hover:border-yellow-400 transition-colors duration-300"
+              className="w-[100px] h-[50px] "
             />
-            {/* <span className="text-xl font-bold text-white hidden sm:block">
-              Bitcoin <span className="text-yellow-500">Africa</span>
-            </span> */}
+           
           </Link>
 
           {/* Desktop Navigation */}
@@ -71,9 +78,12 @@ const Header = () => {
           </button>
         </div>
 
+        {/* Subheader (compact) */}
+        
+
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-3">
+          <div className="md:hidden mt-4 pb-4 space-y-3 relative z-50 bg-black/80 backdrop-blur-sm rounded-lg p-4">
             {navLinks.map((link) => (
               <Link
                 key={link.path}

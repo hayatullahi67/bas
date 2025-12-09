@@ -6,7 +6,7 @@ const EducationalHero = () => {
   return (
     
  
-     <div className="min-h-screen bg-black text-white">
+     <div className="md:min-h-screen bg-black text-white">
       <div className="container mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -43,8 +43,8 @@ const EducationalHero = () => {
             </div>
           </div>
 
-          {/* Right Images Grid */}
-          <div className="relative">
+          {/* Right Images Grid (hidden on screens <600px, visible from 600px+) */}
+          <div className="hidden min-[600px]:block min-[600px]:relative">
             <div className="grid grid-cols-2 gap-4">
               {/* Top Left - Team working */}
               <div className="relative rounded-2xl w-[269px] h-[280px] overflow-hidden shadow-2xl transform hover:scale-105 transition-transform">
@@ -61,8 +61,8 @@ const EducationalHero = () => {
               </div>
 
               {/* Top Right - Person in hat */}
-              <div className=" rounded-2xl w-[280px] h-[400px]  shadow-2xl transform hover:scale-105 transition-transform row-span-2 mt-8">
-                <div className="absolute bottom-4 left-[40px] z-10 bg-yellow-400 text-black px-3 py-2 rounded-full text-[12px] font-medium flex items-center gap-2">
+              <div className=" hidden min-[600px]:block rounded-2xl w-[280px] h-[400px]  shadow-2xl transform hover:scale-105 transition-transform row-span-2 mt-8">
+                <div className=" hidden min-[600px]:absolute bottom-4 left-[40px] z-10 bg-yellow-400 text-black px-3 py-2 rounded-full text-[12px] font-medium flex items-center gap-2">
                   <span className="w-2 h-2 bg-black rounded-full"></span>
                   Learn From Anywhere In The World
                 </div>
@@ -74,7 +74,7 @@ const EducationalHero = () => {
               </div>
 
               {/* Bottom Left - Study group */}
-              <div className="relative rounded-2xl w-[269px] h-[280px] overflow-hidden shadow-2xl transform hover:scale-105 transition-transform">
+              <div className="md:relative rounded-2xl w-[269px] h-[280px] overflow-hidden shadow-2xl transform hover:scale-105 transition-transform">
                 <img 
                   src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=300&fit=crop" 
                   alt="Study group" 
