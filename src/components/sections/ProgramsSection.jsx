@@ -18,7 +18,6 @@ export default function BitcoinPrograms() {
     },
     {
       id: 2,
-<<<<<<< HEAD
       type: "stor",
       title: "GETTING STARTED WITH BITCOIN",
       description: "nt ut labore et dolore magna aliqua. Ut",
@@ -29,8 +28,6 @@ export default function BitcoinPrograms() {
     },
     {
       id: 3,
-=======
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       type: "story", 
       title: "BUILDING YOUR PROOF OF WORK",
       description: "pisciting elit. Sed do eiusmod tempor inc.",
@@ -39,26 +36,10 @@ export default function BitcoinPrograms() {
       tagText: "text-white",
       tagBg: "bg-black/80", 
     },
-<<<<<<< HEAD
     
     {
       id: 4,
       type: "stor",
-=======
-    {
-      id: 3,
-      type: "story",
-      title: "GETTING STARTED WITH BITCOIN",
-      description: "nt ut labore et dolore magna aliqua. Ut",
-      tag: "BEGINNER - INTERMEDIARY | PAID",
-      imageSrc: "path/to/bitcoin-africa-story-logo.png",
-      tagText: "text-white",
-      tagBg: "bg-black/80",
-    },
-    {
-      id: 4,
-      type: "story",
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       title: "BITCOIN FOR YOUTH",
       description: "minim veniam, quis nostrud exercitala",
       tag: "BEGINNER | FREE",
@@ -101,21 +82,12 @@ export default function BitcoinPrograms() {
     let visualClasses = `w-full h-full relative`;
     
     // Applying the distinctive styling based on the image:
-<<<<<<< HEAD
     if (program.type === 'story') {
         // Dark purple background for the diploma card
         visualClasses += ' bg-[red] text-white'; 
     } else {
         // White background with a yellow border for the story cards
         visualClasses += ' bg-[#4f2f83] '; 
-=======
-    if (program.type === 'diploma') {
-        // Dark purple background for the diploma card
-        visualClasses += ' bg-[#4f2f83] text-white'; 
-    } else {
-        // White background with a yellow border for the story cards
-        visualClasses += ' bg-white '; 
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
     }
   
     return (
@@ -131,11 +103,7 @@ export default function BitcoinPrograms() {
                     // Placeholder for the Bitcoin Africa Story logo/graphic
                     <span className="text-xl font-bold text-black/70">
 
-<<<<<<< HEAD
 {/* [Image of Bitcoin Africa Story Logo/Graphic] */}
-=======
-[Image of Bitcoin Africa Story Logo/Graphic]
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
 </span>
                 )}
             </div>
@@ -179,17 +147,10 @@ export default function BitcoinPrograms() {
           
           {/* Card Wrapper - Use explicit pixel widths for precise control */}
           <div 
-<<<<<<< HEAD
             className="flex transition-transform duration-500 ease-in-out gap-[20px]"
             style={{ 
               transform: `translateX(-${startIndex * (288 + 20)}px)`,
               width: `${(288 * programs.length) + (20 * (programs.length - 1))}px`
-=======
-            className="flex transition-transform duration-500 ease-in-out gap-5"
-            style={{ 
-              transform: `translateX(-${startIndex * (268 + 20)}px)`,
-              width: `${(268 * programs.length) + (20 * (programs.length - 1))}px`
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             }}
           >
             
@@ -197,17 +158,10 @@ export default function BitcoinPrograms() {
               <div 
                 key={program.id}
                 // Outer container defines the fixed size and rounded corners
-<<<<<<< HEAD
                 className="flex-shrink-0 w-[288px] h-[370px]  overflow-hidden relative" 
               >
                 {/* 1. Main Visual Block (Fixed Height: 288px) */}
                 <div className="h-[288px] w-full  overflow-hidden">
-=======
-                className="flex-shrink-0 w-[268px] h-[370px] rounded-[15px] overflow-hidden relative" 
-              >
-                {/* 1. Main Visual Block (Fixed Height: 288px) */}
-                <div className="h-[288px] w-full rounded-t-[15px] overflow-hidden">
->>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                   {renderVisualBlock(program)}
                 </div>
 
