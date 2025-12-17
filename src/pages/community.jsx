@@ -4,8 +4,13 @@ import { ArrowRight } from 'lucide-react';
 import { blogPosts } from '../mock';
 
 const UpcomingEvent = ({ title, location, date, attendees }) => (
+<<<<<<< HEAD
   <div className="mb-6 p-4 bg-gray-800  shadow-sm border border-gray-800">
     <div className="inline-block bg-yellow-500 text-black px-3 py-1  text-sm font-semibold mb-2">Workshop</div>
+=======
+  <div className="mb-6 p-4 bg-gray-800 rounded-md shadow-sm border border-gray-800">
+    <div className="inline-block bg-yellow-500 text-black px-3 py-1 rounded text-sm font-semibold mb-2">Workshop</div>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
     <h4 className="font-semibold text-gray-100">{title}</h4>
     <div className="text-sm text-gray-400 mt-2">{location}</div>
     <div className="text-sm text-gray-400 mt-1">{date}</div>
@@ -30,6 +35,7 @@ const Community = () => {
   const logos = ['Bitcoin Ghana', 'Bitcoin Dada', 'Bitcoin Nigeria', 'Crypto Kenya', 'The Bitcoin Tribe', 'BitSawa', 'Bitcoin Ekasi', 'BTCAfrica'];
 
   return (
+<<<<<<< HEAD
     <div className="mt-[130px] pb-32">
       <div className="max-w-6xl mx-auto px-6 md:text-center">
         <h1 className="text-5xl font-extrabold mb-4 text-gray-100"> <span>Join</span> <br className='md:hidden' />
@@ -37,24 +43,42 @@ const Community = () => {
 <span> Growing </span> <br className='md:hidden' />
  <span className='text-[#FAD604]' >Community !</span> </h1>
         <p className="text-gray-400 max-w-2xl mx-auto">Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.</p>
+=======
+    <div className="pt-20 pb-32">
+      <div className="max-w-6xl mx-auto px-6 text-center">
+        <h1 className="text-5xl font-extrabold mb-4 text-gray-100">Join Our Community</h1>
+        <p className="text-gray-400 max-w-2xl mx-auto">Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.</p>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       </div>
 
       <div className="max-w-6xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left column */}
         <div className="space-y-6">
+<<<<<<< HEAD
           <div className="bg-gray-900  p-8 shadow-lg border border-gray-800">
+=======
+          <div className="bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-800">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             <h2 className="text-2xl font-bold mb-2 text-gray-100">Join Our Communities</h2>
             <p className="text-gray-400 mb-6">Connect with our community on your favorite platforms.</p>
 
             <div className="flex gap-4">
               <a
+<<<<<<< HEAD
                 className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3  bg-yellow-500 text-black font-medium hover:bg-yellow-400 transition"
+=======
+                className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 rounded-md bg-yellow-500 text-black font-medium hover:bg-yellow-400 transition"
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 href="#"
               >
                 <span>Join Telegram</span>
               </a>
               <a
+<<<<<<< HEAD
                 className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3  bg-transparent border border-yellow-500 text-yellow-500 font-medium hover:bg-yellow-500/10 transition"
+=======
+                className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 rounded-md bg-transparent border border-yellow-500 text-yellow-500 font-medium hover:bg-yellow-500/10 transition"
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 href="#"
               >
                 <span>Join WhatsApp</span>
@@ -98,10 +122,17 @@ const Community = () => {
 
         {/* Right column */}
         <div className="space-y-6">
+<<<<<<< HEAD
           <div className="bg-gray-900  p-6 shadow-lg border border-gray-800">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold text-gray-100">Upcoming Events</h3>
               {/* <button className="inline-flex items-center gap-2 px-3 py-2 border border-yellow-500 text-yellow-500 ">Add Event</button> */}
+=======
+          <div className="bg-gray-900 rounded-2xl p-6 shadow-lg border border-gray-800">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-100">Upcoming Events</h3>
+              <button className="inline-flex items-center gap-2 px-3 py-2 border border-yellow-500 text-yellow-500 rounded">Add Event</button>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             </div>
 
             <div className="mt-6">
@@ -115,7 +146,11 @@ const Community = () => {
             </div>
 
             <div className="text-center mt-4">
+<<<<<<< HEAD
               <Link to="#" className="inline-flex items-center gap-2 px-4 py-2 border border-yellow-500 text-yellow-500 ">View Calendar</Link>
+=======
+              <Link to="#" className="inline-flex items-center gap-2 px-4 py-2 border border-yellow-500 text-yellow-500 rounded">View Calendar</Link>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             </div>
           </div>
 
@@ -127,7 +162,11 @@ const Community = () => {
       
       </div>
       
+<<<<<<< HEAD
         <div className="bg-gray-900 max-w-6xl mx-auto mt-[40px]  p-10 shadow-lg border border-gray-800">
+=======
+        <div className="bg-gray-900 max-w-6xl mx-auto mt-[40px] rounded-2xl p-10 shadow-lg border border-gray-800">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             <h3 className="text-xl font-semibold text-center mb-2 text-gray-100">Growing Together</h3>
             <p className="text-center text-gray-400 mb-6">Our community impact across Africa</p>
 

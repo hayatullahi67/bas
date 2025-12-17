@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const Donate = () => {
   const [activeTab, setActiveTab] = useState('geyser');
 
+<<<<<<< HEAD
   const BACKGROUND_IMAGE_URL = 'assets/dontebg.jpg';
   const DONATION_IMAGE_URL = 'assets/dontebg.jpg';
   return (
@@ -51,6 +52,12 @@ const Donate = () => {
     <div className="max-w-6xl mx-auto px-6 py-12">
       {/* <h1 className="text-3xl font-black text-center mb-6">Support Bitcoin Africa Story</h1>
       <p className="text-center text-gray-300 mb-8 max-w-2xl mx-auto">Your donations help us produce educational content and support Bitcoin adoption across Africa. Choose a payment option below.</p> */}
+=======
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-black text-center mb-6">Support Bitcoin Africa Story</h1>
+      <p className="text-center text-gray-300 mb-8 max-w-2xl mx-auto">Your donations help us produce educational content and support Bitcoin adoption across Africa. Choose a payment option below.</p>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
 
       {/* Tabs */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
@@ -84,7 +91,11 @@ const Donate = () => {
           {activeTab === 'geyser' && (
             <div className="flex flex-col items-center">
               <h2 className="text-xl font-bold mb-4">Geyser Donation Widget</h2>
+<<<<<<< HEAD
               <p className="text-sm text-gray-400 mb-4 text-center">Support our ongoing Storytelling, Bitcoin education, circular economy, and Community Building Initiatives.</p>
+=======
+              <p className="text-sm text-gray-400 mb-4 text-center">Use the compact Geyser widget to donate — fast and mobile-friendly.</p>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
               <div className="w-full flex justify-center">
                 <div className="w-full max-w-[400px]">
                   <iframe
@@ -162,6 +173,7 @@ const Donate = () => {
         </div>
       </div>
     </div>
+<<<<<<< HEAD
     <section className="max-w-6xl mx-auto bg-black text-white py-16 sm:py-20 md:py-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
         
@@ -211,6 +223,8 @@ const Donate = () => {
       </div>
     </section>
     </div>
+=======
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
   );
 };
 

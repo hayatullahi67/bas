@@ -9,7 +9,11 @@ export default function OtherBitcoinPrograms() {
       title: "BITCOIN DIPLOMA",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       tag: "BEGINNER | FREE",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/811838/pexels-photo-811838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
+=======
+      imageSrc: "path/to/bitcoin-diploma-graphic.png", 
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-black",
       tagBg: "bg-yellow-400", 
     },
@@ -19,7 +23,11 @@ export default function OtherBitcoinPrograms() {
       title: "BUILDING YOUR PROOF OF WORK",
       description: "pisciting elit. Sed do eiusmod tempor inc.",
       tag: "ADVANCE | PAID",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/5905707/pexels-photo-5905707.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-white",
       tagBg: "bg-black/80", 
     },
@@ -29,7 +37,11 @@ export default function OtherBitcoinPrograms() {
       title: "GETTING STARTED WITH BITCOIN",
       description: "nt ut labore et dolore magna aliqua. Ut",
       tag: "BEGINNER - INTERMEDIARY | PAID",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-white",
       tagBg: "bg-black/80",
     },
@@ -39,7 +51,11 @@ export default function OtherBitcoinPrograms() {
       title: "BITCOIN FOR YOUTH",
       description: "minim veniam, quis nostrud exercitala",
       tag: "BEGINNER | FREE",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/843700/pexels-photo-843700.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-black",
       tagBg: "bg-yellow-400", 
     },
@@ -49,7 +65,11 @@ export default function OtherBitcoinPrograms() {
       title: "ADVANCED TRADING STRATEGIES",
       description: "Master complex trading strategies and market analysis.",
       tag: "EXPERT | PAID",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/3762804/pexels-photo-3762804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-white",
       tagBg: "bg-black/80",
     },
@@ -59,7 +79,11 @@ export default function OtherBitcoinPrograms() {
       title: "BLOCKCHAIN FUNDAMENTALS",
       description: "Understanding the core technology behind Bitcoin.",
       tag: "BEGINNER | FREE",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/7065096/pexels-photo-7065096.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/blockchain-graphic.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-black",
       tagBg: "bg-yellow-400",
     },
@@ -69,7 +93,11 @@ export default function OtherBitcoinPrograms() {
       title: "CRYPTO INVESTMENT BOOTCAMP",
       description: "Learn portfolio management and investment strategies.",
       tag: "INTERMEDIATE | PAID",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/7065097/pexels-photo-7065097.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-white",
       tagBg: "bg-black/80",
     },
@@ -79,12 +107,17 @@ export default function OtherBitcoinPrograms() {
       title: "BITCOIN SECURITY ESSENTIALS",
       description: "Protect your assets and learn secure wallet management.",
       tag: "BEGINNER | FREE",
+<<<<<<< HEAD
       imageSrc: "https://images.pexels.com/photos/5380674/pexels-photo-5380674.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+=======
+      imageSrc: "path/to/bitcoin-africa-story-logo.png",
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       tagText: "text-black",
       tagBg: "bg-yellow-400",
     },
   ];
 
+<<<<<<< HEAD
 
 
   // --- CARD RENDER LOGIC ---
@@ -146,6 +179,40 @@ const renderVisualBlock = (program) => {
   );
 };
 
+=======
+  // --- CARD RENDER LOGIC ---
+  const renderVisualBlock = (program) => {
+    let visualClasses = `w-full h-full relative`;
+    
+    if (program.type === 'diploma') {
+        visualClasses += ' bg-[#4f2f83] text-white'; 
+    } else {
+        visualClasses += ' bg-white '; 
+    }
+  
+    return (
+        <div className={visualClasses}>
+            <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                {program.type === 'diploma' ? (
+                    <span className="text-xl font-bold"></span>
+                ) : (
+                    <span className="text-xl font-bold text-black/70">
+[Image of Bitcoin Africa Story Logo/Graphic]
+</span>
+                )}
+            </div>
+            
+            <span className={`
+                absolute bottom-0 left-0 
+                text-xs font-bold px-3 py-1 
+                ${program.tagBg} ${program.tagText} 
+            `}>
+                {program.tag}
+            </span>
+        </div>
+    );
+  };
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
 
   // --- MAIN COMPONENT RENDER ---
   return (

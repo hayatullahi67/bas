@@ -18,7 +18,11 @@ const ProgramCard = () => {
         {/* Main Content Grid */}
         <div className="flex flex-col lg:flex-row gap-[170px] items-start mb-20">
           {/* Left - Image */}
+<<<<<<< HEAD
           <div className="max-sm:hidden md:relative flex-shrink-0">
+=======
+          <div className="hidden md:relative flex-shrink-0">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             <div className="rounded-[25px] overflow-hidden shadow-lg w-[367px] h-[412px]">
               <img 
                 src="https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=600&h=700&fit=crop" 
@@ -43,12 +47,21 @@ const ProgramCard = () => {
 
             {/* Description Paragraphs */}
             <div className="space-y-4 text-gray-400 text-[15px]">
+<<<<<<< HEAD
              <p className="leading-relaxed">
                 **Master the fundamentals of sound money.** Our free educational program is designed to guide you through the core principles of Bitcoin—from its decentralized structure  and cryptographic basis to its role as a hedge against inflation. Learn how to securely acquire, store, and utilize the hardest money ever created.
               </p>
               <p className="leading-relaxed">
               **Go beyond theory with a global community.** Engage with seasoned Bitcoiners and developers in a supportive environment. Our program not only covers technical literacy (like running nodes and self-custody) but also fosters career development, helping you launch into the industry or simply become a more informed participant in the global digital economy.
               </p>
+=======
+              <p className="leading-relaxed">
+                Ut Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad MLIt
+              </p>
+              <p className="leading-relaxed">
+                Nim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. Ut Enim Ad Maliqua. Ut EnIm Ad MLIt Enim Ad Maliqua. Ut ELE Enim Ad Maliqua. Ut Enim Ad MLIt Enim Ad Maliqua. U
+              </p>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
             </div>
 
             {/* Buttons */}

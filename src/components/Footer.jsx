@@ -339,6 +339,7 @@
 
 
 
+<<<<<<< HEAD
 // import { Link } from 'react-router-dom';
 // import { Twitter, Facebook, Youtube } from 'lucide-react';
 
@@ -1112,6 +1113,38 @@ const mockTopStories = [
 
 
 // Mock data for categories (Unchanged)
+=======
+import { Link } from 'react-router-dom';
+import { Twitter, Facebook, Youtube } from 'lucide-react';
+
+// --- Mock Data (Kept for Structure) ---
+// Mock data for posts, structured to simulate what you'd fetch from a Firebase Firestore collection
+const mockPosts = [
+  { 
+    id: 1, 
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 
+    author: 'LYN ALDEN', 
+    image: 'https://customer-assets.emergentagent.com/job_orange-education/artifacts/o5w3l51g_baslogo.jpg', 
+    link: '/post/lorem-ipsum-1' 
+  },
+  { 
+    id: 2, 
+    title: 'Sed do eiusmod tempor incididunt ut labore et dolore magna.', 
+    author: 'LYN ALDEN', 
+    image: 'https://customer-assets.emergentagent.com/job_orange-education/artifacts/o5w3l51g_baslogo.jpg', 
+    link: '/post/sed-do-eiusmod-2' 
+  },
+  { 
+    id: 3, 
+    title: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco.', 
+    author: 'LYN ALDEN', 
+    image: 'https://customer-assets.emergentagent.com/job_orange-education/artifacts/o5w3l51g_baslogo.jpg', 
+    link: '/post/ut-enim-ad-minim-3' 
+  },
+];
+
+// Mock data for categories
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
 const mockCategories = [
   { name: 'NEWS', link: '/category/news' },
   { name: 'BITCOIN', link: '/category/bitcoin' },
@@ -1122,6 +1155,7 @@ const mockCategories = [
   { name: 'AFRICA BITCOIN STORIES', link: '/category/africa-bitcoin-stories' },
 ];
 
+<<<<<<< HEAD
 // Reusable Post Card component (Unchanged)
 const PostCard = ({ title, author, image, link }) => (
   <Link to={link} className="flex items-start space-x-3 group">
@@ -1143,12 +1177,43 @@ const PostCard = ({ title, author, image, link }) => (
       </p>
     </div>
   </Link>
+=======
+// Reusable Post Card component
+const PostCard = ({ title, author, image, link }) => (
+    <Link to={link} className="flex items-start space-x-3 group">
+      {/* Post Image/Thumbnail */}
+      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden rounded-md border border-gray-700">
+        <img 
+          src={image} 
+          alt={title} 
+          className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-200"
+        />
+      </div>
+      {/* Post Content */}
+      <div className="flex-1">
+        <p className="text-gray-200 text-sm leading-snug group-hover:text-yellow-500 transition-colors duration-200">
+          {title}
+        </p>
+        <p className="text-gray-500 text-xs mt-1">
+          BY <span className="font-medium">{author}</span>
+        </p>
+      </div>
+    </Link>
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
 );
 
 
 const Footer = () => {
+<<<<<<< HEAD
   
   return (
+=======
+  const popularPosts = mockPosts.slice(0, 3);
+  const topStories = mockPosts.slice(0, 3);
+
+  return (
+    // Base color is black with a subtle border for separation
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
     <footer className="bg-black border-t-8 border-yellow-500">
       <div className="max-w-7xl mx-auto px-6 py-12">
         
@@ -1159,7 +1224,11 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Popular Posts</h2>
             <div className="space-y-4">
+<<<<<<< HEAD
               {mockPopularPosts.map((post) => (
+=======
+              {popularPosts.map((post) => (
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 <PostCard 
                   key={post.id} 
                   title={post.title} 
@@ -1175,7 +1244,11 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Top Stories</h2>
             <div className="space-y-4">
+<<<<<<< HEAD
               {mockTopStories.map((post) => (
+=======
+              {topStories.map((post) => (
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 <PostCard 
                   key={post.id + 'ts'} 
                   title={post.title} 
@@ -1204,9 +1277,19 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+<<<<<<< HEAD
         
         {/* === BOTTOM SECTION: LOGO, ABOUT, FOLLOW US (3-Column Grid) === */}
         <div className="mt-[130px] grid grid-cols-1 md:grid-cols-3 gap-[50px] items-start">
+=======
+
+        {/* --- Separator --- */}
+        {/* <hr className="my-10 border-gray-800" /> */}
+        
+        {/* === BOTTOM SECTION: LOGO, ABOUT, FOLLOW US (3-Column Grid) === */}
+        {/* Uses grid-cols-1 on mobile and grid-cols-3 on medium+ screens */}
+        <div className="mt-[130px] grid grid-cols-1 md:grid-cols-3  gap-[50px] items-start">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
           
           {/* 1. Logo/Brand Column */}
           <div className="flex justify-start">
@@ -1266,6 +1349,7 @@ const Footer = () => {
               </a>
             </div>
 
+<<<<<<< HEAD
             <div className="mt-8 pt-6 text-center md:text-left   text-sm ">
               <ul className="flex md:flex-wrap d space-x-4 text-white">
                   <li><Link to="/advertise" className="hover:text-yellow-500 uppercase">ADVERTISE</Link></li>
@@ -1278,6 +1362,33 @@ const Footer = () => {
             </div>
           </div>
         </div>
+=======
+                    <div className="mt-8 pt-6 text-center md:text-left   text-sm ">
+          <ul className="flex md:flex-wrap d space-x-4 text-white">
+              <li><Link to="/advertise" className="hover:text-yellow-500 uppercase">ADVERTISE</Link></li>
+              <li><Link to="/terms" className="hover:text-yellow-500 uppercase">TERM OF USE</Link></li>
+              <li><Link to="/privacy" className="hover:text-yellow-500 uppercase">PRIVACY POLICY</Link></li>
+          </ul>
+          <p className="mt-2 text-xs text-gray-500">
+            © {new Date().getFullYear()} Bitcoin Africa Story.
+          </p>
+        </div>
+          </div>
+        </div>
+        
+        {/* --- Bottom Footer Links/Copyright --- */}
+        {/* Separated from the 3-column grid below */}
+        {/* <div className="mt-8 pt-6 text-center md:text-right text-sm ">
+          <ul className="flex flex-wrap justify-center md:justify-end space-x-4 text-white">
+              <li><Link to="/advertise" className="hover:text-yellow-500 uppercase">ADVERTISE</Link></li>
+              <li><Link to="/terms" className="hover:text-yellow-500 uppercase">TERM OF USE</Link></li>
+              <li><Link to="/privacy" className="hover:text-yellow-500 uppercase">PRIVACY POLICY</Link></li>
+          </ul>
+          <p className="mt-2 text-xs text-gray-500">
+            © {new Date().getFullYear()} Bitcoin Africa Story.
+          </p>
+        </div> */}
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
       </div>
     </footer>
   );

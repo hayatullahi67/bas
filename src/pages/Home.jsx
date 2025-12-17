@@ -142,7 +142,11 @@ const Home = () => {
             {/* Logo grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               {Array.from({ length: 8 }).map((_, i) => (
+<<<<<<< HEAD
                 <div key={i} className="flex items-center justify-center h-20 bg-gray-800 border border-gray-700 ">
+=======
+                <div key={i} className="flex items-center justify-center h-20 bg-gray-800 border border-gray-700 rounded-lg">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                   <span className="text-sm text-gray-300">Bitcoin {i === 0 ? 'Ghana' : i === 1 ? 'Dada' : i === 2 ? 'Nigeria' : i === 3 ? 'Kenya' : i === 4 ? 'Tribe' : i === 5 ? 'BitSawa' : i === 6 ? 'Ekasi' : 'BTCAfrica'} Logo</span>
                 </div>
               ))}
@@ -150,7 +154,11 @@ const Home = () => {
 
             {/* Community list */}
             <div className="space-y-4 mb-6">
+<<<<<<< HEAD
               <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 ">
+=======
+              <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 rounded-lg">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 <div>
                   <div className="flex items-center gap-3">
                     <div className="font-semibold text-white">BTrust Builders</div>
@@ -161,7 +169,11 @@ const Home = () => {
                 <button className="ml-4 px-3 py-1 border border-yellow-500 text-yellow-500 rounded-md hover:bg-yellow-500/10">Visit</button>
               </div>
 
+<<<<<<< HEAD
               <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 ">
+=======
+              <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 rounded-lg">
+>>>>>>> 90b6020f646788a78030acbb88796a5efa2740d1
                 <div>
                   <div className="flex items-center gap-3">
                     <div className="font-semibold text-white">Bitcoin Dada</div>
