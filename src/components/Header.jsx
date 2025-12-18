@@ -12,8 +12,9 @@ const Header = () => {
     { name: 'Education', path: '/education' },
     { name: 'News & Story', path: '/blog' },
     { name: 'Community', path: '/community' },
-    { name: 'Donate', path: '/donate' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'Donate', path: '/donate' }
+
   ];
 
   const subheadernavLinks = [

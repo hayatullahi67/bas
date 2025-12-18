@@ -5,6 +5,8 @@ import { blogPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import Autoplay from "embla-carousel-autoplay";
+import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -135,23 +137,34 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section className="relative w-full  md:min-h-screen overflow-hiddn flex items-center  text-white">
+         <section className="relative w-full  md:min-h-screen overflow-hidden flex items-center  text-white">
 
   {/* 🔹 Background Image Wrapper */}
-  <div className="absolute inset-0 overflow-hidde">
-    <img
-      src="assets/BASSTORYSITEHEADERPIC.jpg"
-      alt="Hero background"
-      className="absolute top-0 left-0 h-full w-[120%] object-cover opacity-70 animate-bg-pan"
-    />
-  </div>
+  <Carousel plugins={[Autoplay({ delay: 7000 })]} opts={{ duration: 400 }} className="absolute inset-0 overflow-hidden">
+    <CarouselContent>
+      <CarouselItem className="pl-0">
+        <img
+          src="assets/blogbg1.jpg"
+          alt="Hero background 1"
+          className="h-full w-full object-cover opacity-70"
+        />
+      </CarouselItem>
+      <CarouselItem className="pl-0">
+        <img
+          src="assets/blogbg2.jpg"
+          alt="Hero background 2"
+          className="h-full w-full object-cover opacity-70"
+        />
+      </CarouselItem>
+    </CarouselContent>
+  </Carousel>
 
   {/* 🔹 Dark Overlay */}
   <div className="absolute inset-0 bg-black/60"></div>
 
   {/* 🔹 Content */}
   <div className="relative z-10 w-[100%] mx-auto max-sm:pt-[50px] p-6 md:p-12 lg:p-24">
-    <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight mb-4">
+    <h1 className="text-7xl sm:text-7xl lg:text-7xl font-extrabold leading-tight mb-4">
       The <br/> Pulse of <br/> Bitcoin <br/> <span className="text-yellow-400">in Africa</span>
     </h1>
 
@@ -160,11 +173,11 @@ const Blog = () => {
     </p>
 
     <div className="flex flex-col sm:flex-row gap-4">
-      <button className="px-10 py-4 text-lg font-bold text-black bg-yellow-500 hover:bg-yellow-400 transition rounded-lg shadow-xl">
+      <button className="px-10 py-4 text-lg font-bold text-black bg-yellow-500 hover:bg-yellow-400 transition  shadow-xl">
         Donate
       </button>
 
-      <button className="px-10 py-4 text-lg font-bold text-white border-2 border-white hover:bg-white hover:text-black transition rounded-lg">
+      <button className="px-10 py-4 text-lg font-bold text-white border-2 border-white hover:bg-white hover:text-black transition ">
         Submit story
       </button>
     </div>
@@ -179,7 +192,7 @@ const Blog = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                className={`px-6 py-2  font-medium transition-all duration-200 ${
                   selectedCategory === category
                     ? 'bg-yellow-500 text-black'
                     : 'bg-gray-900 text-gray-300 hover:bg-gray-800 border border-gray-800'
