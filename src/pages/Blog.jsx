@@ -140,20 +140,42 @@ const Blog = () => {
          <section className="relative w-full  md:min-h-screen overflow-hidden flex items-center  text-white">
 
   {/* 🔹 Background Image Wrapper */}
-  <Carousel plugins={[Autoplay({ delay: 7000 })]} opts={{ duration: 400 }} className="absolute inset-0 overflow-hidden">
-    <CarouselContent>
-      <CarouselItem className="pl-0">
+  {/* <Carousel plugins={[Autoplay({ delay: 7000 })]} opts={{ duration: 400 }} className="absolute inset-0 overflow-hidden  ">
+    <CarouselContent className="h-full">
+      <CarouselItem className="pl-0 h-full ">
         <img
           src="assets/blogbg1.jpg"
           alt="Hero background 1"
           className="h-full w-full object-cover opacity-70"
         />
       </CarouselItem>
-      <CarouselItem className="pl-0">
+      <CarouselItem className="pl-0 h-full">
         <img
           src="assets/blogbg2.jpg"
           alt="Hero background 2"
           className="h-full w-full object-cover opacity-70"
+        />
+      </CarouselItem>
+    </CarouselContent>
+  </Carousel> */}
+  <Carousel 
+    plugins={[Autoplay({ delay: 3000 })]} 
+    opts={{ duration: 50 }} 
+    className="absolute inset-0 w-full h-full"
+  >
+    <CarouselContent className="h-full">
+      <CarouselItem className="pl-0 min-h-screen h-full">
+        <img
+          src="assets/blogbg1.jpg"
+          alt="Hero background 1"
+          className="min-h-screen h-full w-full object-cover opacity-70"
+        />
+      </CarouselItem>
+      <CarouselItem className="pl-0 min-h-screen h-full">
+        <img
+          src="assets/blogbg2.jpg"
+          alt="Hero background 2"
+          className="min-h-screen h-full w-full object-cover opacity-70"
         />
       </CarouselItem>
     </CarouselContent>
@@ -164,25 +186,25 @@ const Blog = () => {
 
   {/* 🔹 Content */}
   <div className="relative z-10 w-[100%] mx-auto max-sm:pt-[50px] p-6 md:p-12 lg:p-24">
-    <h1 className="text-5xl sm:text-7xl lg:text-7xl font-extrabold leading-tight mb-4">
+    <h1 className="text-5xl sm:text-7xl lg:text-7xl  leading-tight mb-4">
       The <br/> Pulse of <br/> Bitcoin <br/> <span className="text-yellow-400">in Africa</span>
     </h1>
 
     <p className="text-lg md:text-xl max-w-3xl mb-10 font-medium text-gray-200">
-      Stay updated with the latest developments, real-life stories, and insightful articles from across Africa’s Bitcoin ecosystem. From grassroots education to circular economy projects, we bring you the voices, experiences, and innovations shaping Africa’s Bitcoin future.
+     From grassroots education to circular economy projects, we bring you the voices, experiences, and innovations shaping Africa’s Bitcoin future.
     </p>
 
-    <div className="flex flex-col sm:flex-row gap-4">
-      <button className="px-10 py-4 text-lg font-bold text-black bg-yellow-500 hover:bg-yellow-400 transition  shadow-xl">
+    <div className="flex  sm:flex-row gap-4">
+      <button className="px-10 py-4 md:text-lg font-bold text-black bg-yellow-500 hover:bg-yellow-400 transition  shadow-xl">
         Donate
       </button>
 
-      <button className="px-10 py-4 text-lg font-bold text-white border-2 border-white hover:bg-white hover:text-black transition ">
+      <button className="px-10 py-4 text-[13px] md:text-lg font-bold text-white border-2 border-white hover:bg-white hover:text-black transition ">
         Submit story
       </button>
     </div>
   </div>
-</section>
+         </section>
 
       {/* Category Filter */}
       <section className="py-8 px-6 sticky top-16 bg-black/95 backdrop-blur-sm border-b border-gray-800 z-40">

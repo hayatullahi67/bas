@@ -100,7 +100,7 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontFamily: {
-        sans: ['Montserrat', 'sans-serif'],
+        sans: ['Montserrat', ],
       },
       colors: {
         background: 'hsl(var(--background))',
