@@ -24,7 +24,7 @@ const Header = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800 h-[100px] ">
+    <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800  ">
    
       {isOpen && (
         <div

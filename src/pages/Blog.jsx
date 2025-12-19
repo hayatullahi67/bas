@@ -164,7 +164,7 @@ const Blog = () => {
 
   {/* 🔹 Content */}
   <div className="relative z-10 w-[100%] mx-auto max-sm:pt-[50px] p-6 md:p-12 lg:p-24">
-    <h1 className="text-7xl sm:text-7xl lg:text-7xl font-extrabold leading-tight mb-4">
+    <h1 className="text-5xl sm:text-7xl lg:text-7xl font-extrabold leading-tight mb-4">
       The <br/> Pulse of <br/> Bitcoin <br/> <span className="text-yellow-400">in Africa</span>
     </h1>
 
