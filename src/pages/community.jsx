@@ -32,52 +32,63 @@ const Community = () => {
   return (
     <div className="mt-[75px] pb-32">
       <div
-      style={{
-            backgroundImage: "linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.7) 100%), url('/assets/communitybg.png')",
+       style={{
+            background: "linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/assets/story.jpg')",
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
-            // backgroundPosition: 'center',
-          }} className='p-0 m-0 w-full' >
-      <div className="max-w-6xl w-full">
-        <div
-         
-        className="relative   shadow-2xl">
-          {/* Background Image with Overlay */}
+            backgroundPosition: 'center',
+          }}
+      className="grid grid-cols-1 lg:grid-cols-2 w-full ">
         
-
-          {/* Content */}
-          <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-16 py-[10px] pt-[20px] sm:py-16 md:py-20 lg:pb-[20px] lg:pt-24">
-            <div className="max-w-2xl">
-              {/* Tag */}
-              <div className="inline-block mb-6 sm:mb-8">
-                <span className="bg-yellow-400/20 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium backdrop-blur-sm border border-yellow-400/30">
-                  Your Network is your Networth
-                </span>
-              </div>
-
-              {/* Heading */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                Join
-                <br />
-                Our
-                <br />
-                Growing
-                <br />
-                <span className="text-yellow-400">Community!</span>
-              </h1>
-
-              {/* Description */}
-              <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-xl">
-                Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
-              </p>
-
-              {/* CTA Button */}
-              {/* <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-yellow-400/50">
-                Join Now
-              </button> */}
+        {/* Text Side */}
+        <div className="px-6 sm:px-8 md:px-12 lg:px-16 py-12 sm:py-16 md:py-20 lg:pt-24 lg:pb-0 flex items-center">
+          <div className="max-w-2xl">
+            {/* Tag */}
+            <div className="inline-block mb-6 sm:mb-8">
+              <span className="bg-yellow-400/20 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium backdrop-blur-sm border border-yellow-400/30">
+                Your Network is your Networth
+              </span>
             </div>
-            </div>
-            </div></div></div>
+
+            {/* Heading */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Join
+              <br />
+              Our
+              <br />
+              Growing
+              <br />
+              <span className="text-yellow-400">Community!</span>
+            </h1>
+
+            {/* Description */}
+            <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-xl">
+              Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
+            </p>
+
+            {/* CTA Button */}
+            {/* <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-yellow-400/50">
+              Join Now
+            </button> */}
+          </div>
+        </div>
+
+        {/* Image Side */}
+        <div
+          // style={{
+          //   backgroundImage: "url('/assets/communitybg.png')",
+          //   backgroundRepeat: 'no-repeat',
+          //   backgroundSize: 'cover',
+          //   backgroundPosition: 'center',
+          // }}
+          className="flex items-center lg:min-h-full relative"
+        >
+          {/* Optional overlay if needed */}
+          <div className="">
+            {/* <img src="/assets/story.jpg" alt="" /> */}
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-6xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left column */}
