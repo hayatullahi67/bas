@@ -2,19 +2,20 @@ import { Calendar, Users, Target, Heart } from 'lucide-react';
 
 const About = () => {
   const milestones = [
-    { year: '2023', title: 'The Beginning', description: 'Started teaching Bitcoin to local communities in Nigeria' },
-    { year: '2023', title: '100 Students', description: 'Reached our first 100 students across multiple cities' },
-    { year: '2024', title: 'Expanding Reach', description: 'Extended education programs to Ghana, Kenya, and South Africa' },
-    { year: '2024', title: '500+ Community', description: 'Built a thriving community of over 500 Bitcoin enthusiasts' },
-    { year: '2025', title: 'Going Digital', description: 'Launched online courses to reach all of Africa' },
-    { year: '2025', title: 'The Future', description: 'Continuing to empower millions across the continent' }
+    { year: '2024', title: 'The Beginning', description: 'Started teaching Bitcoin to local communities in Nigeria.' },
+    { year: '2024', title: 'First 100 Students', description: 'Reached our first 100 students across multiple cities' },
+    { year: '2024', title: 'Growing Across Africa', description: 'Extended education programs to Ghana, Kenya, and South Africa' },
+    { year: '2025', title: ' 300+ Community Members', description: 'Built a thriving network of students, learners, volunteers, and educators across Africa.' },
+    { year: '2025', title: '6 Online Bitcoin Diplomas', description: 'Launched online Bitcoin learning programs to make education accessible to every African, anywhere.' },
+    { year: '2025', title: '10+ Bitcoin Events', description: 'Hosted impactful events — from school sessions to classroom workshops, church outreach, youth hangouts, and community meetups.' },
+    { year: '2025', title: 'Building Circular Economies', description: 'Launched initiatives like Bitcoin Ikorodu and continued scaling real Bitcoin adoption across African communities.' }
   ];
 
   return (
     <div className="pt-16">
       {/* Hero Section */}
-      <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
+        <div className="max-w-4xl mx-auto ">
           <div className="inline-block mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
             <span className="text-yellow-500 text-sm font-semibold">About Us</span>
           </div>
@@ -25,6 +26,49 @@ const About = () => {
             Our journey began with a simple belief: everyone deserves access to financial freedom. 
             For the past 2 years, we've been making that belief a reality across Africa.
           </p>
+        </div>
+      </section> */}
+
+      <section >
+        <div  style={{
+          backgroundImage: "linear-gradient(to top right, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to top left, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to bottom left, transparent 0%, rgba(0,0,0,0.9) 100%), url('/assets/aboutus.png')",
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }} 
+        className='pt-[100px] relative min-h-[600px] md:min-h-[700px]'
+        >
+          
+          <div className='w-[90%] mx-auto relative z-10 px-4 md:px-0'>
+            <div className='bg-[#FFD70061] text-[white] w-full max-w-[300px] md:w-[300px] h-[44px] rounded-full py-[10px] px-[10px] mx-auto md:mx-0'>
+              <h5 className='text-sm md:text-base'>2+ Years of Proof-of-Quality-Works</h5>
+            </div>
+            <div className='mt-4'>
+              <h1 className='text-3xl md:text-5xl lg:text-6xl font-black'>Empowering <br /> Africa <br /> Through <br /> <span className='text-[#FAD604]' >Bitcoin</span></h1>
+            </div>
+            <div className='mt-4'>
+              <p className='w-full md:w-[500px] text-base md:text-lg'>
+                Our journey began with a simple belief: everyone deserves access to financial freedom.
+                 We've been making that belief a reality across Africa.
+              </p>
+            </div>
+
+            <div>
+              <div className='flex flex-col md:flex-row gap-[10px] md:gap-[20px] mt-[30px] pb-[50px] items-center md:items-start'>
+                <div className='w-[150px] md:w-[200px] h-[60px] md:h-[80px] bg-[#FAD604] flex items-center justify-center text-white rounded'> 
+                  <div>
+                    <p className='text-[black] text-[20px] md:text-[30px]'>Donate</p>
+                  </div>
+                </div>
+
+                 <div className='w-[150px] md:w-[200px] h-[60px] md:h-[80px] flex items-center justify-center text-white border border-[2px] rounded'> 
+                  <div>
+                    <p className='text-[white] text-[20px] md:text-[30px]'>contact us</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
         </div>
       </section>
 
@@ -37,32 +81,30 @@ const About = () => {
                 Our <span className="text-yellow-500">Story</span>
               </h2>
               <div className="space-y-4 text-lg text-gray-300 leading-relaxed">
+                <h5>From One Question to a Continental Movement</h5>
+                 
+                 <h5>Bitcoin Africa Story started with a question:</h5>
+                   <p>“Why are so many Africans still excluded from financial opportunities when Bitcoin exists?”</p>
                 <p>
-                  It all started with a question: Why do so many Africans struggle with financial access 
-                  when solutions like Bitcoin exist? This question led me on a journey to understand Bitcoin 
-                  deeply and share that knowledge with my community.
+                  That question sparked a journey — from small, informal meetups in Nigeria to a growing pan-African network of learners, merchants, educators, youths, and creators discovering Bitcoin together.
                 </p>
                 <p>
-                  What began as small meetups with a handful of curious individuals has grown into a movement. 
-                  Over the past two years, I've witnessed the transformation that happens when people truly 
-                  understand Bitcoin—not just as an investment, but as a tool for financial sovereignty.
+                  Through collaboration with Bitcoin initiatives across the continent — from Ghana to Kenya, Uganda to South Africa, and the rest of Africa — we’ve seen the impact firsthand:
+When Africans understand Bitcoin, everything changes.
                 </p>
                 <p>
-                  From Lagos to Nairobi, from Accra to Johannesburg, the message is the same: Bitcoin offers 
-                  hope. It offers an alternative to currencies that lose value, to banking systems that exclude, 
-                  and to financial controls that limit opportunity.
+                  Today, Bitcoin Africa Story stands at the intersection of education, community empowerment, storytelling, and circular economy building.
+We’re helping people not only learn Bitcoin, but use it in their daily lives.
                 </p>
-                <p>
-                  Today, we're not just teaching Bitcoin—we're building a community of empowered individuals 
-                  who understand their financial power and are ready to take control of their economic futures.
-                </p>
+               
               </div>
             </div>
+            
             <div className="space-y-6">
               <img
                 src="assets/communities.jpg"
                 alt="Community"
-                className="w-full rounded-2xl shadow-2xl"
+                className="w-full shadow-2xl"
               />
               <div className="grid grid-cols-2 gap-6">
                 <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
@@ -92,9 +134,8 @@ const About = () => {
                 Our <span className="text-yellow-500">Mission</span>
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
-                To provide accessible, comprehensive Bitcoin education to every African, empowering them 
-                with the knowledge and tools needed to achieve financial sovereignty and build generational 
-                wealth through sound money principles.
+               Accelerating Bitcoin adoption in Africa by educating communities, empowering youth, supporting grassroots initiatives, building local Bitcoin networks, and sharing African Bitcoin stories — making Bitcoin practical, simple, and life-changing for everyday Africans.
+
               </p>
             </div>
 
@@ -107,9 +148,7 @@ const About = () => {
                 Our <span className="text-yellow-500">Vision</span>
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
-                An Africa where every individual has the knowledge, tools, and confidence to control their 
-                financial future. A continent where Bitcoin adoption drives economic freedom, innovation, 
-                and prosperity for all.
+                To build a financially empowered Africa where individuals, families, and communities understand Bitcoin, use Bitcoin, and benefit from its freedom, transparency, and opportunity.
               </p>
             </div>
           </div>
@@ -123,7 +162,7 @@ const About = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Our <span className="text-yellow-500">Journey</span>
             </h2>
-            <p className="text-xl text-gray-400">Key milestones in our mission to spread Bitcoin education</p>
+            <p className="text-xl text-gray-400">Milestones on the Road to Africa’s Bitcoin Future</p>
           </div>
 
           <div className="relative">
