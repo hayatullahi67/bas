@@ -213,7 +213,8 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
               </div>
               <h3 className="text-2xl font-bold mb-4">Community First</h3>
               <p className="text-gray-400 leading-relaxed">
-                We believe in the power of community. Together, we learn, grow, and build a better financial future.
+               Bitcoin adoption grows from the grassroots — through people, not institutions.
+
               </p>
             </div>
 
@@ -223,7 +224,7 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
               </div>
               <h3 className="text-2xl font-bold mb-4">Education Excellence</h3>
               <p className="text-gray-400 leading-relaxed">
-                We're committed to providing accurate, comprehensive, and accessible Bitcoin education for everyone.
+               We prioritize accuracy, clarity, and accessibility in every lesson and resource.
               </p>
             </div>
 
@@ -233,7 +234,8 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
               </div>
               <h3 className="text-2xl font-bold mb-4">Empowerment</h3>
               <p className="text-gray-400 leading-relaxed">
-                Our goal is to empower individuals with knowledge and tools to take control of their financial destiny.
+                We equip people with tools for independence, not dependency.
+
               </p>
             </div>
           </div>
@@ -242,23 +244,50 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
 
       {/* CTA */}
       <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Start Your Bitcoin Journey?
-            </h2>
-            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join our community of learners and take the first step towards financial freedom.
-            </p>
-            <a
-              href="/blog"
-              className="inline-block px-8 py-4 bg-yellow-500 text-black font-bold text-lg rounded-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105"
-            >
-              Start Learning Today
-            </a>
-          </div>
+  <div className="max-w-4xl mx-auto">
+    {/* Kept your gradient background and border style */}
+    <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-8 md:p-12">
+      
+      <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+        Join The Movement
+      </h2>
+
+      <div className="space-y-6">
+        <p className="text-lg text-gray-300">
+          Whether you're a beginner, a student, a merchant, a builder, or a passionate Bitcoiner:
+        </p>
+
+        <p className="text-xl font-bold text-white">
+          You are welcome here.
+        </p>
+
+        <p className="text-lg text-gray-300 leading-relaxed">
+          Start learning, contribute to circular economies, or support our work as we continue 
+          empowering communities — one person, one story, one sats transaction at a time.
+        </p>
+
+        {/* Link List Section */}
+        <div className="flex flex-col space-y-4 pt-4">
+          <a href="/journey" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
+            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
+            Start Your Bitcoin Journey Today
+          </a>
+          
+          <a href="/support" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
+            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
+            Support Our Work
+          </a>
+          
+          <a href="/community" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
+            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
+            Join the Community
+          </a>
         </div>
-      </section>
+      </div>
+
+    </div>
+  </div>
+</section>
     </div>
   );
 };
