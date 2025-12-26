@@ -35,24 +35,24 @@ const Mission = () => {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-4">
-                            <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                            <div className="p-6 bg-gray-900 border border-gray-800 ">
                               <BookOpen className="text-yellow-500 mb-3" size={32} />
                               <h3 className="text-lg font-semibold mb-2">Education First</h3>
                               <p className="text-sm text-gray-400">Comprehensive Bitcoin courses for all levels</p>
                             </div>
-                            <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                            <div className="p-6 bg-gray-900 border border-gray-800 ">
                               <Shield className="text-yellow-500 mb-3" size={32} />
                               <h3 className="text-lg font-semibold mb-2">Security Focus</h3>
                               <p className="text-sm text-gray-400">Learn to protect your Bitcoin safely</p>
                             </div>
                           </div>
                           <div className="space-y-4 mt-8">
-                            <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                            <div className="p-6 bg-gray-900 border border-gray-800 ">
                               <Users className="text-yellow-500 mb-3" size={32} />
                               <h3 className="text-lg font-semibold mb-2">Community Driven</h3>
                               <p className="text-sm text-gray-400">Join a network of Bitcoin enthusiasts</p>
                             </div>
-                            <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                            <div className="p-6 bg-gray-900 border border-gray-800 ">
                               <TrendingUp className="text-yellow-500 mb-3" size={32} />
                               <h3 className="text-lg font-semibold mb-2">Practical Skills</h3>
                               <p className="text-sm text-gray-400">Real-world Bitcoin usage and strategies</p>

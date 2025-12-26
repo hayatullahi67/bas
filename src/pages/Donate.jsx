@@ -7,44 +7,41 @@ const Donate = () => {
   const DONATION_IMAGE_URL = 'assets/dontebg.jpg';
   return (
     <div className='mt-[110px]'>
-    <section 
-      className="relative max-md:mt-[100px] mt-[40px] md:min-h-screen flex items-center justify-start overflow-hidden"
-      // Applying the background image directly via style
-      style={{
-        backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      
-      {/* Dark Overlay for Text Contrast */}
-      {/* We still need an absolute/inset div for the color overlay to cover the background */}
-      <div className="absolute inset-0 bg-black opacity-70"></div>
-      
-      {/* Content Container */}
-      <div className="relative z-10 p-6 sm:p-10 md:p-16 lg:p-24 max-w-7xl mx-auto w-full">
-        <div className="max-w-xl md:max-w-2xl lg:max-w-3xl">
+    <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
+      </div>
 
-          {/* Golden Badge */}
-          <span className="inline-block px-3 py-1 mb-6 text-sm font-semibold text-white bg-[#FFD70061] rounded-[100px]">
-            2+ Years of Proof-of-Quality-Works
-          </span>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+          <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+            <div className="inline-block mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+              <span className="text-yellow-500 text-sm font-semibold">2+ Years of Proof-of-Quality-Works</span>
+            </div>
 
-          {/* Main Title - Responsive sizing for impact */}
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
-            Support <br className="md:hidden" />
-            Bitcoin <br className="md:hidden" /> Adoption <br className="md:hidden" />
-            Across <br className="-md:hidden" />
-            <span className="text-yellow-400"> Africa.</span>
-          </h1>
+            <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+              <span>Support </span> <br className="sm:hidden"/> <span>Bitcoin </span> <br className="sm:hidden"/> <span>Adoption </span> <br className=""/> <span className="text-[#FAD604]">Across Africa.</span>
+            </h1>
 
-          {/* Subtext/Body */}
-          <p className="text-white text-lg sm:text-xl font-light max-w-md">
-            Your donation fuels grassroots training, community building, real adoption stories, 
-            and local circular economy projects. Help us grow Africa's Bitcoin proof-of-work.
-          </p>
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+              Your donation fuels grassroots training, community building, real adoption stories, and local circular economy projects. Help us grow Africa's Bitcoin proof-of-work.
+            </p>
 
-          {/* Add a Call-to-Action button here if needed */}
+            <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+              <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+                Donate Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

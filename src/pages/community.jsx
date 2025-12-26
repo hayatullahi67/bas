@@ -31,64 +31,53 @@ const Community = () => {
 
   return (
     <div className="mt-[75px] pb-32">
-      <div
-       style={{
-            background: "linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/assets/story.jpg')",
+      <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: "url('/assets/story.jpg')",
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
-      className="grid grid-cols-1 lg:grid-cols-2 w-full ">
-        
-        {/* Text Side */}
-        <div className="px-6 sm:px-8 md:px-12 lg:px-16 py-12 sm:py-16 md:py-20 lg:pt-24 lg:pb-0 flex items-center">
-          <div className="max-w-2xl">
-            {/* Tag */}
-            <div className="inline-block mb-6 sm:mb-8">
-              <span className="bg-yellow-400/20 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium backdrop-blur-sm border border-yellow-400/30">
-                Your Network is your Networth
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-              Join
-              <br />
-              Our
-              <br />
-              Growing
-              <br />
-              <span className="text-yellow-400">Community!</span>
-            </h1>
-
-            {/* Description */}
-            <p className="text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-xl">
-              Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
-            </p>
-
-            {/* CTA Button */}
-            {/* <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-yellow-400/50">
-              Join Now
-            </button> */}
-          </div>
-        </div>
-
-        {/* Image Side */}
-        <div
-          // style={{
-          //   backgroundImage: "url('/assets/communitybg.png')",
-          //   backgroundRepeat: 'no-repeat',
-          //   backgroundSize: 'cover',
-          //   backgroundPosition: 'center',
-          // }}
-          className="flex items-center lg:min-h-full relative"
         >
-          {/* Optional overlay if needed */}
-          <div className="">
-            {/* <img src="/assets/story.jpg" alt="" /> */}
+          <div className="absolute inset-0 bg-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+            <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+              <div className="inline-block mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+                <span className="text-yellow-500 text-sm font-semibold">Your Network is your Networth</span>
+              </div>
+
+              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+                <span>Join </span> <br className="sm:hidden"/> <span>Our </span> <br className="sm:hidden"/> <span>Growing </span> <br className=""/> <span className="text-[#FAD604]">Community!</span>
+              </h1>
+
+              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+                Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
+              </p>
+
+              <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+                <a
+                  href="#"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                >
+                  Join Telegram
+                </a>
+                <a
+                  href="#"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200"
+                >
+                  Join WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <div className="max-w-6xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left column */}

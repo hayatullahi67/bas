@@ -137,12 +137,16 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section className="relative w-full  md:min-h-screen overflow-hidden flex items-center  text-white">
+         <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
 
-  {/* 🔹 Background Image Wrapper */}
-  {/* <Carousel plugins={[Autoplay({ delay: 7000 })]} opts={{ duration: 400 }} className="absolute inset-0 overflow-hidden  ">
+  {/* Background Image with Carousel */}
+  <Carousel 
+    plugins={[Autoplay({ delay: 3000 })]} 
+    opts={{ duration: 50 }} 
+    className="absolute inset-0 w-full h-full z-0"
+  >
     <CarouselContent className="h-full">
-      <CarouselItem className="pl-0 h-full ">
+      <CarouselItem className="pl-0 h-full">
         <img
           src="assets/blogbg1.jpg"
           alt="Hero background 1"
@@ -157,51 +161,34 @@ const Blog = () => {
         />
       </CarouselItem>
     </CarouselContent>
-  </Carousel> */}
-  <Carousel 
-    plugins={[Autoplay({ delay: 3000 })]} 
-    opts={{ duration: 50 }} 
-    className="absolute inset-0 w-full h-full"
-  >
-    <CarouselContent className="h-full">
-      <CarouselItem className="pl-0 min-h-screen h-full">
-        <img
-          src="assets/blogbg1.jpg"
-          alt="Hero background 1"
-          className="min-h-screen h-full w-full object-cover opacity-70"
-        />
-      </CarouselItem>
-      <CarouselItem className="pl-0 min-h-screen h-full">
-        <img
-          src="assets/blogbg2.jpg"
-          alt="Hero background 2"
-          className="min-h-screen h-full w-full object-cover opacity-70"
-        />
-      </CarouselItem>
-    </CarouselContent>
   </Carousel>
 
-  {/* 🔹 Dark Overlay */}
-  <div className="absolute inset-0 bg-black/60"></div>
+  {/* Dark Overlay */}
+  <div className="absolute inset-0 bg-black/80"></div>
+  <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black"></div>
 
-  {/* 🔹 Content */}
-  <div className="relative z-10 w-[100%] mx-auto max-sm:pt-[50px] p-6 md:p-12 lg:p-24">
-    <h1 className="text-5xl sm:text-7xl lg:text-7xl  leading-tight mb-4">
-      The <br/> Pulse of <br/> Bitcoin <br/> <span className="text-yellow-400">in Africa</span>
-    </h1>
+  {/* Content */}
+  <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+    <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+      <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+        <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+          <span>The </span> <br className="sm:hidden"/> <span>Pulse of </span> <br className="sm:hidden"/> <span>Bitcoin </span> <br className=""/> <span className="text-yellow-400">in Africa</span>
+        </h1>
 
-    <p className="text-lg md:text-xl max-w-3xl mb-10 font-medium text-gray-200">
-     From grassroots education to circular economy projects, we bring you the voices, experiences, and innovations shaping Africa’s Bitcoin future.
-    </p>
+        <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+          From grassroots education to circular economy projects, we bring you the voices, experiences, and innovations shaping Africa's Bitcoin future.
+        </p>
 
-    <div className="flex  sm:flex-row gap-4">
-      <button className="px-10 py-4 md:text-lg font-bold text-black bg-yellow-500 hover:bg-yellow-400 transition  shadow-xl">
-        Donate
-      </button>
+        <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+          <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+            Donate
+          </button>
 
-      <button className="px-10 py-4 text-[13px] md:text-lg font-bold text-white border-2 border-white hover:bg-white hover:text-black transition ">
-        Submit story
-      </button>
+          <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
+            Submit story
+          </button>
+        </div>
+      </div>
     </div>
   </div>
          </section>

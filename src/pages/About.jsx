@@ -1,4 +1,5 @@
-import { Calendar, Users, Target, Heart } from 'lucide-react';
+import { Calendar, Users, Target, Heart, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const About = () => {
   const milestones = [
@@ -29,45 +30,109 @@ const About = () => {
         </div>
       </section> */}
 
-      <section >
-        <div  style={{
-          backgroundImage: "linear-gradient(to top right, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to top left, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.9) 100%), linear-gradient(to bottom left, transparent 0%, rgba(0,0,0,0.9) 100%), url('/assets/aboutus.png')",
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-        }} 
-        className='pt-[100px] relative min-h-[600px] md:min-h-[700px]'
+      <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: "url('/assets/aboutus.png')",
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
-          
-          <div className='w-[90%] mx-auto relative z-10 px-4 md:px-0'>
-            <div className='bg-[#FFD70061] text-[white] w-full max-w-[300px] md:w-[300px] h-[44px] rounded-full py-[10px] px-[10px] mx-auto md:mx-0'>
-              <h5 className='text-sm md:text-base'>2+ Years of Proof-of-Quality-Works</h5>
-            </div>
-            <div className='mt-4'>
-              <h1 className='text-3xl md:text-5xl lg:text-6xl font-black'>Empowering <br /> Africa <br /> Through <br /> <span className='text-[#FAD604]' >Bitcoin</span></h1>
-            </div>
-            <div className='mt-4'>
-              <p className='w-full md:w-[500px] text-base md:text-lg'>
-                Our journey began with a simple belief: everyone deserves access to financial freedom.
-                 We've been making that belief a reality across Africa.
+          <div className="absolute inset-0 bg-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
+        </div>
+
+        {/* Hero Content - two column layout */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+            {/* Left: Text content */}
+            <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+              <div className="inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+                <span className="text-yellow-500 text-sm font-semibold">2+ Years of Proof-of-Quality-Works</span>
+              </div>
+
+              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+             <span>  Empowering  </span> <br className="sm:hidden"/> <span> Africa </span>  <br className="sm:hidden"/> <span>  Through </span> <br className=""/> <span className="text-[#FAD604]">  Bitcoin.  </span>               
+            </h1>
+
+              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+               Our journey began with a simple belief: everyone deserves access to financial freedom. We've been making that belief a reality across Africa.
               </p>
-            </div>
 
-            <div>
-              <div className='flex flex-col md:flex-row gap-[10px] md:gap-[20px] mt-[30px] pb-[50px] items-center md:items-start'>
-                <div className='w-[150px] md:w-[200px] h-[60px] md:h-[80px] bg-[#FAD604] flex items-center justify-center text-white rounded'> 
-                  <div>
-                    <p className='text-[black] text-[20px] md:text-[30px]'>Donate</p>
-                  </div>
+              <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+                <Link
+                  to="/donate"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                >
+                  Donate
+                  <ArrowRight className="ml-2" size={18} />
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg  hover:bg-yellow-500 hover:text-black transition-all duration-200"
+                >
+                  Contact Us
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">2+</div>
+                  <div className="text-gray-400 text-sm">Years Teaching</div>
                 </div>
-
-                 <div className='w-[150px] md:w-[200px] h-[60px] md:h-[80px] flex items-center justify-center text-white border border-[2px] rounded'> 
-                  <div>
-                    <p className='text-[white] text-[20px] md:text-[30px]'>contact us</p>
-                  </div>
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">500+</div>
+                  <div className="text-gray-400 text-sm">Lives Changed</div>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">50+</div>
+                  <div className="text-gray-400 text-sm">Communities</div>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">100%</div>
+                  <div className="text-gray-400 text-sm">Free Education</div>
                 </div>
               </div>
             </div>
-            
+
+            {/* Right: Image collage */}
+            <div className="w-full hidden lg:w-1/2 flex items-center justify-center">
+              <div className="relative w-[460px] h-[300px] lg:w-[520px] lg:h-[360px]">
+                {/* Large top-right image */}
+                <div className="absolute right-0 top-0 w-[320px] h-[240px] lg:w-[360px] lg:h-[270px] rounded-2xl overflow-hidden border border-gray-800 shadow-lg">
+                  <img
+                    src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=1000&q=80"
+                    alt="student-1"
+                    className="w-full h-full object-cover grayscale-[10%]"
+                  />
+                </div>
+
+                {/* Large bottom-left image */}
+                <div className="absolute left-0 bottom-[-70px] w-[300px] h-[260px] lg:w-[340px] lg:h-[300px] rounded-2xl overflow-hidden border border-gray-800 shadow-xl transform -translate-y-6 lg:-translate-y-8">
+                  <img
+                    src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1000&q=80"
+                    alt="student-2"
+                    className="w-full h-full object-cover grayscale-[10%]"
+                  />
+                </div>
+
+                {/* Small middle accent */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[212px] h-[212px] lg:w-[232px] lg:h-[232px] rounded-xl overflow-hidden border-2 border-yellow-500 shadow-md bg-gradient-to-tr from-yellow-500/10 to-transparent flex items-center justify-center">
+                  <img
+                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
+                    alt="student-3"
+                    className="w-full h-full object-cover rounded-lg filter grayscale-[10%]"
+                  />
+                </div>
+
+                {/* Decorative small circle */}
+                <div className="absolute -left-6 -top-6 w-6 h-6 rounded-full bg-yellow-500/80 blur-sm" aria-hidden="true" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
