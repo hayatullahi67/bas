@@ -17,13 +17,7 @@ const Mission = () => {
                             Spreading Bitcoin Adoption Across <span className="text-yellow-500">Africa</span>
                           </h2>
                           <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                            For the past 2 years, I've been on a mission to educate Africans about Bitcoin and its 
-                            transformative power. From local meetups to online workshops, we're building a community 
-                            of empowered individuals who understand the importance of financial self-sovereignty.
-                          </p>
-                          <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-                            Bitcoin isn't just technology—it's hope for millions seeking economic freedom. Together, 
-                            we're creating a future where everyone has access to sound money and financial opportunity.
+                           To accelerate Bitcoin adoption in Africa through education, community empowerment, grassroots initiatives, and storytelling all aimed at making Bitcoin practical for everyday Africans.
                           </p>
                           <Link 
                             to="/about" 

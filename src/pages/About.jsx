@@ -191,7 +191,7 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Mission */}
-            <div className="p-10 bg-gray-900 border border-gray-800 rounded-2xl">
+            <div className="p-10 bg-gray-900 border border-gray-800 ">
               <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-6">
                 <Target className="text-yellow-500" size={32} />
               </div>
@@ -199,13 +199,13 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
                 Our <span className="text-yellow-500">Mission</span>
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
-               Accelerating Bitcoin adoption in Africa by educating communities, empowering youth, supporting grassroots initiatives, building local Bitcoin networks, and sharing African Bitcoin stories — making Bitcoin practical, simple, and life-changing for everyday Africans.
+              To accelerate Bitcoin adoption in Africa through education, community empowerment, grassroots initiatives, and storytelling all aimed at making Bitcoin practical for everyday Africans.
 
               </p>
             </div>
 
             {/* Vision */}
-            <div className="p-10 bg-gray-900 border border-gray-800 rounded-2xl">
+            <div className="p-10 bg-gray-900 border border-gray-800 ">
               <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-6">
                 <Heart className="text-yellow-500" size={32} />
               </div>
@@ -241,11 +241,11 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
                   className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                 >
                   {/* Timeline dot */}
-                  <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-yellow-500 rounded-full border-4 border-black transform -translate-x-1/2" />
+                  <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-yellow-500  border-4 border-black transform -translate-x-1/2" />
 
                   {/* Content */}
                   <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12 pl-16 md:pl-0' : 'md:pl-12 pl-16 md:pl-0'}`}>
-                    <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl hover:border-yellow-500 transition-colors duration-300">
+                    <div className="p-6 bg-gray-900 border border-gray-800  hover:border-yellow-500 transition-colors duration-300">
                       <div className="flex items-center mb-3">
                         <Calendar className="text-yellow-500 mr-2" size={20} />
                         <span className="text-yellow-500 font-bold">{milestone.year}</span>
@@ -272,7 +272,7 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 bg-gray-900 border border-gray-800 rounded-xl text-center hover:border-yellow-500 transition-colors duration-300">
+            <div className="p-8 bg-gray-900 border border-gray-800  text-center hover:border-yellow-500 transition-colors duration-300">
               <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Users className="text-yellow-500" size={32} />
               </div>
@@ -283,7 +283,7 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
               </p>
             </div>
 
-            <div className="p-8 bg-gray-900 border border-gray-800 rounded-xl text-center hover:border-yellow-500 transition-colors duration-300">
+            <div className="p-8 bg-gray-900 border border-gray-800  text-center hover:border-yellow-500 transition-colors duration-300">
               <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Target className="text-yellow-500" size={32} />
               </div>
@@ -293,7 +293,7 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
               </p>
             </div>
 
-            <div className="p-8 bg-gray-900 border border-gray-800 rounded-xl text-center hover:border-yellow-500 transition-colors duration-300">
+            <div className="p-8 bg-gray-900 border border-gray-800  text-center hover:border-yellow-500 transition-colors duration-300">
               <div className="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="text-yellow-500" size={32} />
               </div>
@@ -332,21 +332,19 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
         </p>
 
         {/* Link List Section */}
-        <div className="flex flex-col space-y-4 pt-4">
-          <a href="/journey" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
-            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
-            Start Your Bitcoin Journey Today
-          </a>
+        <div className="flex flex-col sm:flex-col gap-4 pt-4">
+          <Link to="/education" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+            Start Your Bitcoin Journey
+            <ArrowRight className="ml-2" size={18} />
+          </Link>
           
-          <a href="/support" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
-            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
+          <Link to="/donate" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
             Support Our Work
-          </a>
+          </Link>
           
-          <a href="/community" className="flex items-center gap-3 text-white font-bold text-lg hover:text-yellow-500 transition-colors group">
-            <span className="group-hover:translate-x-1 transition-transform">👉</span> 
+          <Link to="/community" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
             Join the Community
-          </a>
+          </Link>
         </div>
       </div>
 
