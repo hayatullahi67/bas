@@ -242,7 +242,7 @@ const Blog = () => {
       {/* Submit Story Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-12">
+          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30  p-12">
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Share Your Bitcoin <span className="text-yellow-500">Story</span>
@@ -254,7 +254,7 @@ const Blog = () => {
 
             <button
               onClick={() => setShowForm(!showForm)}
-              className="w-full mb-6 px-8 py-4 bg-yellow-500 text-black font-bold text-lg rounded-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105"
+              className="w-full mb-6 px-8 py-4 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105"
             >
               {showForm ? 'Cancel' : 'Submit Your Story'}
             </button>

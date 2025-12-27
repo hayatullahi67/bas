@@ -59,7 +59,7 @@ const About = () => {
             </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-               Our journey began with a simple belief: everyone deserves access to financial freedom. We've been making that belief a reality across Africa.
+               Our journey began with a simple belief: everyone deserves access to financial freedom. 
               </p>
 
               <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">

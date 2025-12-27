@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 
 const Donate = () => {
   const [activeTab, setActiveTab] = useState('geyser');
@@ -45,6 +46,7 @@ const Donate = () => {
         </div>
       </div>
     </section>
+
     <div className="max-w-6xl mx-auto px-6 py-12">
       {/* <h1 className="text-3xl font-black text-center mb-6">Support Bitcoin Africa Story</h1>
       <p className="text-center text-gray-300 mb-8 max-w-2xl mx-auto">Your donations help us produce educational content and support Bitcoin adoption across Africa. Choose a payment option below.</p> */}
@@ -159,52 +161,26 @@ const Donate = () => {
         </div>
       </div>
     </div>
-    <section className="max-w-6xl mx-auto bg-black text-white py-16 sm:py-20 md:py-24 px-6 sm:px-10">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Responsive Grid Container: Stacks on mobile, two columns on medium screens and up */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-          
-          {/* Text Content (Left Column on Desktop) */}
-          <div className="md:order-1 order-2"> 
-            
-            {/* Title */}
-            <h2 className="text-4xl sm:text-5xl font-extrabold mb-8">
-              How To Donate
-            </h2>
 
-            {/* Paragraph 1 */}
-            <p className="text-lg sm:text-xl font-light mb-8 max-w-lg">
+    <section className="max-w-6xl mx-auto bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white py-16 sm:py-20 md:py-24 px-6 sm:px-10">
+      <div className="max-w-4xl mx-auto">
+        <Card className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white border border-gray-700 shadow-2xl rounded-[none] overflow-hidden hover:shadow-yellow-500/20 transition-shadow duration-300">
+          <CardHeader className="text-center pb-6 pt-8">
+            <CardTitle className="text-4xl sm:text-3xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent leading-tight">
+              How To Donate
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center px-8 pb-8">
+            <p className="text-lg sm:text-xl md:text-xl font-light mb-8 max-w-3xl mx-auto text-gray-300 leading-relaxed">
               Choose your preferred Bitcoin payment option above.
             </p>
-
-            {/* Paragraph 2 - Emphasizing security/mission */}
-            <p className="text-lg sm:text-xl font-light max-w-lg">
+            <p className="text-lg sm:text-xl md:text-xl font-light max-w-3xl mx-auto text-gray-300 leading-relaxed">
               All contributions are secure, transparent, and go directly to 
               community work, education and our efforts to drive Bitcoin 
               Adoption across Africa.
             </p>
-            
-            {/* Note: The original design implies the Bitcoin payment options 
-                 are listed *above* this section. You would integrate them 
-                 elsewhere on the page. */}
-          </div>
-
-          {/* Image Content (Right Column on Desktop) */}
-          {/* We use md:order-2 order-1 to make the image appear first on mobile 
-             if preferred, otherwise use md:order-2 order-2 to keep text first. 
-             Based on the sample image, text-first on mobile is cleaner. 
-             I'll stick to text-first on both by setting md:order-1 and md:order-2 
-             for the columns. If you want the image first on mobile, swap the order-1/2 classes. */}
-          <div className="md:order-2 order-1"> 
-            <img 
-              src={DONATION_IMAGE_URL}
-              alt="Group holding a Bitcoin Africa Story banner"
-              className="w-full h-auto rounded-lg shadow-2xl object-cover"
-            />
-          </div>
-
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
     </div>
