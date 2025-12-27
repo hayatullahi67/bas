@@ -137,27 +137,27 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
+         <section className="relative md:min-h-screen flex items-center overflow-hidden">
 
   {/* Background Image with Carousel */}
   <Carousel 
     plugins={[Autoplay({ delay: 3000 })]} 
     opts={{ duration: 50 }} 
-    className="absolute inset-0 w-full h-full z-0"
+    className="absolute inset-0 w-full h-full "
   >
-    <CarouselContent className="h-full">
-      <CarouselItem className="pl-0 h-full">
+    <CarouselContent className="h-full min-h-screen">
+      <CarouselItem className="pl-0 h-full min-h-screen">
         <img
           src="assets/blogbg1.jpg"
           alt="Hero background 1"
-          className="h-full w-full object-cover opacity-70"
+          className="h-full w-full min-h-screen object-cover opacity-70"
         />
       </CarouselItem>
-      <CarouselItem className="pl-0 h-full">
+      <CarouselItem className="pl-0 h-full min-h-screen">
         <img
           src="assets/blogbg2.jpg"
           alt="Hero background 2"
-          className="h-full w-full object-cover opacity-70"
+          className="h-full w-full min-h-screen object-cover opacity-70"
         />
       </CarouselItem>
     </CarouselContent>
@@ -194,7 +194,7 @@ const Blog = () => {
          </section>
 
       {/* Category Filter */}
-      <section className="py-8 px-6 sticky top-16 bg-black/95 backdrop-blur-sm border-b border-gray-800 z-40">
+      <section className="py-8 px-6 md:sticky top-16 bg-black/95 backdrop-blur-sm border-b border-gray-800 z-40">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (

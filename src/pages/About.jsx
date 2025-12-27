@@ -13,7 +13,7 @@ const About = () => {
   ];
 
   return (
-    <div className="pt-16">
+    <div className="pt-16"> 
       {/* Hero Section */}
       {/* <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-4xl mx-auto ">
@@ -154,12 +154,11 @@ const About = () => {
                   That question sparked a journey — from small, informal meetups in Nigeria to a growing pan-African network of learners, merchants, educators, youths, and creators discovering Bitcoin together.
                 </p>
                 <p>
-                  Through collaboration with Bitcoin initiatives across the continent — from Ghana to Kenya, Uganda to South Africa, and the rest of Africa — we’ve seen the impact firsthand:
-When Africans understand Bitcoin, everything changes.
+                  Through collaboration with Bitcoin initiatives across the continent. We’ve seen the impact firsthand: When Africans understand Bitcoin, everything changes.
                 </p>
                 <p>
                   Today, Bitcoin Africa Story stands at the intersection of education, community empowerment, storytelling, and circular economy building.
-We’re helping people not only learn Bitcoin, but use it in their daily lives.
+                     We’re helping people not only learn Bitcoin, but use it in their daily lives.
                 </p>
                
               </div>
@@ -172,11 +171,11 @@ We’re helping people not only learn Bitcoin, but use it in their daily lives.
                 className="w-full shadow-2xl"
               />
               <div className="grid grid-cols-2 gap-6">
-                <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                <div className="p-6 bg-gray-900 border border-gray-800 ">
                   <div className="text-3xl font-bold text-yellow-500 mb-2">2+</div>
                   <div className="text-gray-400">Years of Teaching</div>
                 </div>
-                <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
+                <div className="p-6 bg-gray-900 border border-gray-800 ">
                   <div className="text-3xl font-bold text-yellow-500 mb-2">500+</div>
                   <div className="text-gray-400">Lives Changed</div>
                 </div>
