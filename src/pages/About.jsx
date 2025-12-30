@@ -1,5 +1,6 @@
 import { Calendar, Users, Target, Heart, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const About = () => {
   const milestones = [
@@ -235,8 +236,12 @@ const About = () => {
 
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
-                <div
+                <motion.div
                   key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  viewport={{ once: true }}
                   className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                 >
                   {/* Timeline dot */}
@@ -253,7 +258,7 @@ const About = () => {
                       <p className="text-gray-400">{milestone.description}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

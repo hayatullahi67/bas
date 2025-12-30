@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle } from 'lucide-react';
 import { blogPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
@@ -176,15 +176,15 @@ const Blog = () => {
         </h1>
 
         <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-          From grassroots education to circular economy projects, we bring you the voices, experiences, and innovations shaping Africa's Bitcoin future.
+         spotlighting innovation, grassroots adoption, policy developments, and the people using Bitcoin to build financial freedom in Africa.
         </p>
 
         <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
-          <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+          <button className="inline-flex w-auto sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
             Donate
           </button>
 
-          <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
+          <button className="inline-flex w-auto sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
             Submit story
           </button>
         </div>
