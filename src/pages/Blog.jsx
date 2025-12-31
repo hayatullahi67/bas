@@ -137,7 +137,7 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section className="relative md:min-h-screen flex items-center overflow-hidden">
+         <section className="relative  flex items-center overflow-hidden">
 
   {/* Background Image with Carousel */}
   <Carousel 

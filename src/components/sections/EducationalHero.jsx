@@ -6,7 +6,7 @@ const EducationalHero = () => {
   return (
     
  
-     <div className="md:min-h-screen bg-black text-white">
+     <div className=" bg-black text-white">
       <div className="container mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}

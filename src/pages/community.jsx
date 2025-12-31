@@ -31,7 +31,7 @@ const Community = () => {
 
   return (
     <div className="mt-[75px] pb-32">
-      <section className="relative md:min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative  flex items-center overflow-hidden">
         <div
           className="absolute inset-0 z-0"
           style={{
