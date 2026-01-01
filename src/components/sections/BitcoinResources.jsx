@@ -1,15 +1,26 @@
 import React from 'react';
 
 export default function BitcoinResources() {
+  // const resources = [
+  //   { id: 1, title: 'BITCOIN WHITEPAPER', subtitle: 'Bitcoin whitepaper and history', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'whitepaper' },
+  //   { id: 2, title: 'MEMPOOL SPACE', subtitle: 'Realtime mempool visualizer', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'mempool' },
+  //   { id: 3, title: 'TIMECHAIN CALENDAR', subtitle: 'Events & important dates', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'calendar' },
+  //   { id: 4, title: 'CYBERFORT', subtitle: 'Security tools & best practices', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'cyberfort' },
+  //   { id: 5, title: 'AFRICAN BITCOIN MAP', subtitle: 'Regional initiatives & resources', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'map' },
+  //   { id: 6, title: 'CITRUSRATES', subtitle: 'Analytics & on-chain stats', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'citrusrate' },
+  //   { id: 7, title: 'GEYSER FUND', subtitle: 'Funding & grants for builders', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'geyser' },
+  //   { id: 8, title: 'TANDO', subtitle: 'Community projects & tools', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'tando' },
+  // ];
+
   const resources = [
-    { id: 1, title: 'BITCOIN WHITEPAPER', subtitle: 'Bitcoin whitepaper and history', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'whitepaper' },
-    { id: 2, title: 'MEMPOOL SPACE', subtitle: 'Realtime mempool visualizer', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'mempool' },
-    { id: 3, title: 'TIMECHAIN CALENDAR', subtitle: 'Events & important dates', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'calendar' },
-    { id: 4, title: 'CYBERFORT', subtitle: 'Security tools & best practices', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'cyberfort' },
-    { id: 5, title: 'AFRICAN BITCOIN MAP', subtitle: 'Regional initiatives & resources', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'map' },
-    { id: 6, title: 'CITRUSRATES', subtitle: 'Analytics & on-chain stats', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'citrusrate' },
-    { id: 7, title: 'GEYSER FUND', subtitle: 'Funding & grants for builders', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'geyser' },
-    { id: 8, title: 'TANDO', subtitle: 'Community projects & tools', imageSrc: 'https://images.unsplash.com/photo-1542228262-6c3d0a1f6b9f?w=400&h=400&fit=crop', imageAlt: 'tando' },
+    { id: 1, title: 'BITCOIN WHITEPAPER', subtitle: 'Bitcoin whitepaper and history', imageSrc: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=300&fit=crop', imageAlt: 'whitepaper' },
+    { id: 2, title: 'MEMPOOL SPACE', subtitle: 'Realtime mempool visualizer', imageSrc: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop', imageAlt: 'mempool' },
+    { id: 3, title: 'TIMECHAIN CALENDAR', subtitle: 'Events & important dates', imageSrc: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=300&fit=crop', imageAlt: 'calendar' },
+    { id: 4, title: 'CYBERFORT', subtitle: 'Security tools & best practices', imageSrc: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop', imageAlt: 'cyberfort' },
+    { id: 5, title: 'AFRICAN BITCOIN MAP', subtitle: 'Regional initiatives & resources', imageSrc: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=400&h=300&fit=crop', imageAlt: 'map' },
+    { id: 6, title: 'CITRUSRATES', subtitle: 'Analytics & on-chain stats', imageSrc: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop', imageAlt: 'citrusrate' },
+    { id: 7, title: 'GEYSER FUND', subtitle: 'Funding & grants for builders', imageSrc: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=300&fit=crop', imageAlt: 'geyser' },
+    { id: 8, title: 'TANDO', subtitle: 'Community projects & tools', imageSrc: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', imageAlt: 'tando' },
   ];
 
   const renderIconPlaceholder = (imageSrc, alt) => {
@@ -42,7 +53,7 @@ export default function BitcoinResources() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {resources.map((r) => (
             <article key={r.id} className="fle flex-co w-[250px] items-start gap-3">
-              <div className={`w-[250px] h-[166px] rounded-lg overflow-hidden bg-yellow-100 border-4 border-yellow-300 flex items-center justify-center`}>
+              <div className={`w-[250px] h-[166px] rounded-lg overflow-hidden bg-yellow-100  flex items-center justify-center`}>
                 {r.imageSrc ? (
                   <img src={r.imageSrc} alt={r.imageAlt} className="w-full h-full object-cover" loading="lazy" />
                 ) : (

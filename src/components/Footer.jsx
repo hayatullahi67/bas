@@ -1,5 +1,3 @@
-
-
 import { Link } from 'react-router-dom';
 import { Twitter, Facebook, Youtube } from 'lucide-react';
 
@@ -58,15 +56,28 @@ const mockTopStories = [
 
 
 // Mock data for categories (Unchanged)
+// const mockCategories = [
+//   { name: 'NEWS', link: '/category/news' },
+//   { name: 'BITCOIN', link: '/category/bitcoin' },
+//   { name: 'GUIDES', link: '/category/guides' },
+//   { name: 'TECHNICAL', link: '/category/technical' },
+//   { name: 'ARTICLES', link: '/category/articles' },
+//   { name: 'BUSINESS', link: '/category/business' },
+//   { name: 'AFRICA BITCOIN STORIES', link: '/category/africa-bitcoin-stories' },
+// ];
+  
+// Mock data for categories with post counts
 const mockCategories = [
-  { name: 'NEWS', link: '/category/news' },
-  { name: 'BITCOIN', link: '/category/bitcoin' },
-  { name: 'GUIDES', link: '/category/guides' },
-  { name: 'TECHNICAL', link: '/category/technical' },
-  { name: 'ARTICLES', link: '/category/articles' },
-  { name: 'BUSINESS', link: '/category/business' },
-  { name: 'AFRICA BITCOIN STORIES', link: '/category/africa-bitcoin-stories' },
-];
+  { name: 'BUSINESS', link: '/category/business', count: 4267 },
+  { name: 'CULTURE', link: '/category/culture', count: 3558 },
+  { name: 'MARKETS', link: '/category/markets', count: 2295 },
+  { name: 'TECHNICAL', link: '/category/technical', count: 1321 },
+  { name: 'NEWS', link: '/category/news', count: 726 },
+  { name: 'INDUSTRY EVENTS', link: '/category/industry-events', count: 364 },
+  { name: 'PRESS RELEASES', link: '/category/press-releases', count: 285 },
+  { name: 'LEGAL', link: '/category/legal', count: 201 },
+]
+
 
 // Reusable Post Card component (Unchanged)
 const PostCard = ({ title, author, image, link }) => (
@@ -137,7 +148,7 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Categories</h2>
             <ul className="space-y-2">
-              {mockCategories.map((category) => (
+              {/* {mockCategories.map((category) => (
                 <li key={category.name}>
                   <Link 
                     to={category.link} 
@@ -146,7 +157,20 @@ const Footer = () => {
                     {category.name}
                   </Link>
                 </li>
-              ))}
+              ))} */}
+              {mockCategories.map((category, index) => (
+            <li 
+              key={category.name} 
+              className="flex items-center justify-between py-1 "
+            >
+              <span className="text-white text-base font-medium uppercase hover:text-yellow-500 cursor-pointer transition-colors duration-200">
+                {category.name}
+              </span>
+              <span className="text-white text-base font-bold">
+                {category.count}
+              </span>
+            </li>
+          ))}
             </ul>
           </div>
         </div>
@@ -160,7 +184,7 @@ const Footer = () => {
               <img 
                 src="/assets/BASlogo.png" 
                 alt="Bitcoin Africa Story Logo" 
-                className="w-[200px] " 
+                className="w-[100%] md:w-[200px] " 
               />
             </Link>
           </div>
