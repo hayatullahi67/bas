@@ -181,6 +181,7 @@
 
 import { Mail, MapPin, Send, Twitter, MessageCircle } from 'lucide-react';
 import { ContactForm } from '../components/sections';
+import ScrollToTop from '../components/ScrollToTop';
 
 const Contact = () => {
   // Define a minimal icon size for the smallest screens (e.g., 18px)
@@ -190,7 +191,7 @@ const Contact = () => {
     <div className="pt-16">
       {/* Hero Section */}
       {/* Reduced default horizontal padding to px-4 */}
-      <section className="py-16 sm:py-20 px-4 bg-gradient-to-b from-gray-900/30 to-transparent">
+      <section id="hero" className="py-16 sm:py-20 px-4 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block mb-4 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
             <span className="text-yellow-500 text-xs sm:text-sm font-semibold">Get In Touch</span>
@@ -375,6 +376,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
+<ScrollToTop />
     </div>
   );
 };

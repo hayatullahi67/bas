@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Share2, Twitter, Facebook, Link2 } from 'lucide-react';
 import { blogPosts } from '../mock';
+import ScrollToTop from '../components/ScrollToTop';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -230,6 +231,7 @@ const BlogPost = () => {
           </div>
         )}
       </article>
+<ScrollToTop />
     </div>
   );
 };

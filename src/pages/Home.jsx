@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Shield, TrendingUp } from 'lucide-react';
 import { blogPosts, testimonials, features, categories } from '../mock';
 import { PostsGrid, TestimonialCarousel ,Hero, Mission } from '../components/sections';
+import ScrollToTop from '../components/ScrollToTop';
 
 const Home = () => {
   // testimonial carousel handled by TestimonialCarousel component
@@ -179,6 +180,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+<ScrollToTop />
     </div>
   );
 };

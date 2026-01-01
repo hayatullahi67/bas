@@ -7,6 +7,7 @@ import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
+import ScrollToTop from '../components/ScrollToTop';
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -137,7 +138,7 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section className="relative  flex items-center overflow-hidden">
+         <section id="hero" className="relative  flex items-center overflow-hidden">
 
   {/* Background Image with Carousel */}
   <Carousel 
@@ -356,6 +357,7 @@ const Blog = () => {
           </div>
         </div>
       </section>
+<ScrollToTop />
     </div>
   );
 };

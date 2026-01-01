@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { blogPosts } from '../mock';
+import ScrollToTop from '../components/ScrollToTop';
 
 const UpcomingEvent = ({ title, location, date, attendees }) => (
   <div className="mb-6 p-4 bg-gray-800  shadow-sm border border-gray-800">
@@ -31,7 +32,7 @@ const Community = () => {
 
   return (
     <div className="mt-[75px] pb-32">
-      <section className="relative  flex items-center overflow-hidden">
+      <section id="hero" className="relative  flex items-center overflow-hidden">
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -190,6 +191,7 @@ const Community = () => {
               </div>
             </div>
           </div>
+<ScrollToTop />
     </div>
   );
 };

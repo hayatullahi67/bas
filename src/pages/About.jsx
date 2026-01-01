@@ -1,6 +1,7 @@
 import { Calendar, Users, Target, Heart, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import ScrollToTop from '../components/ScrollToTop';
 
 const About = () => {
   const milestones = [
@@ -31,7 +32,7 @@ const About = () => {
         </div>
       </section> */}
 
-      <section className="relative  flex items-center overflow-hidden">
+      <section id="hero" className="relative  flex items-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 z-0"
@@ -355,6 +356,7 @@ const About = () => {
     </div>
   </div>
 </section>
+<ScrollToTop />
     </div>
   );
 };

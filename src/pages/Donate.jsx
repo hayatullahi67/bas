@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+import ScrollToTop from '../components/ScrollToTop';
 
 const Donate = () => {
   const [activeTab, setActiveTab] = useState('geyser');
@@ -8,7 +9,7 @@ const Donate = () => {
   const DONATION_IMAGE_URL = 'assets/dontebg.jpg';
   return (
     <div className='mt-[110px]'>
-    <section className="relative  flex items-center overflow-hidden">
+    <section id="hero" className="relative  flex items-center overflow-hidden">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -29,7 +30,7 @@ const Donate = () => {
               <span className="text-yellow-500 text-sm font-semibold">2+ Years of Proof-of-Quality-Works</span>
             </div>
 
-            <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+            <h1 className="text-4xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
               <span>Support </span> <br className="sm:hidden"/> <span>Bitcoin </span> <br className="sm:hidden"/> <span>Adoption </span> <br className=""/> <span className="text-[#FAD604]">Across Africa.</span>
             </h1>
 
@@ -183,6 +184,7 @@ const Donate = () => {
         </Card>
       </div>
     </section>
+    <ScrollToTop />
     </div>
   );
 };

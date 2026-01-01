@@ -106,7 +106,7 @@ import { ArrowRight, Send } from 'lucide-react';
 
 const EducationalHero = () => {
   return (
-    <section className="relative   flex items-center overflow-hidden">
+    <section id="hero" className="relative   flex items-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 z-0"
