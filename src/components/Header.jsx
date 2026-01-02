@@ -8,11 +8,11 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Education', path: '/education' },
     { name: 'News & Story', path: '/blog' },
+    { name: 'Education', path: '/education' },
     { name: 'Community', path: '/community' },
     { name: 'Contact', path: '/contact' },
+    { name: 'About', path: '/about' },
     { name: 'Donate', path: '/donate' }
 
   ];
@@ -54,15 +54,19 @@ const Header = () => {
                 key={link.path}
                 to={link.path}
                 className={`text-sm font-medium transition-colors duration-200 relative group ${
-                  isActive(link.path)
-                    ? 'text-yellow-500'
-                    : 'text-gray-300 hover:text-yellow-500'
+                  link.name === 'Donate' ? 'bg-yellow-500 text-black px-3 py-2 rounded shadow-lg' : (
+                    isActive(link.path)
+                      ? 'text-yellow-500'
+                      : 'text-gray-300 hover:text-yellow-500'
+                  )
                 }`}
               >
                 {link.name}
                 <span
                   className={`absolute -bottom-1 left-0 h-0.5 bg-yellow-500 transition-all duration-200 ${
-                    isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
+                    link.name === 'Donate' ? 'hidden' : (
+                      isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
+                    )
                   }`}
                 />
               </Link>
@@ -91,9 +95,11 @@ const Header = () => {
                 to={link.path}
                 onClick={() => setIsOpen(false)}
                 className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                  isActive(link.path)
-                    ? 'text-yellow-500 bg-yellow-500/10'
-                    : 'text-gray-300 hover:text-yellow-500 hover:bg-yellow-500/5'
+                  link.name === 'Donate' ? 'bg-yellow-500 text-black shadow-lg' : (
+                    isActive(link.path)
+                      ? 'text-yellow-500 bg-yellow-500/10'
+                      : 'text-gray-300 hover:text-yellow-500 hover:bg-yellow-500/5'
+                  )
                 }`}
               >
                 {link.name}
