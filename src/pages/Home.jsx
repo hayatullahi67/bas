@@ -83,7 +83,7 @@ const Home = () => {
               <p className="text-xl text-gray-400">Latest insights on Bitcoin Movement and adoption in Africa</p>
             </div>
             <Link 
-              to="/blog" 
+              to="/news" 
               className="hidden md:inline-flex items-center text-yellow-500 font-semibold hover:text-yellow-400 transition-colors duration-200"
             >
               View All Posts
@@ -105,7 +105,7 @@ const Home = () => {
 
           <div className="text-center mt-8 md:hidden">
             <Link 
-              to="/blog" 
+              to="/news" 
               className="inline-flex items-center text-yellow-500 font-semibold hover:text-yellow-400 transition-colors duration-200"
             >
               View All Posts

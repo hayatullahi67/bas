@@ -27,8 +27,8 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/news" element={<Blog />} />
+        <Route path="/news/:slug" element={<BlogPost />} />
         <Route path="/education" element={<Education />} />
         <Route path="/community" element={<Community />} />
         <Route path="/resources" element={<Resources />} />

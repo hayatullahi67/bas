@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const PostCard = ({ post }) => {
   return (
     <Link
-      to={`/blog/${post.slug}`}
+      to={`/news/${post.slug}`}
       className="group bg-gray-900 border border-gray-800  overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:scale-105"
     >
       <div className="aspect-video overflow-hidden relative">

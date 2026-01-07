@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { blogPosts } from '../mock';
 import ScrollToTop from '../components/ScrollToTop';
+import CountUp from '../components/ui/CountUp';
 
 const UpcomingEvent = ({ title, location, date, attendees }) => (
   <div className="mb-6 p-4 bg-gray-800  shadow-sm border border-gray-800">
@@ -174,19 +175,19 @@ const Community = () => {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div>
-                <div className="text-3xl font-bold text-yellow-500">5,240</div>
+                <div className="text-3xl font-bold text-yellow-500"><CountUp end={5240} /></div>
                 <div className="text-sm text-gray-400">Active Members</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-yellow-500">850+</div>
+                <div className="text-3xl font-bold text-yellow-500"><CountUp end={850} suffix="+" /></div>
                 <div className="text-sm text-gray-400">Discussions</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-yellow-500">125</div>
+                <div className="text-3xl font-bold text-yellow-500"><CountUp end={125} /></div>
                 <div className="text-sm text-gray-400">Local Events</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-yellow-500">28</div>
+                <div className="text-3xl font-bold text-yellow-500"><CountUp end={28} /></div>
                 <div className="text-sm text-gray-400">Countries</div>
               </div>
             </div>

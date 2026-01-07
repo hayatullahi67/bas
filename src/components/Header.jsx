@@ -8,7 +8,7 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'News & Story', path: '/blog' },
+    { name: 'News ', path: '/news' },
     { name: 'Education', path: '/education' },
     { name: 'Community', path: '/community' },
     { name: 'Contact', path: '/contact' },
@@ -54,7 +54,7 @@ const Header = () => {
                 key={link.path}
                 to={link.path}
                 className={`text-sm font-medium transition-colors duration-200 relative group ${
-                  link.name === 'Donate' ? 'bg-yellow-500 text-black px-3 py-2 rounded shadow-lg' : (
+                  link.name === 'Donate' ? 'bg-yellow-500 text-black px-3 py-2  shadow-lg' : (
                     isActive(link.path)
                       ? 'text-yellow-500'
                       : 'text-gray-300 hover:text-yellow-500'
@@ -94,7 +94,7 @@ const Header = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                className={`block px-4 py-2  text-sm font-medium transition-colors duration-200 ${
                   link.name === 'Donate' ? 'bg-yellow-500 text-black shadow-lg' : (
                     isActive(link.path)
                       ? 'text-yellow-500 bg-yellow-500/10'

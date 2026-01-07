@@ -12,7 +12,7 @@ const BlogPost = () => {
       <div className="pt-16 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
-          <Link to="/blog" className="text-yellow-500 hover:text-yellow-400">
+          <Link to="/news" className="text-yellow-500 hover:text-yellow-400">
             ← Back to Blog
           </Link>
         </div>
@@ -209,7 +209,7 @@ const BlogPost = () => {
               {relatedPosts.map((relatedPost) => (
                 <Link
                   key={relatedPost.id}
-                  to={`/blog/${relatedPost.slug}`}
+                  to={`/news/${relatedPost.slug}`}
                   className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-yellow-500 transition-all duration-300"
                 >
                   <div className="aspect-video overflow-hidden">

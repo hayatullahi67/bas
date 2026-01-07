@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import CountUp from '../ui/CountUp';
 
 const Hero = () => {
   return (
@@ -38,7 +39,7 @@ const Hero = () => {
 
               <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
                 <Link
-                  to="/blog"
+                  to="/news"
                   className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
                 >
                   View Stories
@@ -55,19 +56,19 @@ const Hero = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">2+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={2} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Years Teaching</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">500+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={500} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Students Reached</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">50+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={50} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Communities</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">100%</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={100} suffix="%" /></div>
                   <div className="text-gray-400 text-sm">Free Education</div>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { Calendar, Users, Target, Heart, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ScrollToTop from '../components/ScrollToTop';
+import CountUp from '../components/ui/CountUp';
 
 const About = () => {
   const milestones = [
@@ -83,19 +84,19 @@ const About = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">2+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={2} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Years Teaching</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">500+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={500} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Lives Changed</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">50+</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={50} suffix="+" /></div>
                   <div className="text-gray-400 text-sm">Communities</div>
                 </div>
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1">100%</div>
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={100} suffix="%" /></div>
                   <div className="text-gray-400 text-sm">Free Education</div>
                 </div>
               </div>
@@ -174,11 +175,11 @@ const About = () => {
               />
               <div className="grid grid-cols-2 gap-6">
                 <div className="p-6 bg-gray-900 border border-gray-800 ">
-                  <div className="text-3xl font-bold text-yellow-500 mb-2">2+</div>
+                  <div className="text-3xl font-bold text-yellow-500 mb-2"><CountUp end={2} suffix="+" /></div>
                   <div className="text-gray-400">Years of Teaching</div>
                 </div>
                 <div className="p-6 bg-gray-900 border border-gray-800 ">
-                  <div className="text-3xl font-bold text-yellow-500 mb-2">500+</div>
+                  <div className="text-3xl font-bold text-yellow-500 mb-2"><CountUp end={500} suffix="+" /></div>
                   <div className="text-gray-400">Lives Changed</div>
                 </div>
               </div>

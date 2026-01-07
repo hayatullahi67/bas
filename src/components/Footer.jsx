@@ -166,7 +166,7 @@ const Footer = () => {
               <span className="text-white text-base font-medium uppercase hover:text-yellow-500 cursor-pointer transition-colors duration-200">
                 {category.name}
               </span>
-              <span className="text-white text-base font-bold">
+              <span className="text-white ">
                 {category.count}
               </span>
             </li>
