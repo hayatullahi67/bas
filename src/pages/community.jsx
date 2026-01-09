@@ -62,7 +62,7 @@ const Community = () => {
                 Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
               </p>
 
-              <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+              {/* <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
                 <a
                   href="#"
                   className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
@@ -75,7 +75,7 @@ const Community = () => {
                 >
                   Join WhatsApp
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

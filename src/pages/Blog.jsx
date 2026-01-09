@@ -180,7 +180,7 @@ const Blog = () => {
          spotlighting innovation, grassroots adoption, policy developments, and the people using Bitcoin to build financial freedom in Africa.
         </p>
 
-        <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+        {/* <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
           <button className="inline-flex w-auto sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
             Donate
           </button>
@@ -188,7 +188,7 @@ const Blog = () => {
           <button className="inline-flex w-auto sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
             Submit story
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   </div>
