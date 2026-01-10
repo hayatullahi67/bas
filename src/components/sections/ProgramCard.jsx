@@ -23,8 +23,8 @@ const ProgramCard = () => {
 
           {/* Left: Image Side with modern framing */}
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-            <div className="relative h-[500px] rounded-2xl overflow-hidden border border-white/10">
+            <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-orange-600  blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div className="relative h-[500px]  overflow-hidden border border-white/10">
               <img
                 src="https://images.unsplash.com/photo-1591115765373-520b7a217294?q=80&w=2070&auto=format&fit=crop"
                 alt="Bitcoin Educator"

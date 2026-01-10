@@ -33,10 +33,10 @@ const EducationalHero = () => {
 
             <div className="space-y-2">
               <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
-                STUDY <span className="text-[#FAD604]">BITCOIN.</span>
+                Study <span className="text-[#FAD604]">Bitcoin.</span>
               </h1>
               <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
-                STUDY FREEDOM!
+                Study Freedom!
               </h1>
             </div>
 

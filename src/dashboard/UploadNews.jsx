@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Edit, Trash2, Save, X } from 'lucide-react';
-import { blogPosts as initialBlogPosts, categories } from '../mock';
+import { categories } from '../mock';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore';
 
 const UploadNews = () => {
-  const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
+  const [blogPosts, setBlogPosts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [formData, setFormData] = useState({
@@ -52,12 +52,10 @@ const UploadNews = () => {
         const snap = await getDocs(collection(db, 'news'));
         const items = snap.docs.map(d => ({ ...d.data(), id: d.id }));
         if (mounted) {
-          // if there are items, replace local list; otherwise keep initial mock
-          setBlogPosts(items.length ? items : initialBlogPosts);
+          setBlogPosts(items);
         }
       } catch (err) {
         console.error('Error fetching news from Firestore:', err);
-        if (mounted) setBlogPosts(initialBlogPosts);
       }
     };
     fetchNews();
@@ -83,8 +81,14 @@ const UploadNews = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEditing && currentPost) {
-      setBlogPosts(prev => prev.map(post => post.id === currentPost.id ? { ...formData, id: post.id } : post));
-      setModal({ open: true, title: 'Updated', message: 'Blog post updated locally.' });
+      try {
+        const postRef = doc(db, 'news', currentPost.id);
+        await updateDoc(postRef, formData);
+        setBlogPosts(prev => prev.map(post => post.id === currentPost.id ? { ...formData, id: post.id } : post));
+        setModal({ open: true, title: 'Updated', message: 'Blog post updated in Firebase.' });
+      } catch (err) {
+        setModal({ open: true, title: 'Error', message: 'Error updating Firebase: ' + (err.message || 'unknown') });
+      }
       resetForm();
       return;
     }
@@ -109,13 +113,19 @@ const UploadNews = () => {
     setCurrentPost(post);
     setFormData(post);
     setIsEditing(true);
+    setImagePreview(post.image);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (postId) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      setBlogPosts(prev => prev.filter(post => post.id !== postId));
-      setModal({ open: true, title: 'Deleted', message: 'Blog post deleted successfully.' });
+  const handleDelete = async (postId) => {
+    if (window.confirm('Are you sure you want to delete this post from Firebase?')) {
+      try {
+        await deleteDoc(doc(db, 'news', postId));
+        setBlogPosts(prev => prev.filter(post => post.id !== postId));
+        setModal({ open: true, title: 'Deleted', message: 'Blog post deleted from Firebase.' });
+      } catch (err) {
+        setModal({ open: true, title: 'Error', message: 'Error deleting from Firebase: ' + (err.message || 'unknown') });
+      }
     }
   };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowUpRight } from 'lucide-react';
 
 export default function BitcoinResources() {
   // const resources = [
@@ -23,19 +24,6 @@ export default function BitcoinResources() {
     { id: 8, title: 'TANDO', subtitle: 'Community projects & tools', imageSrc: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop', imageAlt: 'tando' },
   ];
 
-  const renderIconPlaceholder = (imageSrc, alt) => {
-    // Consistent visual block for all cards (rounded square with yellow border/background)
-    return (
-      <div className={`w-24 h-24 rounded-lg overflow-hidden bg-yellow-100 border-4 border-yellow-300 flex items-center justify-center`}> 
-        {imageSrc ? (
-          <img src={imageSrc} alt={alt} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-xs font-bold text-center text-yellow-700">{alt.toUpperCase()}</span>
-        )}
-      </div>
-    );
-  };
-
   return (
     <section className="bg-black text-white py-16">
       <div className="container mx-auto px-6">
@@ -50,20 +38,44 @@ export default function BitcoinResources() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {resources.map((r) => (
-            <article key={r.id} className="fle flex-co w-[250px] items-start gap-3">
-              <div className={`w-[250px] h-[166px] rounded-lg overflow-hidden bg-yellow-100  flex items-center justify-center`}>
+            <article
+              key={r.id}
+              className="group relative flex flex-col bg-[#0A0A0A] border border-white/5 hover:border-yellow-500/50 transition-all duration-500"
+            >
+              {/* Image Container */}
+              <div className="relative aspect-video overflow-hidden bg-yellow-100/5">
                 {r.imageSrc ? (
-                  <img src={r.imageSrc} alt={r.imageAlt} className="w-full h-full object-cover" loading="lazy" />
+                  <img
+                    src={r.imageSrc}
+                    alt={r.imageAlt}
+                    className="w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
+                    loading="lazy"
+                  />
                 ) : (
-                  <span className="text-xs font-bold text-center text-yellow-700">{r.imageAlt.toUpperCase()}</span>
+                  <div className="w-full h-full flex items-center justify-center bg-yellow-900/20">
+                    <span className="text-xs font-bold text-center text-yellow-500">{r.imageAlt.toUpperCase()}</span>
+                  </div>
                 )}
               </div>
 
-              <div>
-                <h4 className="text-sm font-semibold text-white">{r.title}</h4>
-                <p className="text-xs text-gray-400 mt-1">{r.subtitle}</p>
+              {/* Content Section */}
+              <div className="p-6 flex flex-col flex-grow">
+                <h4 className="text-lg font-bold mb-2 line-clamp-2 leading-tight group-hover:text-yellow-500 transition-colors uppercase text-white">
+                  {r.title}
+                </h4>
+                <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
+                  {r.subtitle}
+                </p>
+
+                {/* Spacer to push button to bottom */}
+                <div className="mt-auto pt-4 border-t border-white/5">
+                  <button className="flex items-center gap-2 text-xs font-bold text-yellow-500 hover:text-white transition-colors group/btn">
+                    ACCESS RESOURCE
+                    <ArrowUpRight className="w-3 h-3 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" />
+                  </button>
+                </div>
               </div>
             </article>
           ))}

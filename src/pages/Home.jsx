@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Shield, TrendingUp } from 'lucide-react';
 import { blogPosts, testimonials, features, categories } from '../mock';
-import { PostsGrid, TestimonialCarousel ,Hero, Mission } from '../components/sections';
+import { PostsGrid, TestimonialCarousel, Hero, Mission } from '../components/sections';
 import ScrollToTop from '../components/ScrollToTop';
 
 const Home = () => {
@@ -26,14 +26,14 @@ const Home = () => {
   return (
     <div className="pt-16 md:mt-[40px]">
       {/* Hero Section */}
-         <Hero/>   
+      <Hero />
 
       {/* Why Bitcoin Matters */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Pillars of   <span className="text-yellow-500"> Bitcoin Africa Story </span>
+              Pillars of   <span className="text-yellow-500"> Bitcoin Africa Story </span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               Discover how Bitcoin is transforming lives and creating opportunities across Africa
@@ -64,7 +64,7 @@ const Home = () => {
       </section>
 
       {/* About Mission */}
-     <Mission />
+      <Mission />
 
       {/* Recent Blog Posts - CATEGORIZED */}
       <section className="py-20 px-6">
@@ -77,8 +77,8 @@ const Home = () => {
               </h2>
               <p className="text-xl text-gray-400">Latest insights on Bitcoin Movement and adoption in Africa</p>
             </div>
-            <Link 
-              to="/news" 
+            <Link
+              to="/news"
               className="hidden md:inline-flex items-center text-yellow-500 font-semibold hover:text-yellow-400 transition-colors duration-200"
             >
               View All Posts
@@ -99,8 +99,8 @@ const Home = () => {
           })}
 
           <div className="text-center mt-8 md:hidden">
-            <Link 
-              to="/news" 
+            <Link
+              to="/news"
               className="inline-flex items-center text-yellow-500 font-semibold hover:text-yellow-400 transition-colors duration-200"
             >
               View All Posts
@@ -138,7 +138,7 @@ const Home = () => {
             {/* Logo grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-center h-20 bg-gray-800 border border-gray-700 ">
+                <div key={i} className="flex items-center justify-center aspect-square bg-gray-800 border border-gray-700 ">
                   <span className="text-sm text-gray-300">Bitcoin {i === 0 ? 'Ghana' : i === 1 ? 'Dada' : i === 2 ? 'Nigeria' : i === 3 ? 'Kenya' : i === 4 ? 'Tribe' : i === 5 ? 'BitSawa' : i === 6 ? 'Ekasi' : 'BTCAfrica'} Logo</span>
                 </div>
               ))}
@@ -175,7 +175,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-<ScrollToTop />
+      <ScrollToTop />
     </div>
   );
 };

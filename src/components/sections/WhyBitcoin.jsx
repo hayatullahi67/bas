@@ -374,7 +374,7 @@ const WhyBitcoin = () => {
         {/* Video Player */}
         <div className="relative max-w-4xl mx-auto mb-24 group">
           <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
-          <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5 shadow-2xl">
+          <div className="relative aspect-video  overflow-hidden border border-white/10 bg-white/5 shadow-2xl">
             <img 
               src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=2069&auto=format&fit=crop" 
               className="w-full h-full object-cover opacity-60 transition-transform duration-700"
