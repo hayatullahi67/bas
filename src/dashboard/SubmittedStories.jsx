@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Edit, Trash2, PlusCircle, Check } from 'lucide-react';
+import { Edit, Trash2, PlusCircle, Check, MessageSquare, CheckCircle, X, Save, Clock, MapPin, Calendar } from 'lucide-react';
 import { db } from '../firebase';
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 const SubmittedStories = () => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState({ open: false, story: null });
+  const [isEditing, setIsEditing] = useState(false);
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const [formData, setFormData] = useState({
+    id: '',
+    author: '',
+    title: '',
+    category: '',
+    content: '',
+    excerpt: ''
+  });
 
   // Fetch submitted_stories from Firestore
   useEffect(() => {
@@ -28,11 +37,21 @@ const SubmittedStories = () => {
     return () => { mounted = false; };
   }, []);
 
-  const openEditModal = (story) => {
-    setModal({ open: true, story: { ...story } });
+  const handleEdit = (story) => {
+    setFormData({
+      id: story.id,
+      author: story.authorName || story.author || '',
+      title: story.title || '',
+      category: story.category || '',
+      content: story.content || '',
+      excerpt: story.excerpt || ''
+    });
+    setIsEditing(true);
   };
 
-  const closeModal = () => setModal({ open: false, story: null });
+  const closeModal = () => {
+    setModal({ open: false, title: '', message: '' });
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this submitted story? This will remove it from submitted_stories.')) return;
@@ -67,35 +86,53 @@ const SubmittedStories = () => {
 
       setStories(prev => prev.map(s => s.id === story.id ? { ...s, posted: true, postedAt: new Date().toISOString() } : s));
 
-      alert('Story published to News successfully. It remains in submitted_stories.');
+      setModal({
+        open: true,
+        title: 'Story Published',
+        message: 'The community submission has been successfully published to the live news feed. It will remain in your review inbox for future reference.'
+      });
     } catch (err) {
-      console.error('Error posting to news:', err);
-      alert('Failed to post to news. See console for details.');
+      console.error('Publication Error:', err);
+      setModal({
+        open: true,
+        title: 'Action Failed',
+        message: 'We encountered an unexpected issue while processing your request. Please ensure your connection is stable and try again.'
+      });
     }
   };
 
-  const handleSaveEdit = async (e) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    const s = modal.story;
-    if (!s || !s.id) return;
+    if (!formData.id) return;
     try {
       const dataToSave = {
-        title: s.title || '',
-        slug: s.slug || '',
-        excerpt: s.excerpt || '',
-        content: s.content || '',
-        category: s.category || 'Uncategorized',
-        image: s.image || '',
-        authorName: s.authorName || s.author || '',
-        date: s.date || new Date().toISOString().split('T')[0],
-        readTime: s.readTime || '5 min read'
+        title: formData.title,
+        authorName: formData.author,
+        category: formData.category,
+        content: formData.content,
+        excerpt: formData.excerpt,
+        updatedAt: serverTimestamp()
       };
-      await updateDoc(doc(db, 'submitted_stories', s.id), dataToSave);
-      setStories(prev => prev.map(item => item.id === s.id ? { ...item, ...dataToSave } : item));
-      closeModal();
+      await updateDoc(doc(db, 'submitted_stories', formData.id), dataToSave);
+      setStories(prev => prev.map(item => item.id === formData.id ? { ...item, ...dataToSave } : item));
+      setIsEditing(false);
+      setModal({
+        open: true,
+        title: 'Submission Updated',
+        message: 'Your changes to the community submission have been saved successfully.'
+      });
     } catch (err) {
-      console.error('Error updating submitted story:', err);
-      alert('Failed to update story. See console for details.');
+      console.error('Update Error:', err);
+      setModal({
+        open: true,
+        title: 'Action Failed',
+        message: 'We encountered an unexpected issue while processing your request. Please ensure your connection is stable and try again.'
+      });
     }
   };
 
@@ -104,75 +141,171 @@ const SubmittedStories = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-gray-900 border border-gray-800 rounded-xl p-8">
-      <h2 className="text-2xl font-bold mb-6 text-yellow-500">Submitted Stories</h2>
-      {stories.length === 0 ? (
-        <p className="text-gray-400">No submitted stories found.</p>
-      ) : (
-        <div className="space-y-4">
-          {stories.map(story => (
-            <div key={story.id} className="p-6 bg-gray-800 rounded-lg border border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${story.posted ? 'bg-green-500 text-black' : 'bg-yellow-500 text-black'}`}>{story.posted ? 'Posted' : 'Pending'}</span>
-                  <span className="text-sm text-gray-500">{story.date}</span>
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-yellow-400">{story.title}</h3>
-                <p className="text-sm text-gray-400 mb-1">By: {story.authorName || story.author || 'Unknown'}</p>
-                <p className="text-sm text-gray-300 mb-2 line-clamp-3">{story.excerpt || story.content}</p>
-              </div>
-              <div className="flex gap-2 md:flex-col">
-                {!story.posted && (
-                  <button onClick={() => handlePostToNews(story)} className="flex items-center px-4 py-2 bg-green-500/10 text-green-500 border border-green-500/30 rounded-lg hover:bg-green-500 hover:text-black transition-all duration-200">
-                    <PlusCircle size={14} className="mr-2" /> Post to News
-                  </button>
+    <div className="pb-20">
+      {/* Header */}
+      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black mb-2 tracking-tight italic">Review <span className="text-yellow-500 underline decoration-yellow-500/30">Inbox</span></h1>
+          <p className="text-sm text-gray-400">Review and publish stories submitted by the community.</p>
+        </div>
+        <div className="flex items-center gap-4 bg-[#0A0A0A]/80 border border-white/5 p-4 rounded-[2rem] px-8">
+          <div className="text-right">
+            <span className="block text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">Total Submissions</span>
+            <span className="text-2xl font-black text-white leading-none">{stories.length}</span>
+          </div>
+          <div className="h-8 w-[1px] bg-white/10"></div>
+          <div className="text-right">
+            <span className="block text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">New Today</span>
+            <span className="text-2xl font-black text-yellow-500 leading-none">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {stories.map((story) => (
+          <div key={story.id} className={`group relative bg-[#0A0A0A] border rounded-[2.5rem] p-6 md:p-8 transition-all duration-500 ${story.posted ? 'border-white/5 opacity-70 hover:opacity-100' : 'border-yellow-500/20 shadow-xl shadow-yellow-500/5 hover:border-yellow-500/50'}`}>
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Status Badge Sidebar */}
+              <div className="hidden md:flex flex-col items-center gap-4 py-2 border-r border-white/5 pr-8">
+                {story.posted ? (
+                  <div className="w-12 h-12 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center border border-green-500/20 shadow-lg shadow-green-500/10">
+                    <CheckCircle size={24} />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center border border-yellow-500/20 shadow-lg shadow-yellow-500/10">
+                    <MessageSquare size={24} />
+                  </div>
                 )}
-                <button onClick={() => openEditModal(story)} className="flex items-center px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 rounded-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-                  <Edit size={14} className="mr-2" /> Edit
-                </button>
-                <button onClick={() => handleDelete(story.id)} className="flex items-center px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/30 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-200">
-                  <Trash2 size={14} className="mr-2" /> Delete
-                </button>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${story.posted ? 'text-green-500' : 'text-yellow-500'}`}>
+                  {story.posted ? 'PUBLISHED' : 'PENDING'}
+                </span>
+              </div>
+
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black text-gray-500">
+                      {story.author?.[0] || 'U'}
+                    </div>
+                    <span className="text-xs font-bold text-gray-400">{story.authorName || story.author || 'Unknown'}</span>
+                    <span className="text-[10px] text-gray-600 font-bold">•</span>
+                    <span className="text-xs font-bold text-gray-600 italic">Submitted on {story.submittedAt?.toDate?.().toLocaleDateString() || story.date || 'unknown date'}</span>
+                  </div>
+                  <div className="px-3 py-1 bg-white/5 border border-white/5 rounded-full text-[10px] font-bold text-gray-500 tracking-tighter uppercase">
+                    {story.category || 'General'}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black tracking-tight group-hover:text-yellow-500 transition-colors uppercase">{story.title}</h3>
+                  <p className="text-gray-400 font-light leading-relaxed line-clamp-3 italic">"{story.excerpt || story.content.substring(0, 150)}..."</p>
+                </div>
+
+                <div className="pt-6 flex flex-wrap items-center gap-4 border-t border-white/5">
+                  {!story.posted && (
+                    <button
+                      onClick={() => handlePostToNews(story)}
+                      className="flex items-center gap-2 px-8 py-4 bg-yellow-500 text-black rounded-2xl font-black text-sm hover:bg-yellow-400 hover:scale-[1.05] transition-all shadow-xl shadow-yellow-500/20"
+                    >
+                      <PlusCircle size={18} /> PUBLISH TO SITE
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleEdit(story)}
+                    className="flex items-center gap-2 px-6 py-4 bg-white/5 text-white border border-white/5 rounded-2xl font-bold text-sm hover:bg-white/10 transition-all border-dashed"
+                  >
+                    <Edit size={18} className="text-yellow-500" /> REVIEW DETAILS
+                  </button>
+                  <button
+                    onClick={() => handleDelete(story.id)}
+                    className="flex items-center gap-2 px-6 py-4 bg-red-500/5 text-red-500 border border-red-500/10 rounded-2xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all ml-auto"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
+
+        {stories.length === 0 && (
+          <div className="py-32 text-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[3rem]">
+            <div className="w-20 h-20 bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-gray-700">
+              <MessageSquare size={40} />
+            </div>
+            <h3 className="text-xl font-black text-gray-300 mb-2 italic">Inbox Zero</h3>
+            <p className="text-xs text-gray-500 tracking-widest uppercase">No submissions waiting for review.</p>
+          </div>
+        )}
+      </div>
+
+      {loading && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
+            <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Processing Publication...</p>
+          </div>
         </div>
       )}
 
-      {/* Edit Modal */}
-      {modal.open && modal.story && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/60" onClick={closeModal}></div>
-          <div className="relative bg-gray-900 border border-gray-800 rounded-lg p-4 w-full max-w-xl mx-4">
-            <h3 className="text-lg font-bold text-yellow-500 mb-2">Edit Submitted Story</h3>
-            <div className="max-h-[65vh] overflow-y-auto pr-2">
-              <form onSubmit={handleSaveEdit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-1">Title</label>
-                <input value={modal.story.title} onChange={(e) => setModal(prev => ({ ...prev, story: { ...prev.story, title: e.target.value } }))} className="w-full px-3 py-2 bg-black border border-gray-700 rounded text-white" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-1">Author</label>
-                <input value={modal.story.authorName || modal.story.author || ''} onChange={(e) => setModal(prev => ({ ...prev, story: { ...prev.story, authorName: e.target.value } }))} className="w-full px-3 py-2 bg-black border border-gray-700 rounded text-white" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-1">Category</label>
-                <input value={modal.story.category || ''} onChange={(e) => setModal(prev => ({ ...prev, story: { ...prev.story, category: e.target.value } }))} className="w-full px-3 py-2 bg-black border border-gray-700 rounded text-white" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-1">Excerpt</label>
-                <textarea value={modal.story.excerpt || ''} onChange={(e) => setModal(prev => ({ ...prev, story: { ...prev.story, excerpt: e.target.value } }))} className="w-full px-3 py-2 bg-black border border-gray-700 rounded text-white" rows={3} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-1">Content</label>
-                <textarea value={modal.story.content || ''} onChange={(e) => setModal(prev => ({ ...prev, story: { ...prev.story, content: e.target.value } }))} className="w-full px-3 py-2 bg-black border border-gray-700 rounded text-white" rows={6} />
-              </div>
-              <div className="flex justify-end gap-2">
-                <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-700 text-white rounded">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold flex items-center gap-2"><Check size={16} /> Save</button>
-              </div>
-              </form>
+      {modal.open && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setModal({ open: false, title: '', message: '' })}></div>
+          <div className="relative bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-12 w-full max-w-lg shadow-2xl text-center">
+            <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border shadow-2xl ${modal.title === 'Action Failed' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'}`}>
+              {modal.title === 'Action Failed' ? <X size={48} /> : <CheckCircle size={48} />}
             </div>
+            <h3 className="text-3xl font-black mb-4 italic uppercase tracking-tighter text-white">{modal.title}</h3>
+            <p className="text-gray-400 mb-10 leading-relaxed font-light text-lg">{modal.message}</p>
+            <button
+              onClick={() => setModal({ open: false, title: '', message: '' })}
+              className="w-full py-5 bg-yellow-500 text-black rounded-2xl font-black text-xl hover:bg-yellow-400 transition-all shadow-2xl shadow-yellow-500/20"
+            >
+              GOT IT
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal (If you decide to keep minimal inline editing or full page) */}
+      {isEditing && (
+        <div className="fixed inset-0 z-[250] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setIsEditing(false)}></div>
+          <div className="relative bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-8 md:p-12 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Reviewing <span className="text-yellow-500">Submission</span></h3>
+              <button onClick={() => setIsEditing(false)} className="p-2 text-gray-500 hover:text-white"><X size={32} /></button>
+            </div>
+
+            <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Author Name</label>
+                  <input type="text" name="author" value={formData.author} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Post Title</label>
+                  <input type="text" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Category</label>
+                  <input type="text" name="category" value={formData.category} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Excerpt</label>
+                  <textarea name="excerpt" value={formData.excerpt} onChange={handleInputChange} rows="5" className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50 resize-none font-light leading-relaxed" />
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Full Content Preview</label>
+                  <textarea name="content" value={formData.content} onChange={handleInputChange} rows="10" required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50 resize-none font-light leading-relaxed" />
+                </div>
+                <button type="submit" className="w-full py-5 bg-white text-black rounded-2xl font-black text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
+                  <Save size={20} /> SAVE CHANGES
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

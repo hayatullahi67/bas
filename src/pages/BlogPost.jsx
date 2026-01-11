@@ -1,11 +1,49 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Share2, Twitter, Facebook, Link2 } from 'lucide-react';
-import { blogPosts } from '../mock';
+import { ArrowLeft, Calendar, Clock, Share2, Twitter, Facebook, Link2, Linkedin } from 'lucide-react';
+import { blogPosts as mockPosts } from '../mock';
 import ScrollToTop from '../components/ScrollToTop';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const BlogPost = () => {
   const { slug } = useParams();
-  const post = blogPosts.find(p => p.slug === slug);
+  const [post, setPost] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch all to get related and the current one
+        const snap = await getDocs(collection(db, 'news'));
+        const allItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const all = allItems.length > 0 ? allItems : mockPosts;
+
+        setPosts(all);
+        const found = all.find(p => p.slug === slug);
+        setPost(found);
+      } catch (err) {
+        console.error('Error fetching post:', err);
+        const found = mockPosts.find(p => p.slug === slug);
+        setPost(found);
+        setPosts(mockPosts);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="pt-32 min-h-screen text-center">
+        <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-400">Loading story...</p>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -13,22 +51,22 @@ const BlogPost = () => {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
           <Link to="/news" className="text-yellow-500 hover:text-yellow-400">
-            ← Back to Blog
+            ← Back to News
           </Link>
         </div>
       </div>
     );
   }
 
-  const relatedPosts = blogPosts
+  const relatedPosts = posts
     .filter(p => p.id !== post.id && p.category === post.category)
     .slice(0, 3);
 
   const handleShare = (platform) => {
     const url = window.location.href;
     const text = post.title;
-    
-    switch(platform) {
+
+    switch (platform) {
       case 'twitter':
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
         break;
@@ -48,8 +86,8 @@ const BlogPost = () => {
     <div className="pt-16">
       {/* Back Button */}
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <Link 
-          to="/blog" 
+        <Link
+          to="/blog"
           className="inline-flex items-center text-gray-400 hover:text-yellow-500 transition-colors duration-200"
         >
           <ArrowLeft size={20} className="mr-2" />
@@ -72,23 +110,49 @@ const BlogPost = () => {
         </h1>
 
         {/* Meta Info */}
-        <div className="flex flex-wrap items-center gap-6 mb-8 text-gray-400">
-          <div className="flex items-center">
-            <div className="w-12 h-12 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold mr-3">
-              BA
+        <div className="flex flex-wrap items-center justify-between gap-6 mb-12 p-6 bg-gray-900/50 border border-gray-800 rounded-2xl">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 border border-yellow-500/20 overflow-hidden shadow-xl">
+                {post.authorImage ? (
+                  <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl font-black">{post.author?.charAt(0) || 'B'}</span>
+                )}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-[#0A0A0A] rounded-full"></div>
             </div>
             <div>
-              <div className="font-semibold text-white">{post.author}</div>
-              <div className="text-sm">Bitcoin Educator</div>
+              <div className="font-bold text-white text-lg tracking-tight">{post.author}</div>
+              <div className="text-xs text-yellow-500/70 font-black uppercase tracking-widest flex items-center gap-2">
+                <Calendar size={12} /> {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </div>
             </div>
           </div>
-          <div className="flex items-center">
-            <Calendar size={16} className="mr-2" />
-            {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </div>
-          <div className="flex items-center">
-            <Clock size={16} className="mr-2" />
-            {post.readTime}
+
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex flex-col items-end">
+              <div className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Engage with Author</div>
+              <div className="flex gap-3">
+                {post.authorLinkedIn && (
+                  <a href={post.authorLinkedIn} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
+                    <Linkedin size={18} />
+                  </a>
+                )}
+                {post.authorX && (
+                  <a href={post.authorX} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                    <Twitter size={18} />
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="h-10 w-px bg-gray-800 hidden md:block"></div>
+            <div className="flex flex-col">
+              <div className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Read Duration</div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <Clock size={14} className="text-yellow-500" /> {post.readTime}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -139,33 +203,33 @@ const BlogPost = () => {
           <p className="text-xl text-gray-300 leading-relaxed mb-8">
             {post.excerpt}
           </p>
-          
+
           <div className="text-gray-300 leading-relaxed space-y-6">
             <p>
-              Bitcoin represents a fundamental shift in how we think about money, value, and financial freedom. 
-              For too long, traditional financial systems have controlled access to economic opportunities, 
+              Bitcoin represents a fundamental shift in how we think about money, value, and financial freedom.
+              For too long, traditional financial systems have controlled access to economic opportunities,
               leaving millions of Africans without the tools they need to build wealth and secure their futures.
             </p>
-            
+
             <h2 className="text-3xl font-bold text-white mt-12 mb-6">Understanding the Basics</h2>
             <p>
-              At its core, Bitcoin is a decentralized digital currency that operates without the need for banks 
-              or intermediaries. It's secured by cryptography and maintained by a global network of computers. 
+              At its core, Bitcoin is a decentralized digital currency that operates without the need for banks
+              or intermediaries. It's secured by cryptography and maintained by a global network of computers.
               This makes it resistant to censorship, seizure, and manipulation.
             </p>
-            
+
             <p>
-              But Bitcoin is more than just technology—it's a movement towards financial sovereignty. When you 
-              hold Bitcoin, you truly own your money. No one can freeze your account, deny you access, or 
+              But Bitcoin is more than just technology—it's a movement towards financial sovereignty. When you
+              hold Bitcoin, you truly own your money. No one can freeze your account, deny you access, or
               inflate away your savings.
             </p>
-            
+
             <h2 className="text-3xl font-bold text-white mt-12 mb-6">Why This Matters for Africa</h2>
             <p>
-              Africa faces unique financial challenges: currency devaluation, limited banking access, high 
+              Africa faces unique financial challenges: currency devaluation, limited banking access, high
               remittance fees, and economic instability. Bitcoin offers practical solutions to these problems:
             </p>
-            
+
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Protection against inflation and currency devaluation</li>
               <li>Access to global markets and opportunities</li>
@@ -173,26 +237,26 @@ const BlogPost = () => {
               <li>Financial inclusion for the unbanked</li>
               <li>True ownership of wealth without intermediaries</li>
             </ul>
-            
+
             <h2 className="text-3xl font-bold text-white mt-12 mb-6">Taking Action</h2>
             <p>
-              Learning about Bitcoin is just the first step. The real transformation happens when you start 
-              using it, understanding its principles, and sharing that knowledge with others. Whether you're 
-              looking to protect your savings, access new opportunities, or simply take control of your 
+              Learning about Bitcoin is just the first step. The real transformation happens when you start
+              using it, understanding its principles, and sharing that knowledge with others. Whether you're
+              looking to protect your savings, access new opportunities, or simply take control of your
               financial future, Bitcoin provides the tools you need.
             </p>
-            
+
             <p>
-              Start small. Learn the basics. Practice with small amounts. Ask questions. Join communities. 
-              And most importantly, never stop learning. The Bitcoin journey is ongoing, and there's always 
+              Start small. Learn the basics. Practice with small amounts. Ask questions. Join communities.
+              And most importantly, never stop learning. The Bitcoin journey is ongoing, and there's always
               more to discover.
             </p>
-            
+
             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-8 my-12">
               <h3 className="text-2xl font-bold text-yellow-500 mb-4">Key Takeaway</h3>
               <p className="text-gray-300 text-lg">
-                Bitcoin isn't just an investment—it's a tool for financial freedom. By understanding and 
-                using Bitcoin, you're taking control of your economic future and joining a global movement 
+                Bitcoin isn't just an investment—it's a tool for financial freedom. By understanding and
+                using Bitcoin, you're taking control of your economic future and joining a global movement
                 towards monetary sovereignty.
               </p>
             </div>
@@ -231,7 +295,7 @@ const BlogPost = () => {
           </div>
         )}
       </article>
-<ScrollToTop />
+      <ScrollToTop />
     </div>
   );
 };

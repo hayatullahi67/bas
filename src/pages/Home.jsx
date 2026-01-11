@@ -1,22 +1,44 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Shield, TrendingUp } from 'lucide-react';
-import { blogPosts, testimonials, features, categories } from '../mock';
+import { blogPosts as mockPosts, testimonials, features, categories } from '../mock';
 import { PostsGrid, TestimonialCarousel, Hero, Mission } from '../components/sections';
 import ScrollToTop from '../components/ScrollToTop';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'news'));
+        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setPosts(items.length > 0 ? items : mockPosts);
+      } catch (err) {
+        console.error('Error fetching news:', err);
+        setPosts(mockPosts);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
   // testimonial carousel handled by TestimonialCarousel component
 
   // Group posts by category for categorized display (dynamic, works with API-shaped data)
   const groupedPosts = useMemo(() => {
-    return blogPosts.reduce((acc, post) => {
+    return posts.slice(0).reverse().reduce((acc, post) => {
       const cat = post.category || 'Uncategorized';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(post);
       return acc;
     }, {});
-  }, [blogPosts]);
+  }, [posts]);
 
   // Use categories from mock if available, otherwise derive from grouped posts
   const categoriesToShow = (categories && categories.length > 0)

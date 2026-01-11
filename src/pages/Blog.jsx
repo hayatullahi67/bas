@@ -1,15 +1,18 @@
 import { useState, useMemo } from 'react';
 // import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle } from 'lucide-react';
-import { blogPosts, categories } from '../mock';
+import { blogPosts as mockPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
 import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
 import ScrollToTop from '../components/ScrollToTop';
+import { useEffect } from 'react';
 
 const Blog = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -18,6 +21,23 @@ const Blog = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState('');
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'news'));
+        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Combine with mock if desired, or just use real
+        setPosts(items.length > 0 ? items : mockPosts);
+      } catch (err) {
+        console.error('Error fetching news:', err);
+        setPosts(mockPosts);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -31,22 +51,22 @@ const Blog = () => {
     authorName: ''
   });
 
-  const filteredPosts = blogPosts.filter(post => {
+  const filteredPosts = posts.filter(post => {
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (post.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (post.excerpt || '').toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   // Group posts by category to support the 'All' view that shows categorized sections
   const groupedPosts = useMemo(() => {
-    return blogPosts.reduce((acc, post) => {
+    return posts.reduce((acc, post) => {
       const cat = post.category || 'Uncategorized';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(post);
       return acc;
     }, {});
-  }, [blogPosts]);
+  }, [posts]);
 
   const categoriesToShow = (categories && categories.length > 0)
     ? categories.filter(c => c !== 'All')
@@ -138,49 +158,49 @@ const Blog = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-         <section id="hero" className="relative  flex items-center overflow-hidden">
+      <section id="hero" className="relative  flex items-center overflow-hidden">
 
-  {/* Background Image with Carousel */}
-  <Carousel 
-    plugins={[Autoplay({ delay: 3000 })]} 
-    opts={{ duration: 50 }} 
-    className="absolute inset-0 w-full h-full "
-  >
-    <CarouselContent className="h-full min-h-screen">
-      <CarouselItem className="pl-0 h-full min-h-screen">
-        <img
-          src="assets/blogbg1.jpg"
-          alt="Hero background 1"
-          className="h-full w-full min-h-screen object-cover opacity-70"
-        />
-      </CarouselItem>
-      <CarouselItem className="pl-0 h-full min-h-screen">
-        <img
-          src="assets/blogbg2.jpg"
-          alt="Hero background 2"
-          className="h-full w-full min-h-screen object-cover opacity-70"
-        />
-      </CarouselItem>
-    </CarouselContent>
-  </Carousel>
+        {/* Background Image with Carousel */}
+        <Carousel
+          plugins={[Autoplay({ delay: 3000 })]}
+          opts={{ duration: 50 }}
+          className="absolute inset-0 w-full h-full "
+        >
+          <CarouselContent className="h-full min-h-screen">
+            <CarouselItem className="pl-0 h-full min-h-screen">
+              <img
+                src="assets/blogbg1.jpg"
+                alt="Hero background 1"
+                className="h-full w-full min-h-screen object-cover opacity-70"
+              />
+            </CarouselItem>
+            <CarouselItem className="pl-0 h-full min-h-screen">
+              <img
+                src="assets/blogbg2.jpg"
+                alt="Hero background 2"
+                className="h-full w-full min-h-screen object-cover opacity-70"
+              />
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
 
-  {/* Dark Overlay */}
-  <div className="absolute inset-0 bg-black/80"></div>
-  <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black"></div>
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black"></div>
 
-  {/* Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-    <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
-      <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
-        <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
-          <span>The </span> <br className="sm:hidden"/> <span>Pulse of </span> <br className="sm:hidden"/> <span>Bitcoin </span> <br className=""/> <span className="text-yellow-400">in Africa</span>
-        </h1>
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
+            <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
+              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+                <span>The </span> <br className="sm:hidden" /> <span>Pulse of </span> <br className="sm:hidden" /> <span>Bitcoin </span> <br className="" /> <span className="text-yellow-400">in Africa</span>
+              </h1>
 
-        <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-         spotlighting innovation, grassroots adoption, policy developments, and the people using Bitcoin to build financial freedom in Africa.
-        </p>
+              <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+                spotlighting innovation, grassroots adoption, policy developments, and the people using Bitcoin to build financial freedom in Africa.
+              </p>
 
-        {/* <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+              {/* <div className="flex sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
           <button className="inline-flex w-auto sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
             Donate
           </button>
@@ -189,10 +209,10 @@ const Blog = () => {
             Submit story
           </button>
         </div> */}
-      </div>
-    </div>
-  </div>
-         </section>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Category Filter */}
       <section className="py-8 px-6 md:sticky top-16 bg-black/95 backdrop-blur-sm border-b border-gray-800 z-40">
@@ -202,11 +222,10 @@ const Blog = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2  font-medium transition-all duration-200 ${
-                  selectedCategory === category
+                className={`px-6 py-2  font-medium transition-all duration-200 ${selectedCategory === category
                     ? 'bg-yellow-500 text-black'
                     : 'bg-gray-900 text-gray-300 hover:bg-gray-800 border border-gray-800'
-                }`}
+                  }`}
               >
                 {category}
               </button>
@@ -357,7 +376,7 @@ const Blog = () => {
           </div>
         </div>
       </section>
-<ScrollToTop />
+      <ScrollToTop />
     </div>
   );
 };
