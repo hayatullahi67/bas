@@ -7,26 +7,10 @@ import ScrollToTop from '../components/ScrollToTop';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { useNews } from '../context/NewsContext';
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'news'));
-        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setPosts(items.length > 0 ? items : mockPosts);
-      } catch (err) {
-        console.error('Error fetching news:', err);
-        setPosts(mockPosts);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
+  const { news: posts, loading } = useNews();
 
   // testimonial carousel handled by TestimonialCarousel component
 

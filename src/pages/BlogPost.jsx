@@ -5,36 +5,21 @@ import ScrollToTop from '../components/ScrollToTop';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { useNews } from '../context/NewsContext';
 
 const BlogPost = () => {
   const { slug } = useParams();
+  const { news: posts, loading: newsLoading } = useNews();
   const [post, setPost] = useState(null);
-  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Fetch all to get related and the current one
-        const snap = await getDocs(collection(db, 'news'));
-        const allItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        const all = allItems.length > 0 ? allItems : mockPosts;
-
-        setPosts(all);
-        const found = all.find(p => p.slug === slug);
-        setPost(found);
-      } catch (err) {
-        console.error('Error fetching post:', err);
-        const found = mockPosts.find(p => p.slug === slug);
-        setPost(found);
-        setPosts(mockPosts);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [slug]);
+    if (!newsLoading) {
+      const found = posts.find(p => p.slug === slug);
+      setPost(found || mockPosts.find(p => p.slug === slug));
+      setLoading(false);
+    }
+  }, [slug, posts, newsLoading]);
 
   if (loading) {
     return (
@@ -87,7 +72,7 @@ const BlogPost = () => {
       {/* Back Button */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         <Link
-          to="/blog"
+          to="/news"
           className="inline-flex items-center text-gray-400 hover:text-yellow-500 transition-colors duration-200"
         >
           <ArrowLeft size={20} className="mr-2" />

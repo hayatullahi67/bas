@@ -16,6 +16,7 @@ import SubmittedStories from './dashboard/SubmittedStories';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Donate from './pages/Donate';
+import { NewsProvider } from './context/NewsContext';
 
 function AppContent() {
   const location = useLocation();
@@ -51,7 +52,9 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <AppContent />
+        <NewsProvider>
+          <AppContent />
+        </NewsProvider>
       </BrowserRouter>
     </div>
   );

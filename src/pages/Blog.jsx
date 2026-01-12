@@ -1,18 +1,20 @@
 import { useState, useMemo } from 'react';
 // import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle } from 'lucide-react';
+import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle , PlusCircle  } from 'lucide-react';
 import { blogPosts as mockPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
+// import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
 import ScrollToTop from '../components/ScrollToTop';
 import { useEffect } from 'react';
+import { useNews } from '../context/NewsContext';
+import { newsService } from '../services/newsService';
+import { serverTimestamp, addDoc, collection } from 'firebase/firestore';
 
 const Blog = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { news: posts, loading, loadMore, loadingMore, hasMore } = useNews();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -21,23 +23,6 @@ const Blog = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState('');
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'news'));
-        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        // Combine with mock if desired, or just use real
-        setPosts(items.length > 0 ? items : mockPosts);
-      } catch (err) {
-        console.error('Error fetching news:', err);
-        setPosts(mockPosts);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -223,8 +208,8 @@ const Blog = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-6 py-2  font-medium transition-all duration-200 ${selectedCategory === category
-                    ? 'bg-yellow-500 text-black'
-                    : 'bg-gray-900 text-gray-300 hover:bg-gray-800 border border-gray-800'
+                  ? 'bg-yellow-500 text-black'
+                  : 'bg-gray-900 text-gray-300 hover:bg-gray-800 border border-gray-800'
                   }`}
               >
                 {category}
@@ -255,6 +240,30 @@ const Blog = () => {
             </div>
           ) : (
             <PostsGrid posts={filteredPosts} />
+          )}
+
+          {/* Load More Button */}
+          {hasMore && selectedCategory !== 'All' && (
+            <div className="mt-16 text-center">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="group relative inline-flex items-center gap-3 px-12 py-5 bg-gray-900 border border-gray-800 text-white font-black uppercase tracking-widest text-xs hover:border-yellow-500/50 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                {loadingMore ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Synchronizing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Load More Stories</span>
+                    <PlusCircle size={14} className="text-yellow-500 group-hover:rotate-90 transition-transform duration-500" />
+                  </>
+                )}
+              </button>
+            </div>
           )}
         </div>
       </section>

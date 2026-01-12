@@ -3,13 +3,17 @@ import { PlusCircle, Edit, Trash2, Save, X, Newspaper, Calendar, Eye, Tag, User,
 import { categories } from '../mock';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { useNews } from '../context/NewsContext';
+import StatusModal from './components/StatusModal';
+import NewsPreviewModal from './components/NewsPreviewModal';
+import ProcessingOverlay from './components/ProcessingOverlay';
+import NewsListItem from './components/NewsListItem';
 
 const UploadNews = () => {
-  const [blogPosts, setBlogPosts] = useState([]);
+  const { news: blogPosts, loading: isInitialLoading, loadMore, loadingMore, hasMore } = useNews();
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -32,7 +36,36 @@ const UploadNews = () => {
   const [modal, setModal] = useState({ open: false, title: '', message: '' });
   const [detailModal, setDetailModal] = useState({ open: false, post: null });
 
-  // convert file to base64
+  // convert file to base64 and compress
+  const compressImage = (file, maxWidth = 800) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export as compressed jpeg
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+
   const fileToBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -44,11 +77,14 @@ const UploadNews = () => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     try {
-      const base64 = await fileToBase64(file);
-      setFormData(prev => ({ ...prev, image: base64 }));
-      setImagePreview(base64);
+      setIsSubmitting(true);
+      const compressedBase64 = await compressImage(file);
+      setFormData(prev => ({ ...prev, image: compressedBase64 }));
+      setImagePreview(compressedBase64);
     } catch (err) {
-      console.error('File to base64 error', err);
+      console.error('Image compression error', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -56,38 +92,18 @@ const UploadNews = () => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     try {
-      const base64 = await fileToBase64(file);
-      setFormData(prev => ({ ...prev, authorImage: base64 }));
-      setAuthorImagePreview(base64);
+      setIsSubmitting(true);
+      const compressedBase64 = await compressImage(file, 300); // Author images can be smaller
+      setFormData(prev => ({ ...prev, authorImage: compressedBase64 }));
+      setAuthorImagePreview(compressedBase64);
     } catch (err) {
-      console.error('Author image to base64 error', err);
+      console.error('Author image compression error', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Fetch news collection from Firestore with real-time updates
-  useEffect(() => {
-    const q = query(collection(db, 'news'), orderBy('date', 'desc'));
 
-    console.log('Initializing news real-time listener...');
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-      console.log('News synchronization complete:', items.length, 'items');
-      setBlogPosts(items);
-      setIsInitialLoading(false);
-    }, (error) => {
-      console.error('Firestore synchronization error:', error);
-      setIsInitialLoading(false);
-    });
-
-    return () => {
-      console.log('Detaching news listener');
-      unsubscribe();
-    };
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -118,7 +134,6 @@ const UploadNews = () => {
       updatedAt: serverTimestamp()
     };
 
-    // Clean payload for Firestore (ensure no id is inside the data object)
     if (payload.id) delete payload.id;
 
     try {
@@ -126,7 +141,6 @@ const UploadNews = () => {
         const postRef = doc(db, 'news', currentPost.id);
         await updateDoc(postRef, payload);
 
-        // Show modal AFTER Firebase updates (onSnapshot will update the list)
         setTimeout(() => {
           setModal({
             open: true,
@@ -135,7 +149,6 @@ const UploadNews = () => {
           });
         }, 300);
       } else {
-        // validate image present for new post
         if (!payload.image) {
           setModal({
             open: true,
@@ -147,7 +160,6 @@ const UploadNews = () => {
         }
         await addDoc(collection(db, 'news'), { ...payload, createdAt: serverTimestamp() });
 
-        // Show modal AFTER Firebase updates (onSnapshot will update the list)
         setTimeout(() => {
           setModal({
             open: true,
@@ -328,9 +340,9 @@ const UploadNews = () => {
           {/* Row 3: Author Media & Socials */}
           <div className="bg-gray-800/20 border border-gray-800 rounded-2xl p-5 space-y-6">
             <h3 className="text-xs font-black text-yellow-500 uppercase tracking-[0.2em] flex items-center gap-2">
-               <User size={14} /> Author Profile Details
+              <User size={14} /> Author Profile Details
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Author Profile Image</label>
@@ -414,8 +426,8 @@ const UploadNews = () => {
                 type="button"
                 onClick={() => setImageMode('url')}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'url'
-                    ? 'bg-yellow-500 text-black'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  ? 'bg-yellow-500 text-black'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                   }`}
               >
                 URL
@@ -424,8 +436,8 @@ const UploadNews = () => {
                 type="button"
                 onClick={() => setImageMode('file')}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'file'
-                    ? 'bg-yellow-500 text-black'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  ? 'bg-yellow-500 text-black'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                   }`}
               >
                 Upload
@@ -526,54 +538,13 @@ const UploadNews = () => {
         ) : (
           <div className="space-y-4">
             {blogPosts.map((post) => (
-              <div
+              <NewsListItem
                 key={post.id}
-                className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl p-5 hover:border-gray-700 transition-all group"
-              >
-                <div className="flex flex-col md:flex-row gap-5">
-                  <div className="w-full md:w-48 h-32 rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-xs font-bold text-black bg-yellow-500 px-2 py-1 rounded">{post.category}</span>
-                      <span className="text-xs text-gray-500">{post.date}</span>
-                      <span className="text-xs text-gray-500">•</span>
-                      <span className="text-xs text-gray-500">{post.author}</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-500 transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-gray-400 line-clamp-2 mb-4">{post.excerpt}</p>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleView(post)}
-                        className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-medium transition-colors flex items-center gap-2"
-                      >
-                        <Eye size={14} /> View
-                      </button>
-                      <button
-                        onClick={() => handleEdit(post)}
-                        className="px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-lg text-xs font-medium transition-colors flex items-center gap-2"
-                      >
-                        <Edit size={14} /> Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg text-xs font-medium transition-colors flex items-center gap-2 ml-auto"
-                      >
-                        <Trash2 size={14} /> Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                post={post}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
 
             {blogPosts.length === 0 && (
@@ -585,120 +556,41 @@ const UploadNews = () => {
                 <p className="text-sm text-gray-600">Create your first article above</p>
               </div>
             )}
+
+            {hasMore && (
+              <div className="pt-6 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-3 bg-gray-900 border border-gray-800 text-white text-xs font-bold uppercase tracking-widest hover:border-yellow-500/50 transition-all flex items-center gap-2 mx-auto disabled:opacity-50"
+                >
+                  {loadingMore ? (
+                    <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <PlusCircle size={14} className="text-yellow-500" />
+                  )}
+                  {loadingMore ? 'Loading More...' : 'Load More Articles'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Success/Error Modal */}
-      {modal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl p-8 w-full max-w-md shadow-2xl">
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${modal.title === 'Action Failed' || modal.title === 'Error'
-                ? 'bg-red-500/20 text-red-500'
-                : 'bg-yellow-500/20 text-yellow-500'
-              }`}>
-              {modal.title === 'Action Failed' || modal.title === 'Error' ? (
-                <X size={32} />
-              ) : (
-                <CheckCircle size={32} />
-              )}
-            </div>
-            <h3 className="text-2xl font-bold text-white text-center mb-2">{modal.title}</h3>
-            <p className="text-gray-400 text-center mb-6">{modal.message}</p>
-            <button
-              onClick={() => setModal({ open: false, title: '', message: '' })}
-              className="w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold rounded-xl hover:from-yellow-400 hover:to-yellow-500 transition-all"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
+      <StatusModal
+        open={modal.open}
+        title={modal.title}
+        message={modal.message}
+        onClose={() => setModal({ open: false, title: '', message: '' })}
+      />
 
-      {/* Detail View Modal */}
-      {detailModal.open && detailModal.post && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
-            <div className="p-6 border-b border-gray-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-bold text-black bg-yellow-500 px-3 py-1 rounded">{detailModal.post.category}</span>
-                <span className="text-sm text-gray-500">{detailModal.post.date}</span>
-              </div>
-              <button
-                onClick={() => setDetailModal({ open: false, post: null })}
-                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-              >
-                <X size={20} className="text-gray-400" />
-              </button>
-            </div>
+      <NewsPreviewModal
+        open={detailModal.open}
+        post={detailModal.post}
+        onClose={() => setDetailModal({ open: false, post: null })}
+      />
 
-            <div className="flex-1 overflow-y-auto p-8">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-3xl font-bold text-white mb-4">{detailModal.post.title}</h2>
-
-                <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-800/50">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="w-14 h-14 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 border border-yellow-500/20 overflow-hidden shadow-xl">
-                        {detailModal.post.authorImage ? (
-                          <img src={detailModal.post.authorImage} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-xl font-black">{detailModal.post.author.charAt(0)}</span>
-                        )}
-                      </div>
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-[#0A0A0A] rounded-full"></div>
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold text-white tracking-tight">{detailModal.post.author}</div>
-                      <div className="text-xs text-yellow-500/70 font-black uppercase tracking-widest">{detailModal.post.readTime} • Author</div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    {detailModal.post.authorLinkedIn && (
-                      <a href={detailModal.post.authorLinkedIn} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-blue-600/20 hover:text-blue-400 rounded-xl transition-all border border-gray-700">
-                        <Linkedin size={18} />
-                      </a>
-                    )}
-                    {detailModal.post.authorX && (
-                      <a href={detailModal.post.authorX} target="_blank" rel="noopener noreferrer" className="p-2.5 bg-gray-800 hover:bg-white/10 hover:text-white rounded-xl transition-all border border-gray-700">
-                        <Twitter size={18} />
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-                {detailModal.post.image && (
-                  <div className="mb-8 rounded-2xl overflow-hidden">
-                    <img
-                      src={detailModal.post.image}
-                      alt={detailModal.post.title}
-                      className="w-full h-auto max-h-96 object-cover"
-                    />
-                  </div>
-                )}
-
-                <div className="bg-gradient-to-r from-yellow-500/10 to-transparent border-l-4 border-yellow-500 p-4 rounded-r-xl mb-8">
-                  <p className="text-gray-300 italic">{detailModal.post.excerpt}</p>
-                </div>
-
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-gray-400 leading-relaxed whitespace-pre-wrap">{detailModal.post.content}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t border-gray-800 flex justify-end">
-              <button
-                onClick={() => setDetailModal({ open: false, post: null })}
-                className="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-medium transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProcessingOverlay isSubmitting={isSubmitting} />
     </div>
   );
 };
