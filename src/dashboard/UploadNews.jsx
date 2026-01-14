@@ -8,6 +8,8 @@ import StatusModal from './components/StatusModal';
 import NewsPreviewModal from './components/NewsPreviewModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 import NewsListItem from './components/NewsListItem';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const UploadNews = () => {
   const { news: blogPosts, loading: isInitialLoading, loadMore, loadingMore, hasMore } = useNews();
@@ -123,6 +125,32 @@ const UploadNews = () => {
       setAuthorImagePreview(value);
     }
   };
+
+  const handleContentChange = (content) => {
+    setFormData(prev => ({
+      ...prev,
+      content
+    }));
+  };
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'align': [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'align',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -472,15 +500,52 @@ const UploadNews = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Content</label>
-              <textarea
-                name="content"
-                value={formData.content}
-                onChange={handleInputChange}
-                rows="12"
-                required
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none leading-relaxed"
-                placeholder="Write your article content here..."
-              />
+              <div className="quill-editor-container">
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={handleContentChange}
+                  modules={modules}
+                  formats={formats}
+                  className="bg-gray-800/50 border border-gray-700 rounded-xl text-white overflow-hidden"
+                />
+              </div>
+
+              <style jsx="true">{`
+                .quill-editor-container .ql-toolbar {
+                  background: #1f2937;
+                  border-top-left-radius: 0.75rem;
+                  border-top-right-radius: 0.75rem;
+                  border-color: #374151;
+                }
+                .quill-editor-container .ql-container {
+                  border-bottom-left-radius: 0.75rem;
+                  border-bottom-right-radius: 0.75rem;
+                  border-color: #374151;
+                  min-height: 300px;
+                  font-size: 1rem;
+                  color: white;
+                }
+                .quill-editor-container .ql-editor.ql-blank::before {
+                  color: #4b5563;
+                }
+                .quill-editor-container .ql-snow .ql-stroke {
+                  stroke: #9ca3af;
+                }
+                .quill-editor-container .ql-snow .ql-fill {
+                  fill: #9ca3af;
+                }
+                .quill-editor-container .ql-snow .ql-picker {
+                  color: #9ca3af;
+                }
+                .quill-editor-container .ql-snow .ql-picker-options {
+                  background-color: #111827;
+                  border-color: #374151;
+                }
+                .quill-editor-container .ql-snow .ql-picker-item {
+                  color: #9ca3af;
+                }
+              `}</style>
             </div>
 
             {imagePreview && (

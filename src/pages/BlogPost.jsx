@@ -67,30 +67,6 @@ const BlogPost = () => {
     }
   };
 
-  const renderContent = (text) => {
-    if (!text) return null;
-    // Regex to identify URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
-
-    return parts.map((part, i) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={i}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-yellow-500 hover:text-yellow-400 underline underline-offset-4 decoration-yellow-500/30 transition-all hover:scale-[1.02] inline-block font-bold"
-          >
-            {part}
-          </a>
-        );
-      }
-      return part;
-    });
-  };
-
   return (
     <div className="pt-16">
       <ScrollToTop />
@@ -214,9 +190,10 @@ const BlogPost = () => {
             {post.excerpt}
           </p>
 
-          <div className="text-gray-300 leading-relaxed space-y-6 whitespace-pre-wrap">
-            {renderContent(post.content)}
-          </div>
+          <div
+            className="text-gray-300 leading-relaxed space-y-6"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
 
         {/* Related Posts */}
