@@ -16,7 +16,7 @@ const BlogPost = () => {
   useEffect(() => {
     if (!newsLoading) {
       const found = posts.find(p => p.slug === slug);
-      setPost(found || mockPosts.find(p => p.slug === slug));
+      setPost(found);
       setLoading(false);
     }
   }, [slug, posts, newsLoading]);
@@ -67,8 +67,33 @@ const BlogPost = () => {
     }
   };
 
+  const renderContent = (text) => {
+    if (!text) return null;
+    // Regex to identify URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-yellow-500 hover:text-yellow-400 underline underline-offset-4 decoration-yellow-500/30 transition-all hover:scale-[1.02] inline-block font-bold"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="pt-16">
+      <ScrollToTop />
       {/* Back Button */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         <Link
@@ -185,66 +210,12 @@ const BlogPost = () => {
 
         {/* Article Content */}
         <div className="prose prose-invert prose-lg max-w-none mb-16">
-          <p className="text-xl text-gray-300 leading-relaxed mb-8">
+          <p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-10 italic border-l-4 border-yellow-500 pl-6">
             {post.excerpt}
           </p>
 
-          <div className="text-gray-300 leading-relaxed space-y-6">
-            <p>
-              Bitcoin represents a fundamental shift in how we think about money, value, and financial freedom.
-              For too long, traditional financial systems have controlled access to economic opportunities,
-              leaving millions of Africans without the tools they need to build wealth and secure their futures.
-            </p>
-
-            <h2 className="text-3xl font-bold text-white mt-12 mb-6">Understanding the Basics</h2>
-            <p>
-              At its core, Bitcoin is a decentralized digital currency that operates without the need for banks
-              or intermediaries. It's secured by cryptography and maintained by a global network of computers.
-              This makes it resistant to censorship, seizure, and manipulation.
-            </p>
-
-            <p>
-              But Bitcoin is more than just technology—it's a movement towards financial sovereignty. When you
-              hold Bitcoin, you truly own your money. No one can freeze your account, deny you access, or
-              inflate away your savings.
-            </p>
-
-            <h2 className="text-3xl font-bold text-white mt-12 mb-6">Why This Matters for Africa</h2>
-            <p>
-              Africa faces unique financial challenges: currency devaluation, limited banking access, high
-              remittance fees, and economic instability. Bitcoin offers practical solutions to these problems:
-            </p>
-
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Protection against inflation and currency devaluation</li>
-              <li>Access to global markets and opportunities</li>
-              <li>Lower-cost international money transfers</li>
-              <li>Financial inclusion for the unbanked</li>
-              <li>True ownership of wealth without intermediaries</li>
-            </ul>
-
-            <h2 className="text-3xl font-bold text-white mt-12 mb-6">Taking Action</h2>
-            <p>
-              Learning about Bitcoin is just the first step. The real transformation happens when you start
-              using it, understanding its principles, and sharing that knowledge with others. Whether you're
-              looking to protect your savings, access new opportunities, or simply take control of your
-              financial future, Bitcoin provides the tools you need.
-            </p>
-
-            <p>
-              Start small. Learn the basics. Practice with small amounts. Ask questions. Join communities.
-              And most importantly, never stop learning. The Bitcoin journey is ongoing, and there's always
-              more to discover.
-            </p>
-
-            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-8 my-12">
-              <h3 className="text-2xl font-bold text-yellow-500 mb-4">Key Takeaway</h3>
-              <p className="text-gray-300 text-lg">
-                Bitcoin isn't just an investment—it's a tool for financial freedom. By understanding and
-                using Bitcoin, you're taking control of your economic future and joining a global movement
-                towards monetary sovereignty.
-              </p>
-            </div>
+          <div className="text-gray-300 leading-relaxed space-y-6 whitespace-pre-wrap">
+            {renderContent(post.content)}
           </div>
         </div>
 
