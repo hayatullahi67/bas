@@ -6,12 +6,14 @@ import {
   LayoutDashboard,
   Home,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Globe
 } from 'lucide-react';
 
 const sidebarItems = [
   { name: 'News & Stories', path: '/dashboard/upload-news', icon: Newspaper },
   { name: 'Events Manager', path: '/dashboard/upload-event', icon: Calendar },
+  { name: 'Communities', path: '/dashboard/upload-communities', icon: Globe },
   { name: 'Submitted Stories', path: '/dashboard/submitted-stories', icon: MessageSquare },
 ];
 

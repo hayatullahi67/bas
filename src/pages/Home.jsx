@@ -11,6 +11,28 @@ import { useNews } from '../context/NewsContext';
 
 const Home = () => {
   const { news: posts, loading } = useNews();
+  const [communities, setCommunities] = useState([]);
+  const [communitiesLoading, setCommunitiesLoading] = useState(true);
+
+  // Fetch communities from Firebase
+  useEffect(() => {
+    const fetchCommunities = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'communities'));
+        const communitiesData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setCommunities(communitiesData);
+      } catch (error) {
+        console.error('Error fetching communities:', error);
+      } finally {
+        setCommunitiesLoading(false);
+      }
+    };
+
+    fetchCommunities();
+  }, []);
 
   // testimonial carousel handled by TestimonialCarousel component
 
@@ -132,52 +154,70 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Communities Card (replaces Newsletter CTA) */}
+      {/* Communities Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gray-900 border border-gray-800  p-8 shadow-lg">
+          <div className="bg-gray-900 border border-gray-800 p-8 shadow-lg">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-white">African Bitcoin Communities</h2>
               <p className="text-sm text-gray-400 mt-2">Discover other amazing Bitcoin communities across Africa</p>
             </div>
 
-            {/* Logo grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-center aspect-square bg-gray-800 border border-gray-700 ">
-                  <span className="text-sm text-gray-300">Bitcoin {i === 0 ? 'Ghana' : i === 1 ? 'Dada' : i === 2 ? 'Nigeria' : i === 3 ? 'Kenya' : i === 4 ? 'Tribe' : i === 5 ? 'BitSawa' : i === 6 ? 'Ekasi' : 'BTCAfrica'} Logo</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Community list */}
-            <div className="space-y-4 mb-6">
-              <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 ">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <div className="font-semibold text-white">BTrust Builders</div>
-                    <div className="text-xs text-gray-400 px-2 py-1 bg-gray-700 rounded-full">2.5k+</div>
-                  </div>
-                  <div className="text-sm text-gray-400 mt-1">Building Bitcoin infrastructure and education across West Africa</div>
-                </div>
-                <button className="ml-4 px-3 py-1 border border-yellow-500 text-yellow-500 rounded-md hover:bg-yellow-500/10">Visit</button>
+            {communitiesLoading ? (
+              <div className="text-center py-12">
+                <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="text-gray-400 mt-4">Loading communities...</p>
               </div>
-
-              <div className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700 ">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <div className="font-semibold text-white">Bitcoin Dada</div>
-                    <div className="text-xs text-gray-400 px-2 py-1 bg-gray-700 rounded-full">1.8k+</div>
-                  </div>
-                  <div className="text-sm text-gray-400 mt-1">Empowering African women through Bitcoin education</div>
-                </div>
-                <button className="ml-4 px-3 py-1 border border-yellow-500 text-yellow-500 rounded-md hover:bg-yellow-500/10">Visit</button>
+            ) : communities.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-400">No communities available yet.</p>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Logo grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                  {communities.slice(0, 8).map((community) => (
+                    <a
+                      key={community.id}
+                      href={community.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center aspect-square bg-gray-800 border border-gray-700 hover:border-yellow-500 transition-all p-4 group"
+                    >
+                      <img
+                        src={community.logo}
+                        alt={community.name}
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform"
+                      />
+                    </a>
+                  ))}
+                </div>
 
-            <div className="text-center">
-              <button className="inline-flex items-center gap-2 px-5 py-2 border border-yellow-500 text-yellow-500 rounded-full hover:bg-yellow-500/10">Submit Community <ArrowRight size={16} /></button>
-            </div>
+                {/* Community list */}
+                <div className="space-y-4 mb-6">
+                  {communities.slice(0, 4).map((community) => (
+                    <div key={community.id} className="flex items-start justify-between p-4 bg-gray-800 border border-gray-700">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <div className="font-semibold text-white">{community.name}</div>
+                        </div>
+                        {community.description && (
+                          <div className="text-sm text-gray-400 mt-1">{community.description}</div>
+                        )}
+                      </div>
+                      <a
+                        href={community.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-4 px-3 py-1 border border-yellow-500 text-yellow-500 rounded-md hover:bg-yellow-500/10 transition-all"
+                      >
+                        Visit
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

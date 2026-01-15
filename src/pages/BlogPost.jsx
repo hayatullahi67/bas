@@ -71,7 +71,7 @@ const BlogPost = () => {
     <div className="pt-16">
       <ScrollToTop />
       {/* Back Button */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-6 py-8">
         <Link
           to="/news"
           className="inline-flex items-center text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -82,7 +82,7 @@ const BlogPost = () => {
       </div>
 
       {/* Article Header */}
-      <article className="max-w-4xl mx-auto px-6 pb-20">
+      <article className="max-w-3xl mx-auto px-6 pb-20">
         {/* Category Badge */}
         <div className="mb-6">
           <span className="inline-block text-sm font-semibold text-black bg-yellow-500 px-4 py-2 rounded-full">
@@ -185,7 +185,7 @@ const BlogPost = () => {
         </div>
 
         {/* Article Content */}
-        <div className="prose prose-invert prose-lg max-w-none mb-16">
+        <div className="prose prose-invert prose-base max-w-none mb-16">
           <p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-10 italic border-l-4 border-yellow-500 pl-6">
             {post.excerpt}
           </p>
@@ -219,7 +219,7 @@ const BlogPost = () => {
           })()}
 
           <div
-            className="text-gray-300 leading-relaxed space-y-6"
+            className="text-gray-300 leading-relaxed space-y-4"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>

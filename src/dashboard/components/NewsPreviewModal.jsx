@@ -6,7 +6,7 @@ const NewsPreviewModal = ({ open, post, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+            <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
                 <div className="p-6 border-b border-gray-800 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <span className="text-xs font-bold text-black bg-yellow-500 px-3 py-1 rounded">{post.category}</span>
@@ -21,7 +21,7 @@ const NewsPreviewModal = ({ open, post, onClose }) => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8">
-                    <div className="max-w-3xl mx-auto">
+                    <div className="max-w-2xl mx-auto">
                         <h2 className="text-3xl font-bold text-white mb-4">{post.title}</h2>
 
                         <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-800/50">
@@ -100,7 +100,7 @@ const NewsPreviewModal = ({ open, post, onClose }) => {
 
                         <div className="prose prose-invert max-w-none">
                             <div
-                                className="text-gray-400 leading-relaxed"
+                                className="text-gray-400 leading-relaxed space-y-4"
                                 dangerouslySetInnerHTML={{ __html: post.content }}
                             />
                         </div>

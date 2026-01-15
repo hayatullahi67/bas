@@ -8,8 +8,42 @@ import StatusModal from './components/StatusModal';
 import NewsPreviewModal from './components/NewsPreviewModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 import NewsListItem from './components/NewsListItem';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
+// Add custom size options
+const fontSizeArr = ['10px', '12px', '14px', '16px', '18px', '20px', '24px', '30px', '36px', '48px'];
+var Size = Quill.import('attributors/style/size');
+Size.whitelist = fontSizeArr;
+Quill.register(Size, true);
+
+// Custom styles for the size picker to show values
+const quillSizeStyles = `
+  .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+    content: attr(data-value) !important;
+  }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: "10px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: "12px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: "14px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: "16px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: "18px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: "20px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: "24px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="30px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="30px"]::before { content: "30px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before { content: "36px" !important; }
+  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
+  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: "48px" !important; }
+`;
 
 const UploadNews = () => {
   const { news: blogPosts, loading: isInitialLoading, loadMore, loadingMore, hasMore } = useNews();
@@ -136,21 +170,29 @@ const UploadNews = () => {
 
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'size': fontSizeArr }],
       [{ 'align': [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      ['blockquote', 'code-block'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link'],
+      ['link', 'image', 'video'],
       ['clean']
     ],
   };
 
   const formats = [
-    'header',
-    'align',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'script',
+    'blockquote', 'code-block',
     'list', 'bullet', 'indent',
-    'link'
+    'align',
+    'link', 'image', 'video'
   ];
 
   const handleSubmit = async (e) => {
@@ -676,7 +718,8 @@ const UploadNews = () => {
         onClose={() => setDetailModal({ open: false, post: null })}
       />
 
-      <ProcessingOverlay isSubmitting={isSubmitting} />
+      <style>{quillSizeStyles}</style>
+      <ProcessingOverlay isVisible={isSubmitting} />
     </div>
   );
 };

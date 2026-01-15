@@ -1,314 +1,296 @@
-import { useEffect, useState } from 'react';
-import { Edit, Trash2, PlusCircle, Check, MessageSquare, CheckCircle, X, Save, Clock, MapPin, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MessageSquare, CheckCircle, XCircle, Trash2, Eye, Calendar, User, Clock, Link2, ExternalLink } from 'lucide-react';
 import { db } from '../firebase';
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, addDoc, doc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import StatusModal from './components/StatusModal';
+import ProcessingOverlay from './components/ProcessingOverlay';
 
 const SubmittedStories = () => {
   const [stories, setStories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedStory, setSelectedStory] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [modal, setModal] = useState({ open: false, title: '', message: '' });
-  const [formData, setFormData] = useState({
-    id: '',
-    author: '',
-    title: '',
-    category: '',
-    content: '',
-    excerpt: ''
-  });
 
-  // Fetch submitted_stories from Firestore
-  useEffect(() => {
-    let mounted = true;
-    const fetchStories = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'submitted_stories'));
-        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        if (mounted) {
-          setStories(items);
-        }
-      } catch (err) {
-        console.error('Error fetching submitted stories:', err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    fetchStories();
-    return () => { mounted = false; };
-  }, []);
-
-  const handleEdit = (story) => {
-    setFormData({
-      id: story.id,
-      author: story.authorName || story.author || '',
-      title: story.title || '',
-      category: story.category || '',
-      content: story.content || '',
-      excerpt: story.excerpt || ''
-    });
-    setIsEditing(true);
+  const fetchStories = async () => {
+    try {
+      const q = query(collection(db, 'submitted_stories'), orderBy('submittedAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const storiesData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setStories(storiesData);
+    } catch (error) {
+      console.error('Error fetching submitted stories:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const closeModal = () => {
-    setModal({ open: false, title: '', message: '' });
+  useEffect(() => {
+    fetchStories();
+  }, []);
+
+  const handleApprove = async (story) => {
+    if (!window.confirm('Are you sure you want to approve this story? It will be published to the main news feed.')) return;
+
+    setIsProcessing(true);
+    try {
+      // 1. Add to main 'news' collection
+      await addDoc(collection(db, 'news'), {
+        title: story.title,
+        slug: story.slug,
+        category: story.category,
+        date: story.date,
+        readTime: story.readTime,
+        image: story.image,
+        excerpt: story.excerpt,
+        content: story.content,
+        author: story.authorName, // Mapping authorName to author field in news
+        authorImage: story.authorImage || '',
+        authorLinkedIn: story.authorLinkedIn || '',
+        authorX: story.authorX || '',
+        youtubeUrl: story.youtubeUrl || '',
+        createdAt: serverTimestamp(),
+        views: 0
+      });
+
+      // 2. Delete from 'submitted_stories'
+      await deleteDoc(doc(db, 'submitted_stories', story.id));
+
+      setModal({ open: true, title: 'Success', message: 'Story approved and published successfully!' });
+      setSelectedStory(null);
+      fetchStories();
+    } catch (error) {
+      console.error('Error approving story:', error);
+      setModal({ open: true, title: 'Error', message: 'Failed to approve story.' });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this submitted story? This will remove it from submitted_stories.')) return;
+    if (!window.confirm('Are you sure you want to delete this submission? This action cannot be undone.')) return;
+
+    setIsProcessing(true);
     try {
       await deleteDoc(doc(db, 'submitted_stories', id));
-      setStories(prev => prev.filter(s => s.id !== id));
-    } catch (err) {
-      console.error('Error deleting submitted story:', err);
-      alert('Failed to delete. See console for details.');
+      setModal({ open: true, title: 'Success', message: 'Submission deleted successfully.' });
+      if (selectedStory?.id === id) setSelectedStory(null);
+      fetchStories();
+    } catch (error) {
+      console.error('Error deleting submission:', error);
+      setModal({ open: true, title: 'Error', message: 'Failed to delete submission.' });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handlePostToNews = async (story) => {
-    try {
-      // create a copy for news collection
-      const newsItem = {
-        title: story.title || '',
-        slug: story.slug || (story.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-        excerpt: story.excerpt || '',
-        content: story.content || '',
-        category: story.category || 'Uncategorized',
-        image: story.image || '',
-        author: story.authorName || story.author || 'Unknown',
-        date: story.date || new Date().toISOString().split('T')[0],
-        readTime: story.readTime || '5 min read'
-      };
-
-      await addDoc(collection(db, 'news'), newsItem);
-
-      // mark submitted story as posted (but DO NOT remove it)
-      await updateDoc(doc(db, 'submitted_stories', story.id), { posted: true, postedAt: serverTimestamp() });
-
-      setStories(prev => prev.map(s => s.id === story.id ? { ...s, posted: true, postedAt: new Date().toISOString() } : s));
-
-      setModal({
-        open: true,
-        title: 'Story Published',
-        message: 'The community submission has been successfully published to the live news feed. It will remain in your review inbox for future reference.'
-      });
-    } catch (err) {
-      console.error('Publication Error:', err);
-      setModal({
-        open: true,
-        title: 'Action Failed',
-        message: 'We encountered an unexpected issue while processing your request. Please ensure your connection is stable and try again.'
-      });
-    }
+  // Helper to get YouTube Embed URL
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
   };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    if (!formData.id) return;
-    try {
-      const dataToSave = {
-        title: formData.title,
-        authorName: formData.author,
-        category: formData.category,
-        content: formData.content,
-        excerpt: formData.excerpt,
-        updatedAt: serverTimestamp()
-      };
-      await updateDoc(doc(db, 'submitted_stories', formData.id), dataToSave);
-      setStories(prev => prev.map(item => item.id === formData.id ? { ...item, ...dataToSave } : item));
-      setIsEditing(false);
-      setModal({
-        open: true,
-        title: 'Submission Updated',
-        message: 'Your changes to the community submission have been saved successfully.'
-      });
-    } catch (err) {
-      console.error('Update Error:', err);
-      setModal({
-        open: true,
-        title: 'Action Failed',
-        message: 'We encountered an unexpected issue while processing your request. Please ensure your connection is stable and try again.'
-      });
-    }
-  };
-
-  if (loading) {
-    return <div className="max-w-3xl mx-auto p-6">Loading submitted stories...</div>;
-  }
 
   return (
-    <div className="pb-20">
-      {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black mb-2 tracking-tight italic">Review <span className="text-yellow-500 underline decoration-yellow-500/30">Inbox</span></h1>
-          <p className="text-sm text-gray-400">Review and publish stories submitted by the community.</p>
+    <div className="min-h-screen bg-black text-white p-6">
+      <ProcessingOverlay isVisible={isProcessing} />
+      <StatusModal
+        isOpen={modal.open}
+        onClose={() => setModal({ open: false, title: '', message: '' })}
+        title={modal.title}
+        message={modal.message}
+      />
+
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
+            <MessageSquare className="text-yellow-500" size={36} />
+            Submitted Stories
+          </h1>
+          <p className="text-gray-400">Review and approve stories submitted by the community</p>
         </div>
-        <div className="flex items-center gap-4 bg-[#0A0A0A]/80 border border-white/5 p-4 rounded-[2rem] px-8">
-          <div className="text-right">
-            <span className="block text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">Total Submissions</span>
-            <span className="text-2xl font-black text-white leading-none">{stories.length}</span>
-          </div>
-          <div className="h-8 w-[1px] bg-white/10"></div>
-          <div className="text-right">
-            <span className="block text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">New Today</span>
-            <span className="text-2xl font-black text-yellow-500 leading-none">0</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="space-y-6">
-        {stories.map((story) => (
-          <div key={story.id} className={`group relative bg-[#0A0A0A] border rounded-[2.5rem] p-6 md:p-8 transition-all duration-500 ${story.posted ? 'border-white/5 opacity-70 hover:opacity-100' : 'border-yellow-500/20 shadow-xl shadow-yellow-500/5 hover:border-yellow-500/50'}`}>
-            <div className="flex flex-col md:flex-row gap-8">
-              {/* Status Badge Sidebar */}
-              <div className="hidden md:flex flex-col items-center gap-4 py-2 border-r border-white/5 pr-8">
-                {story.posted ? (
-                  <div className="w-12 h-12 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center border border-green-500/20 shadow-lg shadow-green-500/10">
-                    <CheckCircle size={24} />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center border border-yellow-500/20 shadow-lg shadow-yellow-500/10">
-                    <MessageSquare size={24} />
-                  </div>
-                )}
-                <span className={`text-[10px] font-black uppercase tracking-widest ${story.posted ? 'text-green-500' : 'text-yellow-500'}`}>
-                  {story.posted ? 'PUBLISHED' : 'PENDING'}
-                </span>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Stories List */}
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 sticky top-4">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                Pending Reviews
+                <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded-full">{stories.length}</span>
+              </h2>
 
-              <div className="flex-1 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black text-gray-500">
-                      {story.author?.[0] || 'U'}
-                    </div>
-                    <span className="text-xs font-bold text-gray-400">{story.authorName || story.author || 'Unknown'}</span>
-                    <span className="text-[10px] text-gray-600 font-bold">•</span>
-                    <span className="text-xs font-bold text-gray-600 italic">Submitted on {story.submittedAt?.toDate?.().toLocaleDateString() || story.date || 'unknown date'}</span>
-                  </div>
-                  <div className="px-3 py-1 bg-white/5 border border-white/5 rounded-full text-[10px] font-bold text-gray-500 tracking-tighter uppercase">
-                    {story.category || 'General'}
-                  </div>
+              {isLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-black tracking-tight group-hover:text-yellow-500 transition-colors uppercase">{story.title}</h3>
-                  <p className="text-gray-400 font-light leading-relaxed line-clamp-3 italic">"{story.excerpt || story.content.substring(0, 150)}..."</p>
-                </div>
-
-                <div className="pt-6 flex flex-wrap items-center gap-4 border-t border-white/5">
-                  {!story.posted && (
-                    <button
-                      onClick={() => handlePostToNews(story)}
-                      className="flex items-center gap-2 px-8 py-4 bg-yellow-500 text-black rounded-2xl font-black text-sm hover:bg-yellow-400 hover:scale-[1.05] transition-all shadow-xl shadow-yellow-500/20"
+              ) : stories.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">No pending stories.</p>
+              ) : (
+                <div className="space-y-3 max-h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar pr-2">
+                  {stories.map(story => (
+                    <div
+                      key={story.id}
+                      onClick={() => setSelectedStory(story)}
+                      className={`p-4 rounded-lg border cursor-pointer transition-all ${selectedStory?.id === story.id
+                        ? 'bg-yellow-500/10 border-yellow-500'
+                        : 'bg-gray-800/50 border-gray-700 hover:border-gray-600 hover:bg-gray-800'
+                        }`}
                     >
-                      <PlusCircle size={18} /> PUBLISH TO SITE
-                    </button>
+                      <h3 className="font-bold text-sm mb-1 line-clamp-2">{story.title}</h3>
+                      <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                        <span className="text-yellow-500">{story.category}</span>
+                        <span>•</span>
+                        <span>{story.authorName}</span>
+                      </div>
+                      <div className="text-xs text-gray-500">{new Date(story.submittedAt?.toDate()).toLocaleDateString()}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Story Details Preview */}
+          <div className="lg:col-span-2">
+            {selectedStory ? (
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 md:p-8">
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 mb-8 pb-6 border-b border-gray-800">
+                  <button
+                    onClick={() => handleApprove(selectedStory)}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <CheckCircle size={18} /> Approve & Publish
+                  </button>
+                  <button
+                    onClick={() => handleDelete(selectedStory.id)}
+                    className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 px-4 py-2 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Trash2 size={18} /> Delete
+                  </button>
+                </div>
+
+                {/* Content Preview */}
+                <div className="prose prose-invert max-w-2xl mx-auto">
+                  {/* Header Image */}
+                  {selectedStory.image && (
+                    <div className="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-6">
+                      <img src={selectedStory.image} alt={selectedStory.title} className="w-full h-full object-cover" />
+                    </div>
                   )}
-                  <button
-                    onClick={() => handleEdit(story)}
-                    className="flex items-center gap-2 px-6 py-4 bg-white/5 text-white border border-white/5 rounded-2xl font-bold text-sm hover:bg-white/10 transition-all border-dashed"
-                  >
-                    <Edit size={18} className="text-yellow-500" /> REVIEW DETAILS
-                  </button>
-                  <button
-                    onClick={() => handleDelete(story.id)}
-                    className="flex items-center gap-2 px-6 py-4 bg-red-500/5 text-red-500 border border-red-500/10 rounded-2xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all ml-auto"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+
+                  {/* Title & Metadata */}
+                  <div className="mb-8">
+                    <span className="text-yellow-500 font-bold uppercase tracking-wider text-sm">{selectedStory.category}</span>
+                    <h1 className="text-3xl md:text-4xl font-bold mt-2 mb-4 leading-tight">{selectedStory.title}</h1>
+
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+                      <div className="flex items-center gap-2">
+                        <Calendar size={14} />
+                        {selectedStory.date}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={14} />
+                        {selectedStory.readTime}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Author Details Section */}
+                  <div className="bg-gray-800/50 rounded-xl p-4 mb-8 flex flex-col md:flex-row items-center md:justify-between gap-4 border border-gray-700">
+                    <div className="flex items-center gap-4">
+                      {selectedStory.authorImage ? (
+                        <img src={selectedStory.authorImage} alt={selectedStory.authorName} className="w-12 h-12 rounded-full object-cover border-2 border-yellow-500" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600">
+                          <User size={20} className="text-gray-400" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Submitted By</div>
+                        <div className="font-bold text-white text-lg">{selectedStory.authorName}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      {selectedStory.authorLinkedIn && (
+                        <a href={selectedStory.authorLinkedIn} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                          <div className="flex items-center gap-2 text-xs font-bold">
+                            <span className="uppercase">LinkedIn</span>
+                            <ExternalLink size={12} />
+                          </div>
+                        </a>
+                      )}
+                      {selectedStory.authorX && (
+                        <a href={selectedStory.authorX} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-700/50 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                          <div className="flex items-center gap-2 text-xs font-bold">
+                            <span className="uppercase">X / Twitter</span>
+                            <ExternalLink size={12} />
+                          </div>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Excerpt */}
+                  <div className="text-xl font-medium text-gray-300 italic mb-8 pl-4 border-l-4 border-yellow-500">
+                    {selectedStory.excerpt}
+                  </div>
+
+                  {/* YouTube Embed */}
+                  {selectedStory.youtubeUrl && (() => {
+                    const embedUrl = getYouTubeEmbedUrl(selectedStory.youtubeUrl);
+                    return embedUrl ? (
+                      <div className="mb-8 rounded-xl overflow-hidden border border-gray-700">
+                        <div className="relative pb-[56.25%] h-0">
+                          <iframe
+                            src={embedUrl}
+                            title="YouTube video player"
+                            className="absolute top-0 left-0 w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+
+                  {/* Rich Text Content */}
+                  <div
+                    className="text-gray-300 space-y-4 rich-text-content"
+                    dangerouslySetInnerHTML={{ __html: selectedStory.content }}
+                  />
+
+                  {/* Styles for consistent rich text rendering */}
+                  <style jsx="true">{`
+                    .rich-text-content h1 { font-size: 2.25rem; font-weight: 800; color: white; margin-top: 2rem; margin-bottom: 1rem; }
+                    .rich-text-content h2 { font-size: 1.875rem; font-weight: 700; color: white; margin-top: 2rem; margin-bottom: 1rem; }
+                    .rich-text-content h3 { font-size: 1.5rem; font-weight: 600; color: #eab308; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+                    .rich-text-content p { margin-bottom: 1.5rem; line-height: 1.8; font-size: 1.125rem; }
+                    .rich-text-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+                    .rich-text-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+                    .rich-text-content li { margin-bottom: 0.5rem; }
+                    .rich-text-content blockquote { border-left: 4px solid #eab308; padding-left: 1rem; font-style: italic; color: #9ca3af; margin: 2rem 0; background: rgba(234, 179, 8, 0.05); padding: 1.5rem; border-radius: 0.5rem; }
+                    .rich-text-content a { color: #eab308; text-decoration: underline; text-underline-offset: 4px; }
+                    .rich-text-content img { border-radius: 0.75rem; margin: 2rem 0; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #374151; }
+                    .rich-text-content pre { background: #111827; padding: 1rem; border-radius: 0.75rem; overflow-x: auto; border: 1px solid #374151; font-family: monospace; }
+                  `}</style>
+
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="h-[600px] bg-gray-900/50 border border-gray-800 rounded-xl flex flex-col items-center justify-center text-gray-500 border-dashed">
+                <MessageSquare size={48} className="mb-4 opacity-50" />
+                <p className="text-lg">Select a story to review details</p>
+              </div>
+            )}
           </div>
-        ))}
-
-        {stories.length === 0 && (
-          <div className="py-32 text-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[3rem]">
-            <div className="w-20 h-20 bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-gray-700">
-              <MessageSquare size={40} />
-            </div>
-            <h3 className="text-xl font-black text-gray-300 mb-2 italic">Inbox Zero</h3>
-            <p className="text-xs text-gray-500 tracking-widest uppercase">No submissions waiting for review.</p>
-          </div>
-        )}
+        </div>
       </div>
-
-      {loading && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
-            <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Processing Publication...</p>
-          </div>
-        </div>
-      )}
-
-      {modal.open && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setModal({ open: false, title: '', message: '' })}></div>
-          <div className="relative bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-12 w-full max-w-lg shadow-2xl text-center">
-            <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border shadow-2xl ${modal.title === 'Action Failed' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'}`}>
-              {modal.title === 'Action Failed' ? <X size={48} /> : <CheckCircle size={48} />}
-            </div>
-            <h3 className="text-3xl font-black mb-4 italic uppercase tracking-tighter text-white">{modal.title}</h3>
-            <p className="text-gray-400 mb-10 leading-relaxed font-light text-lg">{modal.message}</p>
-            <button
-              onClick={() => setModal({ open: false, title: '', message: '' })}
-              className="w-full py-5 bg-yellow-500 text-black rounded-2xl font-black text-xl hover:bg-yellow-400 transition-all shadow-2xl shadow-yellow-500/20"
-            >
-              GOT IT
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Modal (If you decide to keep minimal inline editing or full page) */}
-      {isEditing && (
-        <div className="fixed inset-0 z-[250] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setIsEditing(false)}></div>
-          <div className="relative bg-[#0A0A0A] border border-white/10 rounded-[3rem] p-8 md:p-12 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Reviewing <span className="text-yellow-500">Submission</span></h3>
-              <button onClick={() => setIsEditing(false)} className="p-2 text-gray-500 hover:text-white"><X size={32} /></button>
-            </div>
-
-            <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Author Name</label>
-                  <input type="text" name="author" value={formData.author} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Post Title</label>
-                  <input type="text" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Category</label>
-                  <input type="text" name="category" value={formData.category} onChange={handleInputChange} required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Excerpt</label>
-                  <textarea name="excerpt" value={formData.excerpt} onChange={handleInputChange} rows="5" className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50 resize-none font-light leading-relaxed" />
-                </div>
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Full Content Preview</label>
-                  <textarea name="content" value={formData.content} onChange={handleInputChange} rows="10" required className="w-full px-6 py-4 bg-black border border-white/5 rounded-2xl text-white outline-none focus:border-yellow-500/50 resize-none font-light leading-relaxed" />
-                </div>
-                <button type="submit" className="w-full py-5 bg-white text-black rounded-2xl font-black text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
-                  <Save size={20} /> SAVE CHANGES
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

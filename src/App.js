@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import Dashboard from './dashboard/Dashboard';
 import UploadNews from './dashboard/UploadNews';
 import UploadEvent from './dashboard/UploadEvent';
+import UploadCommunities from './dashboard/UploadCommunities';
 import SubmittedStories from './dashboard/SubmittedStories';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -40,6 +41,7 @@ function AppContent() {
           <Route index element={<UploadNews />} />
           <Route path="upload-news" element={<UploadNews />} />
           <Route path="upload-event" element={<UploadEvent />} />
+          <Route path="upload-communities" element={<UploadCommunities />} />
           <Route path="submitted-stories" element={<SubmittedStories />} />
         </Route>
       </Routes>
