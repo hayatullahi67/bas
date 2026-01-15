@@ -70,6 +70,34 @@ const NewsPreviewModal = ({ open, post, onClose }) => {
                             <p className="text-gray-300 italic">{post.excerpt}</p>
                         </div>
 
+                        {/* YouTube Video Embed */}
+                        {post.youtubeUrl && (() => {
+                            const getYouTubeEmbedUrl = (url) => {
+                                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                const match = url.match(regExp);
+                                return (match && match[2].length === 11)
+                                    ? `https://www.youtube.com/embed/${match[2]}`
+                                    : null;
+                            };
+
+                            const embedUrl = getYouTubeEmbedUrl(post.youtubeUrl);
+
+                            return embedUrl ? (
+                                <div className="mb-8">
+                                    <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                                        <iframe
+                                            className="absolute top-0 left-0 w-full h-full rounded-xl border-2 border-gray-800"
+                                            src={embedUrl}
+                                            title="YouTube video player"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                </div>
+                            ) : null;
+                        })()}
+
                         <div className="prose prose-invert max-w-none">
                             <div
                                 className="text-gray-400 leading-relaxed"

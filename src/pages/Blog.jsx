@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 // import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle , PlusCircle  } from 'lucide-react';
+import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle, PlusCircle, User } from 'lucide-react';
 import { blogPosts as mockPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
 // import { collection, getDocs } from 'firebase/firestore';
@@ -12,6 +12,8 @@ import { useEffect } from 'react';
 import { useNews } from '../context/NewsContext';
 import { newsService } from '../services/newsService';
 import { serverTimestamp, addDoc, collection } from 'firebase/firestore';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const Blog = () => {
   const { news: posts, loading, loadMore, loadingMore, hasMore } = useNews();
@@ -20,6 +22,8 @@ const Blog = () => {
   const [showForm, setShowForm] = useState(false);
   const [imageMode, setImageMode] = useState('url');
   const [imagePreview, setImagePreview] = useState('');
+  const [authorImageMode, setAuthorImageMode] = useState('url');
+  const [authorImagePreview, setAuthorImagePreview] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState('');
@@ -33,7 +37,11 @@ const Blog = () => {
     image: '',
     excerpt: '',
     content: '',
-    authorName: ''
+    authorName: '',
+    authorImage: '',
+    authorLinkedIn: '',
+    authorX: '',
+    youtubeUrl: ''
   });
 
   const filteredPosts = posts.filter(post => {
@@ -66,6 +74,32 @@ const Blog = () => {
     }));
   };
 
+  const handleContentChange = (content) => {
+    setFormData(prev => ({
+      ...prev,
+      content
+    }));
+  };
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'align': [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'align',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link'
+  ];
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -81,6 +115,26 @@ const Blog = () => {
     reader.onload = (event) => {
       setImagePreview(event.target?.result);
       setFormData(prev => ({ ...prev, image: event.target?.result }));
+    };
+    reader.readAsDataURL(file);
+    setSubmitError('');
+  };
+
+  const handleAuthorFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (5MB max)
+    const maxSizeInBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      setSubmitError('Image file must not be more than 5MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setAuthorImagePreview(event.target?.result);
+      setFormData(prev => ({ ...prev, authorImage: event.target?.result }));
     };
     reader.readAsDataURL(file);
     setSubmitError('');
@@ -124,10 +178,16 @@ const Blog = () => {
         image: '',
         excerpt: '',
         content: '',
-        authorName: ''
+        authorName: '',
+        authorImage: '',
+        authorLinkedIn: '',
+        authorX: '',
+        youtubeUrl: ''
       });
       setImagePreview('');
+      setAuthorImagePreview('');
       setImageMode('url');
+      setAuthorImageMode('url');
 
       setTimeout(() => {
         setSubmitMessage('');
@@ -270,119 +330,363 @@ const Blog = () => {
 
       {/* Submit Story Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30  p-12">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Share Your Bitcoin <span className="text-yellow-500">Story</span>
-              </h2>
-              <p className="text-lg text-gray-300">
-                Have a Bitcoin adoption story or education content to share? Submit your story below.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="w-full mb-6 px-8 py-4 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105"
-            >
-              {showForm ? 'Cancel' : 'Submit Your Story'}
-            </button>
-
-            {showForm && (
-              <>
-                {submitError && (
-                  <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3">
-                    <AlertCircle size={20} className="text-red-500 mt-0.5 flex-shrink-0" />
-                    <p className="text-red-200">{submitError}</p>
-                  </div>
-                )}
-
-                {submitMessage && (
-                  <div className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg flex items-start gap-3">
-                    <CheckCircle size={20} className="text-green-500 mt-0.5 flex-shrink-0" />
-                    <p className="text-green-200">{submitMessage}</p>
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">Title *</label>
-                      <input type="text" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500" placeholder="Enter post title" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">Author Name *</label>
-                      <input type="text" name="authorName" value={formData.authorName} onChange={handleInputChange} required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500" placeholder="Your name" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">Slug (auto-generated)</label>
-                    <input type="text" name="slug" value={formData.slug} readOnly className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-400 focus:outline-none cursor-not-allowed" />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">Category *</label>
-                      <select name="category" value={formData.category} onChange={handleInputChange} required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500">
-                        <option value="">Select a category</option>
-                        {categories.filter(cat => cat !== 'All').map(cat => (
-                          <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">Date *</label>
-                      <input type="date" name="date" value={formData.date} onChange={handleInputChange} required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-300 mb-2">Read Time</label>
-                      <input type="text" name="readTime" value={formData.readTime} onChange={handleInputChange} className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500" placeholder="5 min read" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">Image</label>
-                    <div className="flex gap-2 mb-3">
-                      <button type="button" onClick={() => setImageMode('url')} className={`px-3 py-1 rounded text-sm font-medium transition-colors ${imageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}>Use URL</button>
-                      <button type="button" onClick={() => setImageMode('file')} className={`px-3 py-1 rounded text-sm font-medium transition-colors ${imageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}>Upload File</button>
-                    </div>
-
-                    {imageMode === 'url' ? (
-                      <input type="url" name="image" value={formData.image} onChange={handleInputChange} className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500" placeholder="https://example.com/image.jpg" />
-                    ) : (
-                      <div>
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm text-gray-300 file:px-4 file:py-2 file:bg-gray-800 file:border file:border-gray-700 file:rounded file:text-white file:cursor-pointer hover:file:bg-gray-700" />
-                        <p className="text-xs text-gray-400 mt-2">Maximum file size: 5MB</p>
-                      </div>
-                    )}
-
-                    {imagePreview && (
-                      <div className="mt-4">
-                        <label className="block text-sm text-gray-400 mb-2">Preview</label>
-                        <img src={imagePreview} alt="preview" className="max-h-48 rounded-md border border-gray-700" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">Excerpt *</label>
-                    <textarea name="excerpt" value={formData.excerpt} onChange={handleInputChange} rows="3" required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500 resize-none" placeholder="Brief description of the post" />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">Content *</label>
-                    <textarea name="content" value={formData.content} onChange={handleInputChange} rows="8" required className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-500 resize-none" placeholder="Full blog post content" />
-                  </div>
-
-                  <button type="submit" disabled={isSubmitting} className="w-full md:w-auto px-8 py-4 bg-yellow-500 text-black font-bold text-lg rounded-lg hover:bg-yellow-400 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 flex items-center justify-center">
-                    <Save size={18} className="mr-2" />
-                    {isSubmitting ? 'Submitting...' : 'Submit Story'}
-                  </button>
-                </form>
-              </>
-            )}
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Share Your Bitcoin <span className="text-yellow-500">Story</span>
+            </h2>
+            <p className="text-lg text-gray-300">
+              Have a Bitcoin adoption story or education content to share? Submit your story below.
+            </p>
           </div>
+
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="w-full mb-6 px-8 py-4 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105"
+          >
+            {showForm ? 'Cancel' : 'Submit Your Story'}
+          </button>
+
+          {showForm && (
+            <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl p-6 mb-8 shadow-2xl">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
+                    <PlusCircle className="text-yellow-500" size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">Submit Your Story</h2>
+                    <p className="text-xs text-gray-500">Fill in the details below</p>
+                  </div>
+                </div>
+              </div>
+
+              {submitError && (
+                <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3">
+                  <AlertCircle size={20} className="text-red-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-red-200">{submitError}</p>
+                </div>
+              )}
+
+              {submitMessage && (
+                <div className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg flex items-start gap-3">
+                  <CheckCircle size={20} className="text-green-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-green-200">{submitMessage}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Title */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Article Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                    placeholder="Enter your article title..."
+                  />
+                </div>
+
+                {/* Row 1: Category, Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Category</label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                    >
+                      <option value="">Select a category</option>
+                      {categories.filter(cat => cat !== 'All').map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Publish Date</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2: Author, Read Time */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Author Name</label>
+                    <input
+                      type="text"
+                      name="authorName"
+                      value={formData.authorName}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                      placeholder="Your name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Read Time</label>
+                    <input
+                      type="text"
+                      name="readTime"
+                      value={formData.readTime}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                      placeholder="e.g. 5 min read"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3: Author Media & Socials */}
+                <div className="bg-gray-800/20 border border-gray-800 rounded-2xl p-5 space-y-6">
+                  <h3 className="text-xs font-black text-yellow-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <User size={14} /> Author Profile Details
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Author Profile Image</label>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setAuthorImageMode('url')}
+                          className={`flex-1 py-2 px-4 rounded-lg text-[10px] font-black uppercase transition-all ${authorImageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-gray-800 text-gray-400'}`}
+                        >
+                          URL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAuthorImageMode('file')}
+                          className={`flex-1 py-2 px-4 rounded-lg text-[10px] font-black uppercase transition-all ${authorImageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-gray-800 text-gray-400'}`}
+                        >
+                          Upload
+                        </button>
+                      </div>
+                      <input
+                        type={authorImageMode === 'url' ? 'url' : 'file'}
+                        name="authorImage"
+                        onChange={authorImageMode === 'url' ? handleInputChange : handleAuthorFileChange}
+                        value={authorImageMode === 'url' ? formData.authorImage : undefined}
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white text-xs focus:ring-1 focus:ring-yellow-500/50 transition-all"
+                        placeholder="Author profile image URL..."
+                        accept={authorImageMode === 'file' ? "image/*" : undefined}
+                      />
+                      {authorImagePreview && (
+                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-yellow-500/20">
+                          <img src={authorImagePreview} alt="Author" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">LinkedIn Profile</label>
+                        <input
+                          type="url"
+                          name="authorLinkedIn"
+                          value={formData.authorLinkedIn}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white text-sm focus:ring-1 focus:ring-yellow-500/50 transition-all placeholder:text-gray-700"
+                          placeholder="https://linkedin.com/in/..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">X (Twitter) Profile</label>
+                        <input
+                          type="url"
+                          name="authorX"
+                          value={formData.authorX}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white text-sm focus:ring-1 focus:ring-yellow-500/50 transition-all placeholder:text-gray-700"
+                          placeholder="https://x.com/..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Slug */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">URL Slug</label>
+                  <input
+                    type="text"
+                    name="slug"
+                    value={formData.slug}
+                    readOnly
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-yellow-500/70 font-mono text-sm focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Featured Image</label>
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => setImageMode('url')}
+                      className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'url'
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        }`}
+                    >
+                      URL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageMode('file')}
+                      className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'file'
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        }`}
+                    >
+                      Upload
+                    </button>
+                  </div>
+                  <input
+                    type={imageMode === 'url' ? 'url' : 'file'}
+                    name="image"
+                    onChange={imageMode === 'url' ? handleInputChange : handleFileChange}
+                    value={imageMode === 'url' ? formData.image : undefined}
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                    placeholder={imageMode === 'url' ? 'https://example.com/image.jpg' : ''}
+                    accept={imageMode === 'file' ? "image/*" : undefined}
+                  />
+                </div>
+
+                {/* Excerpt */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Excerpt</label>
+                  <textarea
+                    name="excerpt"
+                    value={formData.excerpt}
+                    onChange={handleInputChange}
+                    rows="3"
+                    required
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
+                    placeholder="Brief summary of the article..."
+                  />
+                </div>
+
+                {/* YouTube Video URL (Optional) */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider flex items-center gap-2">
+                    <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                    YouTube Video URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    name="youtubeUrl"
+                    value={formData.youtubeUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                  />
+                  <p className="text-xs text-gray-500 mt-2">Add a YouTube video to embed in your article (optional)</p>
+                </div>
+
+                {/* Content with Preview */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Content</label>
+                    <div className="quill-editor-container">
+                      <ReactQuill
+                        theme="snow"
+                        value={formData.content}
+                        onChange={handleContentChange}
+                        modules={modules}
+                        formats={formats}
+                        className="bg-gray-800/50 border border-gray-700 rounded-xl text-white overflow-hidden"
+                      />
+                    </div>
+
+                    <style jsx="true">{`
+                      .quill-editor-container .ql-toolbar {
+                        background: #1f2937;
+                        border-top-left-radius: 0.75rem;
+                        border-top-right-radius: 0.75rem;
+                        border-color: #374151;
+                      }
+                      .quill-editor-container .ql-container {
+                        border-bottom-left-radius: 0.75rem;
+                        border-bottom-right-radius: 0.75rem;
+                        border-color: #374151;
+                        min-height: 300px;
+                        font-size: 1rem;
+                        color: white;
+                      }
+                      .quill-editor-container .ql-editor.ql-blank::before {
+                        color: #4b5563;
+                      }
+                      .quill-editor-container .ql-snow .ql-stroke {
+                        stroke: #9ca3af;
+                      }
+                      .quill-editor-container .ql-snow .ql-fill {
+                        fill: #9ca3af;
+                      }
+                      .quill-editor-container .ql-snow .ql-picker {
+                        color: #9ca3af;
+                      }
+                      .quill-editor-container .ql-snow .ql-picker-options {
+                        background-color: #111827;
+                        border-color: #374151;
+                      }
+                      .quill-editor-container .ql-snow .ql-picker-item {
+                        color: #9ca3af;
+                      }
+                    `}</style>
+                  </div>
+
+                  {imagePreview && (
+                    <div className="lg:col-span-1">
+                      <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Preview</label>
+                      <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700">
+                        <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover" />
+                        <div className="p-4">
+                          <span className="text-xs font-bold text-yellow-500 uppercase">{formData.category}</span>
+                          <p className="text-sm font-semibold text-white mt-1 line-clamp-2">{formData.title || 'Article Title'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex items-center gap-4 pt-4 border-t border-gray-800">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold rounded-xl hover:from-yellow-400 hover:to-yellow-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-yellow-500/20"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        Submit Story
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </section>
       <ScrollToTop />
