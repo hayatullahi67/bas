@@ -17,6 +17,11 @@ var Size = Quill.import('attributors/style/size');
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
 
+// Add custom font support
+var Font = Quill.import('attributors/style/font');
+Font.whitelist = [false, 'serif', 'monospace', 'Montserrat'];
+Quill.register(Font, true);
+
 // Custom styles for the size picker to show values
 const quillSizeStyles = `
   .ql-snow .ql-picker.ql-size .ql-picker-label::before,
@@ -43,6 +48,37 @@ const quillSizeStyles = `
   .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before { content: "36px" !important; }
   .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
   .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: "48px" !important; }
+
+  /* Font Labels */
+  .ql-snow .ql-picker.ql-font .ql-picker-label::before,
+  .ql-snow .ql-picker.ql-font .ql-picker-item::before {
+    content: "Sans Serif" !important;
+  }
+  .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
+  .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
+    content: "Serif" !important;
+    font-family: serif !important;
+  }
+  .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
+  .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
+    content: "Monospace" !important;
+    font-family: monospace !important;
+  }
+  .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Montserrat"]::before,
+  .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Montserrat"]::before {
+    content: "Montserrat" !important;
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
+  /* Restore Editor Height */
+  .ql-container.ql-snow {
+    min-height: 250px;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
+  .ql-editor {
+    min-height: 250px;
+  }
 `;
 
 const UploadNews = () => {
@@ -72,6 +108,51 @@ const UploadNews = () => {
   const [authorImagePreview, setAuthorImagePreview] = useState('');
   const [modal, setModal] = useState({ open: false, title: '', message: '' });
   const [detailModal, setDetailModal] = useState({ open: false, post: null });
+
+  // Add tooltips to editor toolbar
+  useEffect(() => {
+    const addTooltips = () => {
+      const toolbar = document.querySelector('.ql-toolbar');
+      if (!toolbar) return;
+
+      const tooltips = {
+        'ql-bold': 'Bold',
+        'ql-italic': 'Italic',
+        'ql-underline': 'Underline',
+        'ql-strike': 'Strike',
+        'ql-link': 'Link',
+        'ql-image': 'Insert Image',
+        'ql-video': 'Insert Video',
+        'ql-blockquote': 'Blockquote',
+        'ql-code-block': 'Code Block',
+        'ql-clean': 'Remove Formatting',
+        'ql-indent[value="-1"]': 'Decrease Indent',
+        'ql-indent[value="+1"]': 'Increase Indent',
+        'ql-list[value="ordered"]': 'Numbered List',
+        'ql-list[value="bullet"]': 'Bullet List',
+        'ql-align': 'Alignment',
+        'ql-header': 'Heading Level',
+        'ql-size': 'Font Size',
+        'ql-color': 'Text Color',
+        'ql-background': 'Background Color',
+        'ql-script[value="sub"]': 'Subscript',
+        'ql-script[value="super"]': 'Superscript'
+      };
+
+      Object.entries(tooltips).forEach(([selector, text]) => {
+        const elements = toolbar.querySelectorAll(`.${selector}`);
+        elements.forEach(el => {
+          if (!el.getAttribute('title')) {
+            el.setAttribute('title', text);
+          }
+        });
+      });
+    };
+
+    // Small delay to ensure editor is rendered
+    const timer = setTimeout(addTooltips, 500);
+    return () => clearTimeout(timer);
+  }, [isInitialLoading]);
 
   // convert file to base64 and compress
   const compressImage = (file, maxWidth = 800) => new Promise((resolve, reject) => {
@@ -171,7 +252,7 @@ const UploadNews = () => {
   const modules = {
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'font': [] }],
+      [{ 'font': [false, 'serif', 'monospace', 'Montserrat'] }],
       [{ 'size': fontSizeArr }],
       [{ 'align': [] }],
       ['bold', 'italic', 'underline', 'strike'],
@@ -199,13 +280,12 @@ const UploadNews = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const { id, _doc, ...sanitizedData } = formData;
     const payload = {
-      ...formData,
-      image: formData.image || imagePreview,
+      ...sanitizedData,
+      image: sanitizedData.image || imagePreview,
       updatedAt: serverTimestamp()
     };
-
-    if (payload.id) delete payload.id;
 
     try {
       if (isEditing && currentPost) {
@@ -573,42 +653,6 @@ const UploadNews = () => {
                   className="bg-gray-800/50 border border-gray-700 rounded-xl text-white overflow-hidden"
                 />
               </div>
-
-              <style jsx="true">{`
-                .quill-editor-container .ql-toolbar {
-                  background: #1f2937;
-                  border-top-left-radius: 0.75rem;
-                  border-top-right-radius: 0.75rem;
-                  border-color: #374151;
-                }
-                .quill-editor-container .ql-container {
-                  border-bottom-left-radius: 0.75rem;
-                  border-bottom-right-radius: 0.75rem;
-                  border-color: #374151;
-                  min-height: 300px;
-                  font-size: 1rem;
-                  color: white;
-                }
-                .quill-editor-container .ql-editor.ql-blank::before {
-                  color: #4b5563;
-                }
-                .quill-editor-container .ql-snow .ql-stroke {
-                  stroke: #9ca3af;
-                }
-                .quill-editor-container .ql-snow .ql-fill {
-                  fill: #9ca3af;
-                }
-                .quill-editor-container .ql-snow .ql-picker {
-                  color: #9ca3af;
-                }
-                .quill-editor-container .ql-snow .ql-picker-options {
-                  background-color: #111827;
-                  border-color: #374151;
-                }
-                .quill-editor-container .ql-snow .ql-picker-item {
-                  color: #9ca3af;
-                }
-              `}</style>
             </div>
 
             {imagePreview && (
@@ -644,7 +688,6 @@ const UploadNews = () => {
                 </>
               )}
             </button>
-
           </div>
         </form>
       </div>

@@ -260,14 +260,14 @@ const Blog = () => {
           <CarouselContent className="h-full min-h-screen">
             <CarouselItem className="pl-0 h-full min-h-screen">
               <img
-                src="assets/blogbg1.jpg"
+                src="/assets/blogbg1.jpg"
                 alt="Hero background 1"
                 className="h-full w-full min-h-screen object-cover opacity-70"
               />
             </CarouselItem>
             <CarouselItem className="pl-0 h-full min-h-screen">
               <img
-                src="assets/blogbg2.jpg"
+                src="/assets/blogbg2.jpg"
                 alt="Hero background 2"
                 className="h-full w-full min-h-screen object-cover opacity-70"
               />

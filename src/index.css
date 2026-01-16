@@ -113,3 +113,14 @@ code {
         border-bottom-color: inherit;
     }
 }
+
+/* Global Typography Overrides */
+.ql-editor p,
+.prose p {
+    margin-bottom: 0.75rem !important;
+}
+
+.ql-editor p:last-child,
+.prose p:last-child {
+    margin-bottom: 0 !important;
+}

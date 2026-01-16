@@ -25,7 +25,7 @@ const Header = () => {
 
   return (
     <header className="fixed    top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800  ">
-   
+
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-40"
@@ -38,13 +38,13 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center  group">
-           
-            <img 
-              src="assets/BitcoinAfricaStoryLogo.png" 
-              alt="Bitcoin Africa Story" 
+
+            <img
+              src="/assets/BitcoinAfricaStoryLogo.png"
+              alt="Bitcoin Africa Story"
               className="w-[100px] h-[50px] "
             />
-           
+
           </Link>
 
           {/* Desktop Navigation */}
@@ -53,21 +53,19 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-colors duration-200 relative group ${
-                  link.name === 'Donate' ? 'bg-yellow-500 text-black px-3 py-2  shadow-lg' : (
+                className={`text-sm font-medium transition-colors duration-200 relative group ${link.name === 'Donate' ? 'bg-yellow-500 text-black px-3 py-2  shadow-lg' : (
                     isActive(link.path)
                       ? 'text-yellow-500'
                       : 'text-gray-300 hover:text-yellow-500'
                   )
-                }`}
+                  }`}
               >
                 {link.name}
                 <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-yellow-500 transition-all duration-200 ${
-                    link.name === 'Donate' ? 'hidden' : (
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-yellow-500 transition-all duration-200 ${link.name === 'Donate' ? 'hidden' : (
                       isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
                     )
-                  }`}
+                    }`}
                 />
               </Link>
             ))}
@@ -84,7 +82,7 @@ const Header = () => {
         </div>
 
         {/* Subheader (compact) */}
-        
+
 
         {/* Mobile Navigation */}
         {isOpen && (
@@ -94,13 +92,12 @@ const Header = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`block px-4 py-2  text-sm font-medium transition-colors duration-200 ${
-                  link.name === 'Donate' ? 'bg-yellow-500 text-black shadow-lg' : (
+                className={`block px-4 py-2  text-sm font-medium transition-colors duration-200 ${link.name === 'Donate' ? 'bg-yellow-500 text-black shadow-lg' : (
                     isActive(link.path)
                       ? 'text-yellow-500 bg-yellow-500/10'
                       : 'text-gray-300 hover:text-yellow-500 hover:bg-yellow-500/5'
                   )
-                }`}
+                  }`}
               >
                 {link.name}
               </Link>

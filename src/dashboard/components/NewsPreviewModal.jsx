@@ -100,7 +100,7 @@ const NewsPreviewModal = ({ open, post, onClose }) => {
 
                         <div className="prose prose-invert max-w-none">
                             <div
-                                className="text-gray-400 leading-relaxed space-y-4"
+                                className="blog-post-content text-gray-400 leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: post.content }}
                             />
                         </div>

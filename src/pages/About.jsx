@@ -16,7 +16,7 @@ const About = () => {
   ];
 
   return (
-    <div className="pt-16"> 
+    <div className="pt-16">
       {/* Hero Section */}
       {/* <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-4xl mx-auto ">
@@ -58,11 +58,11 @@ const About = () => {
               </div>
 
               <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
-             <span>  Empowering  </span> <br className="sm:hidden"/> <span> Africa </span>  <br className="sm:hidden"/> <span>  Through </span> <br className=""/> <span className="text-[#FAD604]">  Bitcoin.  </span>               
-            </h1>
+                <span>  Empowering  </span> <br className="sm:hidden" /> <span> Africa </span>  <br className="sm:hidden" /> <span>  Through </span> <br className="" /> <span className="text-[#FAD604]">  Bitcoin.  </span>
+              </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
-               Our journey began with a simple belief: everyone deserves access to financial freedom. 
+                Our journey began with a simple belief: everyone deserves access to financial freedom.
               </p>
 
               <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
@@ -150,9 +150,9 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-lg text-gray-300 leading-relaxed">
                 <h5>From One Question to a Continental Movement</h5>
-                 
-                 <h5>Bitcoin Africa Story started with a question:</h5>
-                   <p>“Why are so many Africans still excluded from financial opportunities when Bitcoin exists?”</p>
+
+                <h5>Bitcoin Africa Story started with a question:</h5>
+                <p>“Why are so many Africans still excluded from financial opportunities when Bitcoin exists?”</p>
                 <p>
                   That question sparked a journey — from small, informal meetups in Nigeria to a growing pan-African network of learners, merchants, educators, youths, and creators discovering Bitcoin together.
                 </p>
@@ -161,15 +161,15 @@ const About = () => {
                 </p>
                 <p>
                   Today, Bitcoin Africa Story stands at the intersection of education, community empowerment, storytelling, and circular economy building.
-                     We’re helping people not only learn Bitcoin, but use it in their daily lives.
+                  We’re helping people not only learn Bitcoin, but use it in their daily lives.
                 </p>
-               
+
               </div>
             </div>
-            
+
             <div className="space-y-6">
               <img
-                src="assets/communities.jpg"
+                src="/assets/communities.jpg"
                 alt="Community"
                 className="w-full shadow-2xl"
               />
@@ -201,7 +201,7 @@ const About = () => {
                 Our <span className="text-yellow-500">Mission</span>
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
-              To accelerate Bitcoin adoption in Africa through education, community empowerment, grassroots initiatives, and storytelling all aimed at making Bitcoin practical for everyday Africans.
+                To accelerate Bitcoin adoption in Africa through education, community empowerment, grassroots initiatives, and storytelling all aimed at making Bitcoin practical for everyday Africans.
 
               </p>
             </div>
@@ -284,7 +284,7 @@ const About = () => {
               </div>
               <h3 className="text-2xl font-bold mb-4">Community First</h3>
               <p className="text-gray-400 leading-relaxed">
-               Bitcoin adoption grows from the grassroots — through people, not institutions.
+                Bitcoin adoption grows from the grassroots — through people, not institutions.
 
               </p>
             </div>
@@ -295,7 +295,7 @@ const About = () => {
               </div>
               <h3 className="text-2xl font-bold mb-4">Education Excellence</h3>
               <p className="text-gray-400 leading-relaxed">
-               We prioritize accuracy, clarity, and accessibility in every lesson and resource.
+                We prioritize accuracy, clarity, and accessibility in every lesson and resource.
               </p>
             </div>
 
@@ -315,49 +315,49 @@ const About = () => {
 
       {/* CTA */}
       <section className="py-20 px-6">
-  <div className="max-w-4xl mx-auto">
-    {/* Kept your gradient background and border style */}
-    <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-8 md:p-12">
-      
-      <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-        Join The Movement
-      </h2>
+        <div className="max-w-4xl mx-auto">
+          {/* Kept your gradient background and border style */}
+          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-8 md:p-12">
 
-      <div className="space-y-6">
-        <p className="text-lg text-gray-300">
-          Whether you're a beginner, a student, a merchant, a builder, or a passionate Bitcoiner:
-        </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+              Join The Movement
+            </h2>
 
-        <p className="text-xl font-bold text-white">
-          You are welcome here.
-        </p>
+            <div className="space-y-6">
+              <p className="text-lg text-gray-300">
+                Whether you're a beginner, a student, a merchant, a builder, or a passionate Bitcoiner:
+              </p>
 
-        <p className="text-lg text-gray-300 leading-relaxed">
-          Start learning, contribute to circular economies, or support our work as we continue 
-          empowering communities — one person, one story, one sats transaction at a time.
-        </p>
+              <p className="text-xl font-bold text-white">
+                You are welcome here.
+              </p>
 
-        {/* Link List Section */}
-        <div className="flex flex-col sm:flex-col gap-4 pt-4">
-          <Link to="/education" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
-            Start Your Bitcoin Journey
-            <ArrowRight className="ml-2" size={18} />
-          </Link>
-          
-          <Link to="/donate" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-            Support Our Work
-          </Link>
-          
-          <Link to="/community" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-            Join the Community
-          </Link>
+              <p className="text-lg text-gray-300 leading-relaxed">
+                Start learning, contribute to circular economies, or support our work as we continue
+                empowering communities — one person, one story, one sats transaction at a time.
+              </p>
+
+              {/* Link List Section */}
+              <div className="flex flex-col sm:flex-col gap-4 pt-4">
+                <Link to="/education" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+                  Start Your Bitcoin Journey
+                  <ArrowRight className="ml-2" size={18} />
+                </Link>
+
+                <Link to="/donate" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
+                  Support Our Work
+                </Link>
+
+                <Link to="/community" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
+                  Join the Community
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-<ScrollToTop />
+      </section>
+      <ScrollToTop />
     </div>
   );
 };

@@ -186,7 +186,7 @@ const BlogPost = () => {
 
         {/* Article Content */}
         <div className="prose prose-invert prose-base max-w-none mb-16">
-          <p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-10 italic border-l-4 border-yellow-500 pl-6">
+          <p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-6 italic border-l-4 border-yellow-500 pl-6">
             {post.excerpt}
           </p>
 
@@ -219,7 +219,7 @@ const BlogPost = () => {
           })()}
 
           <div
-            className="text-gray-300 leading-relaxed space-y-4"
+            className="blog-post-content text-gray-300 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>
