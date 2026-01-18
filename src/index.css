@@ -45,6 +45,7 @@ code {
         --chart-5: 27 87% 67%;
         --radius: 0.5rem;
     }
+
     .dark {
         --background: 0 0% 3.9%;
         --foreground: 0 0% 98%;
@@ -77,6 +78,7 @@ code {
     * {
         @apply border-border;
     }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -87,7 +89,7 @@ code {
         display: contents !important;
     }
 
-    [data-debug-wrapper="true"] > * {
+    [data-debug-wrapper="true"]>* {
         margin-left: inherit;
         margin-right: inherit;
         margin-top: inherit;
@@ -123,4 +125,23 @@ code {
 .ql-editor p:last-child,
 .prose p:last-child {
     margin-bottom: 0 !important;
+}
+
+/* Custom Scrollbar for Events List */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(250, 214, 4, 0.2);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(250, 214, 4, 0.4);
 }
