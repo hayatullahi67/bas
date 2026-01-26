@@ -7,7 +7,11 @@ import {
   Home,
   LogOut,
   ChevronRight,
-  Globe
+  Globe,
+  BookOpen,
+  Video,
+  Library,
+  GraduationCap
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -15,6 +19,10 @@ const sidebarItems = [
   { name: 'Events Manager', path: '/dashboard/upload-event', icon: Calendar },
   { name: 'Communities', path: '/dashboard/upload-communities', icon: Globe },
   { name: 'Submitted Stories', path: '/dashboard/submitted-stories', icon: MessageSquare },
+  { name: 'Edu Programs', path: '/dashboard/upload-programs', icon: BookOpen },
+  { name: 'Other Programs', path: '/dashboard/upload-other-programs', icon: GraduationCap },
+  { name: 'Bitcoin Videos', path: '/dashboard/upload-videos', icon: Video },
+  { name: 'Bitcoin Resources', path: '/dashboard/upload-resources', icon: Library },
 ];
 
 const Sidebar = ({ open = false, onClose = () => { } }) => {

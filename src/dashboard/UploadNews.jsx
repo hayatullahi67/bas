@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Edit, Trash2, Save, X, Newspaper, Calendar, Eye, Tag, User, Clock, Link2, UploadCloud, FileText, CheckCircle, Sparkles, Linkedin, Twitter } from 'lucide-react';
 import { categories } from '../mock';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { useNews } from '../context/NewsContext';
 import StatusModal from './components/StatusModal';
 import NewsPreviewModal from './components/NewsPreviewModal';
@@ -154,7 +155,7 @@ const UploadNews = () => {
     return () => clearTimeout(timer);
   }, [isInitialLoading]);
 
-  // convert file to base64 and compress
+  // Compress image and return as Blob
   const compressImage = (file, maxWidth = 800) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -176,19 +177,13 @@ const UploadNews = () => {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Export as compressed jpeg
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', 0.7);
       };
       img.onerror = reject;
     };
     reader.onerror = reject;
-  });
-
-  const fileToBase64 = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (err) => reject(err);
-    reader.readAsDataURL(file);
   });
 
   const handleFileChange = async (e) => {
@@ -196,9 +191,9 @@ const UploadNews = () => {
     if (!file) return;
     try {
       setIsSubmitting(true);
-      const compressedBase64 = await compressImage(file);
-      setFormData(prev => ({ ...prev, image: compressedBase64 }));
-      setImagePreview(compressedBase64);
+      const compressedBlob = await compressImage(file);
+      setFormData(prev => ({ ...prev, image: compressedBlob }));
+      setImagePreview(URL.createObjectURL(compressedBlob));
     } catch (err) {
       console.error('Image compression error', err);
     } finally {
@@ -211,9 +206,9 @@ const UploadNews = () => {
     if (!file) return;
     try {
       setIsSubmitting(true);
-      const compressedBase64 = await compressImage(file, 300); // Author images can be smaller
-      setFormData(prev => ({ ...prev, authorImage: compressedBase64 }));
-      setAuthorImagePreview(compressedBase64);
+      const compressedBlob = await compressImage(file, 300); // Author images can be smaller
+      setFormData(prev => ({ ...prev, authorImage: compressedBlob }));
+      setAuthorImagePreview(URL.createObjectURL(compressedBlob));
     } catch (err) {
       console.error('Author image compression error', err);
     } finally {
@@ -288,9 +283,42 @@ const UploadNews = () => {
     };
 
     try {
+      // Upload Images to Firebase Storage if they are Blobs
+      let imageUrl = formData.image;
+      let authorImageUrl = formData.authorImage;
+
+      // Helper to upload if Blob
+      const uploadIfFile = async (fileOrUrl, path) => {
+        if (fileOrUrl instanceof Blob) {
+          const storageRef = ref(storage, path);
+          await uploadBytes(storageRef, fileOrUrl);
+          return await getDownloadURL(storageRef);
+        }
+        return fileOrUrl;
+      };
+
+      if (imageUrl instanceof Blob) {
+        imageUrl = await uploadIfFile(imageUrl, `news/featured_${Date.now()}`);
+      }
+
+      if (authorImageUrl instanceof Blob) {
+        authorImageUrl = await uploadIfFile(authorImageUrl, `authors/author_${Date.now()}`);
+      }
+
+      const finalPayload = {
+        ...sanitizedData,
+        image: imageUrl,
+        authorImage: authorImageUrl,
+        updatedAt: serverTimestamp()
+      };
+
       if (isEditing && currentPost) {
         const postRef = doc(db, 'news', currentPost.id);
-        await updateDoc(postRef, payload);
+
+        // Handle image cleanup if URLs changed (Basic implementation)
+        // For a full implementation, we'd compare old and new URLs and delete the old ones from Storage
+
+        await updateDoc(postRef, finalPayload);
 
         setTimeout(() => {
           setModal({
@@ -300,7 +328,7 @@ const UploadNews = () => {
           });
         }, 300);
       } else {
-        if (!payload.image) {
+        if (!finalPayload.image) {
           setModal({
             open: true,
             title: 'Media Required',
@@ -309,7 +337,7 @@ const UploadNews = () => {
           setIsSubmitting(false);
           return;
         }
-        await addDoc(collection(db, 'news'), { ...payload, createdAt: serverTimestamp() });
+        await addDoc(collection(db, 'news'), { ...finalPayload, createdAt: serverTimestamp() });
 
         setTimeout(() => {
           setModal({
@@ -345,10 +373,26 @@ const UploadNews = () => {
     setDetailModal({ open: true, post });
   };
 
-  const handleDelete = async (postId) => {
-    if (window.confirm('Are you sure you want to delete this post from Firebase?')) {
+  const handleDelete = async (post) => {
+    if (window.confirm('Are you sure you want to delete this post? This will also remove associated images from storage.')) {
       try {
-        await deleteDoc(doc(db, 'news', postId));
+        // Delete images from Storage if they exist
+        const deleteStorageFile = async (url) => {
+          if (url && url.includes('firebasestorage.googleapis.com')) {
+            try {
+              const fileRef = ref(storage, url);
+              await deleteObject(fileRef);
+            } catch (storageErr) {
+              console.error('Error deleting file from storage:', storageErr);
+              // Continue with deletion even if storage fails (might be already gone or not a storage URL)
+            }
+          }
+        };
+
+        if (post.image) await deleteStorageFile(post.image);
+        if (post.authorImage) await deleteStorageFile(post.authorImage);
+
+        await deleteDoc(doc(db, 'news', post.id));
         setModal({ open: true, title: 'Deleted', message: 'Blog post deleted successfully.' });
       } catch (err) {
         setModal({ open: true, title: 'Error', message: 'Error deleting: ' + (err.message || 'unknown') });
@@ -714,7 +758,7 @@ const UploadNews = () => {
                 post={post}
                 onView={handleView}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={() => handleDelete(post)}
               />
             ))}
 

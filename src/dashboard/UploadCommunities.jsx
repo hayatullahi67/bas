@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Edit, Trash2, Save, X, Sparkles, Globe, Image as ImageIcon, Link2, CheckCircle } from 'lucide-react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import StatusModal from './components/StatusModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 
@@ -43,7 +44,9 @@ const UploadCommunities = () => {
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.7));
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.7);
             };
             img.onerror = reject;
         };
@@ -89,9 +92,9 @@ const UploadCommunities = () => {
         }
 
         try {
-            const compressed = await compressImage(file);
-            setImagePreview(compressed);
-            setFormData(prev => ({ ...prev, logo: compressed }));
+            const compressedBlob = await compressImage(file);
+            setImagePreview(URL.createObjectURL(compressedBlob));
+            setFormData(prev => ({ ...prev, logo: compressedBlob }));
         } catch (error) {
             setModal({ open: true, title: 'Error', message: 'Failed to process image' });
         }
@@ -108,9 +111,17 @@ const UploadCommunities = () => {
                 return;
             }
 
+            // Upload to Storage if Blob
+            let logoUrl = formData.logo;
+            if (logoUrl instanceof Blob) {
+                const storageRef = ref(storage, `communities/logo_${Date.now()}`);
+                await uploadBytes(storageRef, logoUrl);
+                logoUrl = await getDownloadURL(storageRef);
+            }
+
             const communityData = {
                 name: formData.name,
-                logo: formData.logo,
+                logo: logoUrl,
                 link: formData.link,
                 description: formData.description,
                 createdAt: serverTimestamp(),
@@ -164,11 +175,20 @@ const UploadCommunities = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this community?')) return;
+    const handleDelete = async (community) => {
+        if (!window.confirm('Are you sure you want to delete this community and its logo?')) return;
 
         try {
-            await deleteDoc(doc(db, 'communities', id));
+            // Delete from storage if it's a storage URL
+            if (community.logo && community.logo.includes('firebasestorage.googleapis.com')) {
+                try {
+                    const fileRef = ref(storage, community.logo);
+                    await deleteObject(fileRef);
+                } catch (storageErr) {
+                    console.error('Storage delete error:', storageErr);
+                }
+            }
+            await deleteDoc(doc(db, 'communities', community.id));
             setModal({ open: true, title: 'Success', message: 'Community deleted successfully!' });
             fetchCommunities();
         } catch (error) {
@@ -375,7 +395,7 @@ const UploadCommunities = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(community.id)}
+                                            onClick={() => handleDelete(community)}
                                             className="flex-1 px-3 py-2 bg-gray-700 hover:bg-red-500 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2"
                                         >
                                             <Trash2 size={14} />

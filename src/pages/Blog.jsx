@@ -4,14 +4,14 @@ import { Search, Calendar, Clock, Save, AlertCircle, CheckCircle, PlusCircle, Us
 import { blogPosts as mockPosts, categories } from '../mock';
 import { PostsGrid } from '../components/sections';
 // import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "../components/ui/carousel";
 import ScrollToTop from '../components/ScrollToTop';
-import { useEffect } from 'react';
 import { useNews } from '../context/NewsContext';
 import { newsService } from '../services/newsService';
+import { db, storage } from '../firebase';
 import { serverTimestamp, addDoc, collection } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -153,12 +153,8 @@ const Blog = () => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setImagePreview(event.target?.result);
-      setFormData(prev => ({ ...prev, image: event.target?.result }));
-    };
-    reader.readAsDataURL(file);
+    setImagePreview(URL.createObjectURL(file));
+    setFormData(prev => ({ ...prev, image: file }));
     setSubmitError('');
   };
 
@@ -173,12 +169,8 @@ const Blog = () => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setAuthorImagePreview(event.target?.result);
-      setFormData(prev => ({ ...prev, authorImage: event.target?.result }));
-    };
-    reader.readAsDataURL(file);
+    setAuthorImagePreview(URL.createObjectURL(file));
+    setFormData(prev => ({ ...prev, authorImage: file }));
     setSubmitError('');
   };
 
@@ -195,17 +187,32 @@ const Blog = () => {
         return;
       }
 
+      // Upload to Storage if Blob
+      let imageUrl = formData.image;
+      if (imageUrl instanceof Blob) {
+        const storageRef = ref(storage, `submissions/sub_${Date.now()}`);
+        await uploadBytes(storageRef, imageUrl);
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      let authorImageUrl = formData.authorImage;
+      if (authorImageUrl instanceof Blob) {
+        const authorStorageRef = ref(storage, `submissions/author_${Date.now()}`);
+        await uploadBytes(authorStorageRef, authorImageUrl);
+        authorImageUrl = await getDownloadURL(authorStorageRef);
+      }
+
       const submittedData = {
         title: formData.title,
         slug: formData.slug,
         category: formData.category,
         date: formData.date,
         readTime: formData.readTime || '5 min read',
-        image: formData.image,
+        image: imageUrl,
         excerpt: formData.excerpt,
         content: formData.content,
         authorName: formData.authorName,
-        authorImage: formData.authorImage || '',
+        authorImage: authorImageUrl || '',
         authorLinkedIn: formData.authorLinkedIn || '',
         authorX: formData.authorX || '',
         youtubeUrl: formData.youtubeUrl || '',

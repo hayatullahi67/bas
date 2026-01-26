@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, CheckCircle, XCircle, Trash2, Eye, Calendar, User, Clock, Link2, ExternalLink } from 'lucide-react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { collection, getDocs, deleteDoc, addDoc, doc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject, uploadString } from 'firebase/storage';
 import StatusModal from './components/StatusModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 
@@ -37,6 +38,21 @@ const SubmittedStories = () => {
 
     setIsProcessing(true);
     try {
+      // Handle legacy data during approval if it exists (converting to storage)
+      let imageUrl = story.image;
+      if (imageUrl && imageUrl.startsWith('data:image')) {
+        const storageRef = ref(storage, `news/featured_approved_${Date.now()}`);
+        await uploadString(storageRef, imageUrl, 'data_url');
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      let authorImageUrl = story.authorImage;
+      if (authorImageUrl && authorImageUrl.startsWith('data:image')) {
+        const authorStorageRef = ref(storage, `authors/author_approved_${Date.now()}`);
+        await uploadString(authorStorageRef, authorImageUrl, 'data_url');
+        authorImageUrl = await getDownloadURL(authorStorageRef);
+      }
+
       // 1. Add to main 'news' collection
       await addDoc(collection(db, 'news'), {
         title: story.title,
@@ -44,11 +60,11 @@ const SubmittedStories = () => {
         category: story.category,
         date: story.date,
         readTime: story.readTime,
-        image: story.image,
+        image: imageUrl,
         excerpt: story.excerpt,
         content: story.content,
         author: story.authorName, // Mapping authorName to author field in news
-        authorImage: story.authorImage || '',
+        authorImage: authorImageUrl || '',
         authorLinkedIn: story.authorLinkedIn || '',
         authorX: story.authorX || '',
         youtubeUrl: story.youtubeUrl || '',
@@ -70,14 +86,29 @@ const SubmittedStories = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (story) => {
     if (!window.confirm('Are you sure you want to delete this submission? This action cannot be undone.')) return;
 
     setIsProcessing(true);
     try {
-      await deleteDoc(doc(db, 'submitted_stories', id));
+      // Delete images from Storage if they exist
+      const deleteStorageFile = async (url) => {
+        if (url && url.includes('firebasestorage.googleapis.com')) {
+          try {
+            const fileRef = ref(storage, url);
+            await deleteObject(fileRef);
+          } catch (storageErr) {
+            console.error('Storage delete error:', storageErr);
+          }
+        }
+      };
+
+      if (story.image) await deleteStorageFile(story.image);
+      if (story.authorImage) await deleteStorageFile(story.authorImage);
+
+      await deleteDoc(doc(db, 'submitted_stories', story.id));
       setModal({ open: true, title: 'Success', message: 'Submission deleted successfully.' });
-      if (selectedStory?.id === id) setSelectedStory(null);
+      if (selectedStory?.id === story.id) setSelectedStory(null);
       fetchStories();
     } catch (error) {
       console.error('Error deleting submission:', error);
@@ -167,7 +198,7 @@ const SubmittedStories = () => {
                     <CheckCircle size={18} /> Approve & Publish
                   </button>
                   <button
-                    onClick={() => handleDelete(selectedStory.id)}
+                    onClick={() => handleDelete(selectedStory)}
                     className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 px-4 py-2 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors"
                   >
                     <Trash2 size={18} /> Delete

@@ -14,6 +14,10 @@ import UploadNews from './dashboard/UploadNews';
 import UploadEvent from './dashboard/UploadEvent';
 import UploadCommunities from './dashboard/UploadCommunities';
 import SubmittedStories from './dashboard/SubmittedStories';
+import UploadPrograms from './dashboard/UploadEducationPrograms';
+import UploadOtherPrograms from './dashboard/UploadOtherPrograms';
+import UploadVideos from './dashboard/UploadBitcoinVideos';
+import UploadResources from './dashboard/UploadBitcoinResources';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Donate from './pages/Donate';
@@ -43,6 +47,10 @@ function AppContent() {
           <Route path="upload-event" element={<UploadEvent />} />
           <Route path="upload-communities" element={<UploadCommunities />} />
           <Route path="submitted-stories" element={<SubmittedStories />} />
+          <Route path="upload-programs" element={<UploadPrograms />} />
+          <Route path="upload-other-programs" element={<UploadOtherPrograms />} />
+          <Route path="upload-videos" element={<UploadVideos />} />
+          <Route path="upload-resources" element={<UploadResources />} />
         </Route>
       </Routes>
       {!isDashboard && <Footer />}

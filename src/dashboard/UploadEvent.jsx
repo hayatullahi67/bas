@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Edit, Trash2, Save, Calendar, Clock, MapPin } from 'lucide-react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 const UploadEvent = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,9 @@ const UploadEvent = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [modal, setModal] = useState({ open: false, title: '', message: '', confirmAction: null });
   const [initialLoading, setInitialLoading] = useState(true);
+  const [imageMode, setImageMode] = useState('url');
+  const [imagePreview, setImagePreview] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,20 +52,68 @@ const UploadEvent = () => {
 
   const closeModal = () => setModal({ open: false, title: '', message: '', confirmAction: null });
 
+  const compressImage = (file, maxWidth = 1200) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      setIsSubmitting(true);
+      const compressedBlob = await compressImage(file);
+      setFormData(prev => ({ ...prev, banner: compressedBlob }));
+      setImagePreview(URL.createObjectURL(compressedBlob));
+    } catch (err) {
+      console.error('Image compression error', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      eventName: formData.eventName,
-      venue: formData.venue,
-      address: formData.address,
-      date: formData.date,
-      time: formData.time,
-      description: formData.description,
-      banner: formData.banner,
-      createdAt: serverTimestamp()
-    };
-
+    setIsSubmitting(true);
     try {
+      let bannerUrl = formData.banner;
+      if (bannerUrl instanceof Blob) {
+        const storageRef = ref(storage, `events/banner_${Date.now()}`);
+        await uploadBytes(storageRef, bannerUrl);
+        bannerUrl = await getDownloadURL(storageRef);
+      }
+
+      const payload = {
+        eventName: formData.eventName,
+        venue: formData.venue,
+        address: formData.address,
+        date: formData.date,
+        time: formData.time,
+        description: formData.description,
+        banner: bannerUrl,
+        createdAt: serverTimestamp()
+      };
+
       if (isEditing && formData.id) {
         await updateDoc(doc(db, 'events', formData.id), payload);
         setEvents(prev => prev.map(ev => ev.id === formData.id ? { ...ev, ...payload, id: formData.id } : ev));
@@ -73,12 +125,16 @@ const UploadEvent = () => {
       }
       // reset form
       setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', id: null });
+      setImagePreview('');
       setIsEditing(false);
     } catch (err) {
       console.error('Error saving event:', err);
       openModal('Error', 'Error saving event: ' + (err.message || 'unknown'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   const handleEdit = (event) => {
     setFormData({ ...event });
@@ -86,11 +142,19 @@ const UploadEvent = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (id) => {
-    openModal('Confirm Delete', 'Are you sure you want to delete this event?', async () => {
+  const handleDelete = (event) => {
+    openModal('Confirm Delete', 'Are you sure you want to delete this event and its banner?', async () => {
       try {
-        await deleteDoc(doc(db, 'events', id));
-        setEvents(prev => prev.filter(ev => ev.id !== id));
+        if (event.banner && event.banner.includes('firebasestorage.googleapis.com')) {
+          try {
+            const fileRef = ref(storage, event.banner);
+            await deleteObject(fileRef);
+          } catch (storageErr) {
+            console.error('Storage delete error:', storageErr);
+          }
+        }
+        await deleteDoc(doc(db, 'events', event.id));
+        setEvents(prev => prev.filter(ev => ev.id !== event.id));
         closeModal();
       } catch (err) {
         console.error('Error deleting event:', err);
@@ -203,16 +267,46 @@ const UploadEvent = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Banner Image URL</label>
-                    <input
-                      type="url"
-                      name="banner"
-                      value={formData.banner}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-6 py-4 bg-black/40 border border-white/5 rounded-2xl text-white focus:outline-none focus:border-yellow-500/50 transition-all placeholder:text-gray-700 font-mono text-sm"
-                      placeholder="https://images.unsplash.com/..."
-                    />
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Event Banner Image</label>
+                    <div className="flex gap-2 mb-4">
+                      <button
+                        type="button"
+                        onClick={() => setImageMode('url')}
+                        className={`flex-1 py-3 rounded-2xl text-[10px] font-black tracking-widest transition-all ${imageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400'}`}
+                      >
+                        URL LINK
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setImageMode('file')}
+                        className={`flex-1 py-3 rounded-2xl text-[10px] font-black tracking-widest transition-all ${imageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400'}`}
+                      >
+                        UPLOAD FILE
+                      </button>
+                    </div>
+                    {imageMode === 'url' ? (
+                      <input
+                        type="url"
+                        name="banner"
+                        value={formData.banner instanceof Blob ? '' : formData.banner}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-6 py-4 bg-black/40 border border-white/5 rounded-2xl text-white focus:outline-none focus:border-yellow-500/50 transition-all placeholder:text-gray-700 font-mono text-sm"
+                        placeholder="https://images.unsplash.com/..."
+                      />
+                    ) : (
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="w-full px-6 py-4 bg-black/40 border border-white/5 rounded-2xl text-white focus:outline-none focus:border-yellow-500/50 transition-all font-mono text-sm"
+                      />
+                    )}
+                    {imagePreview && (
+                      <div className="mt-4 rounded-xl overflow-hidden border border-white/10 h-32">
+                        <img src={imagePreview} className="w-full h-full object-cover" alt="Preview" />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -230,9 +324,9 @@ const UploadEvent = () => {
                 </div>
 
                 <div className="pt-4 flex gap-4">
-                  <button type="submit" className="flex-1 px-8 py-4 bg-yellow-500 text-black font-black text-lg rounded-2xl hover:bg-yellow-400 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center shadow-xl shadow-yellow-500/10">
+                  <button type="submit" disabled={isSubmitting} className="flex-1 px-8 py-4 bg-yellow-500 text-black font-black text-lg rounded-2xl hover:bg-yellow-400 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center shadow-xl shadow-yellow-500/10 disabled:opacity-50">
                     <Save size={20} className="mr-2" />
-                    {isEditing ? 'Update Event Info' : 'Publish Event'}
+                    {isSubmitting ? 'PROCESSING...' : (isEditing ? 'Update Event Info' : 'Publish Event')}
                   </button>
                 </div>
               </form>
@@ -274,7 +368,7 @@ const UploadEvent = () => {
                         <button onClick={() => handleEdit(ev)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 text-gray-300 border border-white/5 rounded-xl hover:bg-yellow-500 hover:text-black hover:border-transparent transition-all duration-300 text-[10px] font-black">
                           <Edit size={12} /> MANAGE
                         </button>
-                        <button onClick={() => handleDelete(ev.id)} className="px-4 py-3 bg-red-500/5 text-red-500 border border-red-500/10 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300">
+                        <button onClick={() => handleDelete(ev)} className="px-4 py-3 bg-red-500/5 text-red-500 border border-red-500/10 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300">
                           <Trash2 size={16} />
                         </button>
                       </div>
