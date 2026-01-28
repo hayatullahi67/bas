@@ -205,7 +205,7 @@ const Footer = () => {
             <h3 className="text-lg font-bold text-white mb-2 uppercase">Follow Us</h3>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start text-sm">
               <a
-                href="https://twitter.com"
+                href="https://x.com/story_bitcoin"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -214,7 +214,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-600">·</span>
               <a
-                href="https://youtube.com"
+                href="https://youtube.com/@bitcoinafricastory"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -223,7 +223,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-600">·</span>
               <a
-                href="https://t.me"
+                href="https://t.me/+KirVlW8gMMtlNDI8"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -232,7 +232,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-600">·</span>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/bitcoin-africa-story/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -241,7 +241,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-600">·</span>
               <a
-                href="https://nostr.com"
+                href="https://primal.net/p/nprofile1qqs0tmrphute79adfe4r3h8qdkdgqw3fz9244238x2ss53lmhft3jug4hhw4r"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-yellow-500 transition-colors duration-200"

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PlusCircle, Edit, Trash2, Save, X, Newspaper, Calendar, Eye, Tag, User, Clock, Link2, UploadCloud, FileText, CheckCircle, Sparkles, Linkedin, Twitter } from 'lucide-react';
 import { categories } from '../mock';
 import { db, storage } from '../firebase';
@@ -87,6 +87,7 @@ const UploadNews = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const quillRef = useRef(null);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -109,6 +110,8 @@ const UploadNews = () => {
   const [authorImagePreview, setAuthorImagePreview] = useState('');
   const [modal, setModal] = useState({ open: false, title: '', message: '' });
   const [detailModal, setDetailModal] = useState({ open: false, post: null });
+  // TRACKING: Prevent auto-slug updates if user manually typed one
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 
   // Add tooltips to editor toolbar
   useEffect(() => {
@@ -189,6 +192,17 @@ const UploadNews = () => {
   const handleFileChange = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+
+    // SAFETY CHECK: Prevent massive files from freezing the browser
+    if (file.size > 10 * 1024 * 1024) {
+      setModal({
+        open: true,
+        title: 'File Too Large',
+        message: 'Please upload an image smaller than 10MB to ensure smooth performance.'
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       const compressedBlob = await compressImage(file);
@@ -196,6 +210,11 @@ const UploadNews = () => {
       setImagePreview(URL.createObjectURL(compressedBlob));
     } catch (err) {
       console.error('Image compression error', err);
+      setModal({
+        open: true,
+        title: 'Error',
+        message: 'Failed to process image. Try a different file.'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -204,6 +223,16 @@ const UploadNews = () => {
   const handleAuthorFileChange = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setModal({
+        open: true,
+        title: 'File Too Large',
+        message: 'Author image must be smaller than 5MB.'
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       const compressedBlob = await compressImage(file, 300); // Author images can be smaller
@@ -225,7 +254,13 @@ const UploadNews = () => {
       [name]: value
     }));
 
-    if (name === 'title') {
+    // If user manually edits slug, stop auto-updates
+    if (name === 'slug') {
+      setSlugManuallyEdited(true);
+    }
+
+    // Auto-generate slug from title ONLY if not manually edited
+    if (name === 'title' && !slugManuallyEdited && !isEditing) {
       const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       setFormData(prev => ({ ...prev, slug }));
     }
@@ -244,20 +279,125 @@ const UploadNews = () => {
     }));
   };
 
+  // Helper: Handle Image Upload to Firebase
+  const handleImageUpload = async (file, quill) => {
+    try {
+      // Save cursor position
+      const range = quill.getSelection(true);
+      const cursorPosition = range ? range.index : (quill.getLength() || 0);
+
+      // Compress the image
+      const compressedBlob = await compressImage(file, 1200);
+
+      // Upload to Firebase Storage
+      const timestamp = Date.now();
+      const sanitizedFileName = file.name ? file.name.replace(/[^a-zA-Z0-9.]/g, '_') : 'pasted_image.png';
+      const fileName = `content_${timestamp}_${sanitizedFileName}`;
+      const storageRef = ref(storage, `news/content_images/${fileName}`);
+
+      await uploadBytes(storageRef, compressedBlob);
+      const imageUrl = await getDownloadURL(storageRef);
+
+      // Insert image URL into editor
+      quill.insertEmbed(cursorPosition, 'image', imageUrl);
+      quill.setSelection(cursorPosition + 1);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setModal({
+        open: true,
+        title: 'Upload Failed',
+        message: 'Failed to upload image to storage. Please try again.'
+      });
+    }
+  };
+
+  // Custom image handler for Toolbar Button
+  const imageHandler = useRef(() => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const quill = quillRef.current?.getEditor();
+      if (quill) {
+        await handleImageUpload(file, quill);
+      }
+    };
+  }).current;
+
+  // Handle Paste Events
+  useEffect(() => {
+    // Retry finding the editor a few times if it's not ready immediately
+    const attachPasteHandler = () => {
+      const quill = quillRef.current?.getEditor();
+      if (!quill) return;
+
+      const handlePaste = async (e) => {
+        const clipboardData = e.clipboardData || window.clipboardData;
+        const items = clipboardData?.items;
+
+        if (items) {
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+              e.preventDefault(); // Prevent default base64 paste
+              const file = items[i].getAsFile();
+              if (file) {
+                 // Prevent huge pastes
+                 if (file.size > 10 * 1024 * 1024) {
+                    setModal({
+                      open: true,
+                      title: 'Paste Failed',
+                      message: 'Image is too large (max 10MB).'
+                    });
+                    return;
+                 }
+                await handleImageUpload(file, quill);
+              }
+              return;
+            }
+          }
+        }
+      };
+
+      quill.root.removeEventListener('paste', handlePaste); // Cleanup potential duplicates
+      quill.root.addEventListener('paste', handlePaste);
+      
+      // Return cleanup function for this specific attachment
+      return () => {
+        quill.root.removeEventListener('paste', handlePaste);
+      };
+    };
+
+    // Attempt to attach when loading is done
+    if (!isInitialLoading) {
+      const cleanup = attachPasteHandler();
+      return cleanup;
+    }
+  }, [isInitialLoading, quillRef.current]); // Re-run when loading is done or ref changes
+
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'font': [false, 'serif', 'monospace', 'Montserrat'] }],
-      [{ 'size': fontSizeArr }],
-      [{ 'align': [] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [false, 'serif', 'monospace', 'Montserrat'] }],
+        [{ 'size': fontSizeArr }],
+        [{ 'align': [] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler
+      }
+    }
   };
 
   const formats = [
@@ -378,14 +518,17 @@ const UploadNews = () => {
       try {
         // Delete images from Storage if they exist
         const deleteStorageFile = async (url) => {
-          if (url && url.includes('firebasestorage.googleapis.com')) {
-            try {
-              const fileRef = ref(storage, url);
-              await deleteObject(fileRef);
-            } catch (storageErr) {
-              console.error('Error deleting file from storage:', storageErr);
-              // Continue with deletion even if storage fails (might be already gone or not a storage URL)
+          if (!url) return;
+          
+          try {
+            // Only attempt deletion for Firebase Storage URLs
+            if (url.includes('firebasestorage.googleapis.com')) {
+               const fileRef = ref(storage, url);
+               await deleteObject(fileRef);
             }
+          } catch (storageErr) {
+             // Log but don't stop the main deletion process
+             console.warn('Could not delete file from storage (might already be gone):', url, storageErr);
           }
         };
 
@@ -689,6 +832,7 @@ const UploadNews = () => {
               <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Content</label>
               <div className="quill-editor-container">
                 <ReactQuill
+                  ref={quillRef}
                   theme="snow"
                   value={formData.content}
                   onChange={handleContentChange}

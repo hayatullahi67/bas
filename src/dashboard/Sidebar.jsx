@@ -11,7 +11,9 @@ import {
   BookOpen,
   Video,
   Library,
-  GraduationCap
+  GraduationCap,
+  Heart,
+  Users
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -23,6 +25,8 @@ const sidebarItems = [
   { name: 'Other Programs', path: '/dashboard/upload-other-programs', icon: GraduationCap },
   { name: 'Bitcoin Videos', path: '/dashboard/upload-videos', icon: Video },
   { name: 'Bitcoin Resources', path: '/dashboard/upload-resources', icon: Library },
+  { name: 'X Testimonials', path: '/dashboard/upload-testimonials', icon: Heart },
+  { name: 'Education Testimonials', path: '/dashboard/upload-education-testimonials', icon: Users },
 ];
 
 const Sidebar = ({ open = false, onClose = () => { } }) => {
@@ -39,7 +43,7 @@ const Sidebar = ({ open = false, onClose = () => { } }) => {
           </Link>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2">
+        <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
           <div className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] px-4 mb-4">Management</div>
           {sidebarItems.map(item => (
             <NavLink

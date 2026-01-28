@@ -316,42 +316,35 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
-
-const testimonials = [
-  {
-    id: 1,
-    name: "David Chen",
-    role: "ALUMNI",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop",
-    text: "I never thought I would understand Bitcoin, but this program made it so accessible. Highly recommend to anyone looking for financial sovereignty."
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    role: "COMMUNITY MEMBER",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop",
-    text: "The majority of guys in my group really enjoyed the class. We are already requesting the advanced diploma. The energy is incredible!"
-  },
-  {
-    id: 3,
-    name: "Sarah Smith",
-    role: "ENTREPRENEUR",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop",
-    text: "Thank you! I really enjoyed today's class. You are the best instructor I have had. This changed my perspective on the global economy."
-  },
-  {
-    id: 4,
-    name: "Michael K.",
-    role: "STUDENT",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop",
-    text: "The grassroots approach BAS takes is exactly what Africa needs. Learning about self-custody was a massive eye-opener for me."
-  }
-];
+import { db } from '../../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const WhyBitcoin = () => {
   const [active, setActive] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'educationTestimonials'));
+        const items = snap.docs.map(d => ({
+          id: d.id,
+          ...d.data()
+        }));
+        
+        setTestimonials(items);
+      } catch (err) {
+        console.error('Error fetching testimonials:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const next = () => setActive((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   const prev = () => setActive((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
@@ -393,65 +386,75 @@ const WhyBitcoin = () => {
         </div>
 
         {/* Sliding Carousel Wrapper */}
-        <div className="relative max-w-5xl mx-auto">
-          <div className="overflow-hidden">
-            <div 
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(calc(-${active * 100}%))` }}
-            >
-              {testimonials.map((t, i) => (
-                <div key={t.id} className="w-full flex-shrink-0 px-4 flex justify-center">
-                  <div className={`relative p-8 rounded-3xl border transition-all duration-500 w-full max-w-lg bg-[#111111] ${
-                    i === active ? 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'border-white/5 opacity-40 scale-95'
-                  }`}>
-                    <Quote className="absolute top-8 right-8 w-10 h-10 text-yellow-500/10" strokeWidth={3} />
-                    
-                    <div className="flex items-center gap-4 mb-8">
-                      <div className="relative">
-                        <img src={t.image} alt={t.name} className="w-14 h-14 rounded-full border-2 border-yellow-500 object-cover" />
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-400">Loading testimonials...</p>
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-400">No testimonials yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="relative max-w-5xl mx-auto">
+            <div className="overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(calc(-${active * 100}%))` }}
+              >
+                {testimonials.map((t, i) => (
+                  <div key={t.id} className="w-full flex-shrink-0 px-4 flex justify-center">
+                    <div className={`relative p-8 rounded-3xl border transition-all duration-500 w-full max-w-lg bg-[#111111] ${
+                      i === active ? 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'border-white/5 opacity-40 scale-95'
+                    }`}>
+                      <Quote className="absolute top-8 right-8 w-10 h-10 text-yellow-500/10" strokeWidth={3} />
+                      
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="relative">
+                          <img src={t.image} alt={t.name} className="w-14 h-14 rounded-full border-2 border-yellow-500 object-cover" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg leading-none">{t.name}</h4>
+                          <p className="text-[10px] text-yellow-500 font-bold mt-1 tracking-widest">{t.role}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold text-lg leading-none">{t.name}</h4>
-                        <p className="text-[10px] text-yellow-500 font-bold mt-1 tracking-widest">{t.role}</p>
-                      </div>
+                      
+                      <p className="text-gray-400 text-lg leading-relaxed italic">
+                        "{t.text}"
+                      </p>
                     </div>
-                    
-                    <p className="text-gray-400 text-lg leading-relaxed italic">
-                      "{t.text}"
-                    </p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Navigation Controls - Matching your screenshot style */}
-          <div className="flex flex-col items-center mt-12 gap-6">
-            <div className="flex gap-2">
-              {testimonials.map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? 'w-10 bg-yellow-500' : 'w-2 bg-white/20'}`}
-                />
-              ))}
-            </div>
-            
-            <div className="flex gap-4">
-              <button 
-                onClick={prev} 
-                className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
-              >
-                <ChevronLeft className="w-5 h-5 transition-transform group-active:scale-90" />
-              </button>
-              <button 
-                onClick={next} 
-                className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
-              >
-                <ChevronRight className="w-5 h-5 transition-transform group-active:scale-90" />
-              </button>
+            {/* Navigation Controls - Matching your screenshot style */}
+            <div className="flex flex-col items-center mt-12 gap-6">
+              <div className="flex gap-2">
+                {testimonials.map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? 'w-10 bg-yellow-500' : 'w-2 bg-white/20'}`}
+                  />
+                ))}
+              </div>
+              
+              <div className="flex gap-4">
+                <button 
+                  onClick={prev} 
+                  className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
+                >
+                  <ChevronLeft className="w-5 h-5 transition-transform group-active:scale-90" />
+                </button>
+                <button 
+                  onClick={next} 
+                  className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
+                >
+                  <ChevronRight className="w-5 h-5 transition-transform group-active:scale-90" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
       </div>
     </section>
