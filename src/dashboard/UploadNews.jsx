@@ -108,7 +108,7 @@ const UploadNews = () => {
   const [imagePreview, setImagePreview] = useState('');
   const [authorImageMode, setAuthorImageMode] = useState('url');
   const [authorImagePreview, setAuthorImagePreview] = useState('');
-  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const [modal, setModal] = useState({ open: false, title: '', message: '', confirmAction: null });
   const [detailModal, setDetailModal] = useState({ open: false, post: null });
   // TRACKING: Prevent auto-slug updates if user manually typed one
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
@@ -514,33 +514,38 @@ const UploadNews = () => {
   };
 
   const handleDelete = async (post) => {
-    if (window.confirm('Are you sure you want to delete this post? This will also remove associated images from storage.')) {
-      try {
-        // Delete images from Storage if they exist
-        const deleteStorageFile = async (url) => {
-          if (!url) return;
-          
-          try {
-            // Only attempt deletion for Firebase Storage URLs
-            if (url.includes('firebasestorage.googleapis.com')) {
-               const fileRef = ref(storage, url);
-               await deleteObject(fileRef);
+    setModal({
+      open: true,
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this post? This will also remove associated images from storage.',
+      confirmAction: async () => {
+        try {
+          // Delete images from Storage if they exist
+          const deleteStorageFile = async (url) => {
+            if (!url) return;
+            
+            try {
+              // Only attempt deletion for Firebase Storage URLs
+              if (url.includes('firebasestorage.googleapis.com')) {
+                 const fileRef = ref(storage, url);
+                 await deleteObject(fileRef);
+              }
+            } catch (storageErr) {
+               // Log but don't stop the main deletion process
+               console.warn('Could not delete file from storage (might already be gone):', url, storageErr);
             }
-          } catch (storageErr) {
-             // Log but don't stop the main deletion process
-             console.warn('Could not delete file from storage (might already be gone):', url, storageErr);
-          }
-        };
+          };
 
-        if (post.image) await deleteStorageFile(post.image);
-        if (post.authorImage) await deleteStorageFile(post.authorImage);
+          if (post.image) await deleteStorageFile(post.image);
+          if (post.authorImage) await deleteStorageFile(post.authorImage);
 
-        await deleteDoc(doc(db, 'news', post.id));
-        setModal({ open: true, title: 'Deleted', message: 'Blog post deleted successfully.' });
-      } catch (err) {
-        setModal({ open: true, title: 'Error', message: 'Error deleting: ' + (err.message || 'unknown') });
+          await deleteDoc(doc(db, 'news', post.id));
+          setModal({ open: true, title: 'Deleted', message: 'Blog post deleted successfully.' });
+        } catch (err) {
+          setModal({ open: true, title: 'Error', message: 'Error deleting: ' + (err.message || 'unknown') });
+        }
       }
-    }
+    });
   };
 
   const resetForm = () => {
@@ -936,11 +941,24 @@ const UploadNews = () => {
         )}
       </div>
 
+      {modal.open && modal.confirmAction && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+            <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+            <p className="text-gray-400">{modal.message}</p>
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+              <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <StatusModal
-        open={modal.open}
+        open={modal.open && !modal.confirmAction}
         title={modal.title}
         message={modal.message}
-        onClose={() => setModal({ open: false, title: '', message: '' })}
+        onClose={() => setModal({ open: false, title: '', message: '', confirmAction: null })}
       />
 
       <NewsPreviewModal

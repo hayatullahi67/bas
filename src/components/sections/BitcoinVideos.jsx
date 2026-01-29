@@ -8,6 +8,27 @@ const BitcoinVideos = () => {
   const [activeVideo, setActiveVideo] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper: normalize YouTube URLs to embed format
+  const getEmbedUrl = (url) => {
+    if (!url) return null;
+    try {
+      const u = url.trim();
+      // If already an embed link, return as-is
+      if (u.includes('youtube.com/embed') || u.includes('youtube-nocookie.com/embed')) return u;
+      // Standard watch URL -> convert
+      const watchMatch = u.match(/[?&]v=([\w-_-]+)/);
+      if (watchMatch && watchMatch[1]) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+      // youtu.be short link
+      const shortMatch = u.match(/youtu\.be\/(\w[-\w]*)/i);
+      if (shortMatch && shortMatch[1]) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+      // Already an iframe/embed-like url (keep it) or unknown provider
+      if (u.startsWith('http')) return u;
+      return null;
+    } catch (err) {
+      return null;
+    }
+  };
+
   useEffect(() => {
     const q = query(collection(db, 'bitcoin_videos'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -16,17 +37,18 @@ const BitcoinVideos = () => {
         ...doc.data()
       }));
       setVideos(videosData);
-      if (videosData.length > 0 && !activeVideo) {
-        setActiveVideo(videosData[0]);
-      }
+      // Set active video only if we don't have one yet
+      setActiveVideo(prev => prev || (videosData.length > 0 ? videosData[0] : null));
       setLoading(false);
     });
     return () => unsubscribe();
-  }, [activeVideo]);
+  }, []);
 
-  if (loading || videos.length === 0) return null;
+  if (loading) return null;
+  if (videos.length === 0) return null;
 
   const currentVideo = activeVideo || videos[0];
+  const embedSrc = getEmbedUrl(currentVideo?.embedUrl);
 
   return (
     <div className="bg-black min-h-screen text-white font-mono uppercase tracking-tighter">
@@ -45,12 +67,18 @@ const BitcoinVideos = () => {
         <div className="lg:col-span-8 border-r border-white/10 flex flex-col">
           <div className="p-8 lg:p-12 flex-grow">
             <div className="relative aspect-video bg-[#0A0A0A] border border-white/20">
-              <iframe
-                className="w-full h-full"
-                src={`${currentVideo.embedUrl}?autoplay=0&controls=1&modestbranding=1`}
-                title={currentVideo.title}
-                allowFullScreen
-              ></iframe>
+              {embedSrc ? (
+                <iframe
+                  className="w-full h-full"
+                  src={`${embedSrc}${embedSrc.includes('?') ? '&' : '?'}autoplay=0&controls=1&modestbranding=1`}
+                  title={currentVideo.title}
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-gray-400">Invalid video URL. Please check the embed URL in the dashboard.</p>
+                </div>
+              )}
               <div className="absolute -top-[1px] -left-[1px] w-4 h-4 border-t border-l border-yellow-500"></div>
               <div className="absolute -bottom-[1px] -right-[1px] w-4 h-4 border-b border-r border-yellow-500"></div>
             </div>

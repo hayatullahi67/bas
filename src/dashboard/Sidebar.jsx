@@ -1,4 +1,5 @@
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   Newspaper,
   Calendar,
@@ -10,6 +11,7 @@ import {
   Globe,
   BookOpen,
   Video,
+  PlayCircle,
   Library,
   GraduationCap,
   Heart,
@@ -24,12 +26,23 @@ const sidebarItems = [
   { name: 'Edu Programs', path: '/dashboard/upload-programs', icon: BookOpen },
   { name: 'Other Programs', path: '/dashboard/upload-other-programs', icon: GraduationCap },
   { name: 'Bitcoin Videos', path: '/dashboard/upload-videos', icon: Video },
+  { name: 'Why Bitcoin Video', path: '/dashboard/upload-why-video', icon: PlayCircle },
   { name: 'Bitcoin Resources', path: '/dashboard/upload-resources', icon: Library },
   { name: 'X Testimonials', path: '/dashboard/upload-testimonials', icon: Heart },
   { name: 'Education Testimonials', path: '/dashboard/upload-education-testimonials', icon: Users },
 ];
 
 const Sidebar = ({ open = false, onClose = () => { } }) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/admin');
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <>
       {/* Desktop sidebar */}
@@ -83,48 +96,48 @@ const Sidebar = ({ open = false, onClose = () => { } }) => {
       {/* Mobile drawer */}
       <div className={`md:hidden fixed inset-0 z-[100] ${open ? '' : 'pointer-events-none'}`}>
         <div
-          className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
           onClick={onClose}
         />
-        <aside className={`absolute left-0 top-0 h-full w-72 bg-[#0A0A0A] border-r border-white/10 p-6 transform transition-transform duration-500 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="flex items-center justify-between mb-10">
+        <aside className={`absolute left-0 top-0 h-full w-72 bg-[#0A0A0A] border-r border-white/10 p-4 pt-6 pb-8 transform transition-transform duration-500 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="flex items-center justify-between mb-6 px-2">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-8 h-8 bg-yellow-500 flex items-center justify-center rounded-lg">
                 <span className="font-black text-black">B</span>
               </div>
-              <span className="text-xl font-bold tracking-tighter">BAS <span className="text-yellow-500 font-black">ADMIN</span></span>
+              <span className="text-lg font-bold tracking-tighter">BAS <span className="text-yellow-500 font-black">ADMIN</span></span>
             </Link>
-            <button onClick={onClose} className="p-2 text-gray-500 hover:text-white">
-              <ChevronRight className="rotate-180" size={24} />
+            <button onClick={onClose} className="p-2 text-gray-400 rounded-md hover:bg-white/5">
+              <ChevronRight className="rotate-180" size={20} />
             </button>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)] px-2 pr-3 pb-6">
             {sidebarItems.map(item => (
               <NavLink
                 key={item.name}
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) => `
-                  flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-300
+                  flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300
                   ${isActive
                     ? 'bg-yellow-500 text-black font-bold shadow-lg shadow-yellow-500/20'
                     : 'text-gray-400 hover:bg-white/5'}
                 `}
               >
-                <item.icon size={20} />
-                <span>{item.name}</span>
+                <item.icon size={18} />
+                <span className="text-sm">{item.name}</span>
               </NavLink>
             ))}
           </nav>
 
-          <div className="absolute bottom-8 left-6 right-6 pt-6 border-t border-white/5">
-            <Link to="/" className="flex items-center gap-3 px-4 py-4 text-gray-400 hover:text-white mb-2">
-              <Home size={20} />
+          <div className="mt-auto px-2 pt-4 border-t border-white/5">
+            <Link to="/" className="flex items-center gap-3 px-3 py-3 text-gray-400 hover:text-white mb-2 rounded-lg">
+              <Home size={18} />
               <span>Main Site</span>
             </Link>
-            <button className="w-full flex items-center gap-3 px-4 py-4 text-red-400/70 hover:text-red-400">
-              <LogOut size={20} />
+            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-400/70 hover:text-red-400 rounded-lg">
+              <LogOut size={18} />
               <span>Logout</span>
             </button>
           </div>

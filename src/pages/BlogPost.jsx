@@ -6,12 +6,14 @@ import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNews } from '../context/NewsContext';
+import StatusModal from '../dashboard/components/StatusModal';
 
 const BlogPost = () => {
   const { slug } = useParams();
   const { news: posts, loading: newsLoading } = useNews();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
 
   useEffect(() => {
     if (!newsLoading) {
@@ -60,7 +62,7 @@ const BlogPost = () => {
         break;
       case 'copy':
         navigator.clipboard.writeText(url);
-        alert('Link copied to clipboard!');
+        setModal({ open: true, title: 'Copied', message: 'Link copied to clipboard!' });
         break;
       default:
         break;

@@ -1,4 +1,6 @@
+import React, { useState } from 'react';
 import { Download, FileText, BookOpen, Shield, ExternalLink } from 'lucide-react';
+import StatusModal from '../dashboard/components/StatusModal';
 import { resources } from '../mock';
 
 const Resources = () => {
@@ -13,6 +15,8 @@ const Resources = () => {
     { name: 'Learn Me A Bitcoin', description: 'Technical Bitcoin education', url: 'https://learnmeabitcoin.com' },
     { name: 'Bitcoin Magazine', description: 'Latest Bitcoin news and insights', url: 'https://bitcoinmagazine.com' }
   ];
+
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
 
   return (
     <div className="pt-16">
@@ -71,7 +75,7 @@ const Resources = () => {
                   className="inline-flex items-center text-yellow-500 font-semibold hover:text-yellow-400 transition-colors duration-200"
                   onClick={(e) => {
                     e.preventDefault();
-                    alert('Download feature will be available soon!');
+                    setModal({ open: true, title: 'Coming Soon', message: 'Download feature will be available soon!' });
                   }}
                 >
                   <Download size={18} className="mr-2" />

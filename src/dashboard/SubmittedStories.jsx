@@ -11,7 +11,7 @@ const SubmittedStories = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStory, setSelectedStory] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+  const [modal, setModal] = useState({ open: false, title: '', message: '', confirmAction: null });
 
   const fetchStories = async () => {
     try {
@@ -34,88 +34,98 @@ const SubmittedStories = () => {
   }, []);
 
   const handleApprove = async (story) => {
-    if (!window.confirm('Are you sure you want to approve this story? It will be published to the main news feed.')) return;
+    setModal({
+      open: true,
+      title: 'Confirm',
+      message: 'Are you sure you want to approve this story? It will be published to the main news feed.',
+      confirmAction: async () => {
+        setIsProcessing(true);
+        try {
+          // Handle legacy data during approval if it exists (converting to storage)
+          let imageUrl = story.image;
+          if (imageUrl && imageUrl.startsWith('data:image')) {
+            const storageRef = ref(storage, `news/featured_approved_${Date.now()}`);
+            await uploadString(storageRef, imageUrl, 'data_url');
+            imageUrl = await getDownloadURL(storageRef);
+          }
 
-    setIsProcessing(true);
-    try {
-      // Handle legacy data during approval if it exists (converting to storage)
-      let imageUrl = story.image;
-      if (imageUrl && imageUrl.startsWith('data:image')) {
-        const storageRef = ref(storage, `news/featured_approved_${Date.now()}`);
-        await uploadString(storageRef, imageUrl, 'data_url');
-        imageUrl = await getDownloadURL(storageRef);
+          let authorImageUrl = story.authorImage;
+          if (authorImageUrl && authorImageUrl.startsWith('data:image')) {
+            const authorStorageRef = ref(storage, `authors/author_approved_${Date.now()}`);
+            await uploadString(authorStorageRef, authorImageUrl, 'data_url');
+            authorImageUrl = await getDownloadURL(authorStorageRef);
+          }
+
+          // 1. Add to main 'news' collection
+          await addDoc(collection(db, 'news'), {
+            title: story.title,
+            slug: story.slug,
+            category: story.category,
+            date: story.date,
+            readTime: story.readTime,
+            image: imageUrl,
+            excerpt: story.excerpt,
+            content: story.content,
+            author: story.authorName, // Mapping authorName to author field in news
+            authorImage: authorImageUrl || '',
+            authorLinkedIn: story.authorLinkedIn || '',
+            authorX: story.authorX || '',
+            youtubeUrl: story.youtubeUrl || '',
+            createdAt: serverTimestamp(),
+            views: 0
+          });
+
+          // 2. Delete from 'submitted_stories'
+          await deleteDoc(doc(db, 'submitted_stories', story.id));
+
+          setModal({ open: true, title: 'Success', message: 'Story approved and published successfully!' });
+          setSelectedStory(null);
+          fetchStories();
+        } catch (error) {
+          console.error('Error approving story:', error);
+          setModal({ open: true, title: 'Error', message: 'Failed to approve story.' });
+        } finally {
+          setIsProcessing(false);
+        }
       }
-
-      let authorImageUrl = story.authorImage;
-      if (authorImageUrl && authorImageUrl.startsWith('data:image')) {
-        const authorStorageRef = ref(storage, `authors/author_approved_${Date.now()}`);
-        await uploadString(authorStorageRef, authorImageUrl, 'data_url');
-        authorImageUrl = await getDownloadURL(authorStorageRef);
-      }
-
-      // 1. Add to main 'news' collection
-      await addDoc(collection(db, 'news'), {
-        title: story.title,
-        slug: story.slug,
-        category: story.category,
-        date: story.date,
-        readTime: story.readTime,
-        image: imageUrl,
-        excerpt: story.excerpt,
-        content: story.content,
-        author: story.authorName, // Mapping authorName to author field in news
-        authorImage: authorImageUrl || '',
-        authorLinkedIn: story.authorLinkedIn || '',
-        authorX: story.authorX || '',
-        youtubeUrl: story.youtubeUrl || '',
-        createdAt: serverTimestamp(),
-        views: 0
-      });
-
-      // 2. Delete from 'submitted_stories'
-      await deleteDoc(doc(db, 'submitted_stories', story.id));
-
-      setModal({ open: true, title: 'Success', message: 'Story approved and published successfully!' });
-      setSelectedStory(null);
-      fetchStories();
-    } catch (error) {
-      console.error('Error approving story:', error);
-      setModal({ open: true, title: 'Error', message: 'Failed to approve story.' });
-    } finally {
-      setIsProcessing(false);
-    }
+    });
   };
 
   const handleDelete = async (story) => {
-    if (!window.confirm('Are you sure you want to delete this submission? This action cannot be undone.')) return;
+    setModal({
+      open: true,
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this submission? This action cannot be undone.',
+      confirmAction: async () => {
+        setIsProcessing(true);
+        try {
+          // Delete images from Storage if they exist
+          const deleteStorageFile = async (url) => {
+            if (url && url.includes('firebasestorage.googleapis.com')) {
+              try {
+                const fileRef = ref(storage, url);
+                await deleteObject(fileRef);
+              } catch (storageErr) {
+                console.error('Storage delete error:', storageErr);
+              }
+            }
+          };
 
-    setIsProcessing(true);
-    try {
-      // Delete images from Storage if they exist
-      const deleteStorageFile = async (url) => {
-        if (url && url.includes('firebasestorage.googleapis.com')) {
-          try {
-            const fileRef = ref(storage, url);
-            await deleteObject(fileRef);
-          } catch (storageErr) {
-            console.error('Storage delete error:', storageErr);
-          }
+          if (story.image) await deleteStorageFile(story.image);
+          if (story.authorImage) await deleteStorageFile(story.authorImage);
+
+          await deleteDoc(doc(db, 'submitted_stories', story.id));
+          setModal({ open: true, title: 'Success', message: 'Submission deleted successfully.' });
+          if (selectedStory?.id === story.id) setSelectedStory(null);
+          fetchStories();
+        } catch (error) {
+          console.error('Error deleting submission:', error);
+          setModal({ open: true, title: 'Error', message: 'Failed to delete submission.' });
+        } finally {
+          setIsProcessing(false);
         }
-      };
-
-      if (story.image) await deleteStorageFile(story.image);
-      if (story.authorImage) await deleteStorageFile(story.authorImage);
-
-      await deleteDoc(doc(db, 'submitted_stories', story.id));
-      setModal({ open: true, title: 'Success', message: 'Submission deleted successfully.' });
-      if (selectedStory?.id === story.id) setSelectedStory(null);
-      fetchStories();
-    } catch (error) {
-      console.error('Error deleting submission:', error);
-      setModal({ open: true, title: 'Error', message: 'Failed to delete submission.' });
-    } finally {
-      setIsProcessing(false);
-    }
+      }
+    });
   };
 
   // Helper to get YouTube Embed URL
@@ -129,12 +139,20 @@ const SubmittedStories = () => {
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <ProcessingOverlay isVisible={isProcessing} />
-      <StatusModal
-        isOpen={modal.open}
-        onClose={() => setModal({ open: false, title: '', message: '' })}
-        title={modal.title}
-        message={modal.message}
-      />
+      {modal.open && modal.confirmAction && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+            <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+            <p className="text-gray-400">{modal.message}</p>
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+              <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
 
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">

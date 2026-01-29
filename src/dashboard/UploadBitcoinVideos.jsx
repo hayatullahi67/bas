@@ -13,6 +13,8 @@ const UploadBitcoinVideos = () => {
     const [videos, setVideos] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [modal, setModal] = useState({ open: false, title: '', message: '', confirmAction: null });
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -23,7 +25,6 @@ const UploadBitcoinVideos = () => {
     });
 
     const [imageMode, setImageMode] = useState('url');
-    const [modal, setModal] = useState({ open: false, title: '', message: '' });
 
     useEffect(() => {
         const q = query(collection(db, 'bitcoin_videos'), orderBy('createdAt', 'desc'));
@@ -98,8 +99,20 @@ const UploadBitcoinVideos = () => {
                 thumbUrl = await getDownloadURL(storageRef);
             }
 
+                    // Normalize/embed URL if user pasted a watch or short URL
+            const normalizeEmbed = (url) => {
+                if (!url) return url;
+                const u = url.trim();
+                const watchMatch = u.match(/[?&]v=([\w-_-]+)/);
+                if (watchMatch && watchMatch[1]) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+                const shortMatch = u.match(/youtu\.be\/(\w[-\w]*)/i);
+                if (shortMatch && shortMatch[1]) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+                return u;
+            };
+
             const payload = {
                 ...formData,
+                embedUrl: normalizeEmbed(formData.embedUrl),
                 thumbnailUrl: thumbUrl,
                 updatedAt: serverTimestamp()
             };
@@ -125,23 +138,28 @@ const UploadBitcoinVideos = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (video) => {
-        if (window.confirm('Delete video and its thumbnail?')) {
-            try {
-                // Delete from storage if it's a storage URL
-                if (video.thumbnailUrl && video.thumbnailUrl.includes('firebasestorage.googleapis.com')) {
-                    try {
-                        const fileRef = ref(storage, video.thumbnailUrl);
-                        await deleteObject(fileRef);
-                    } catch (storageErr) {
-                        console.error('Storage delete error:', storageErr);
+    const handleDelete = (video) => {
+        setModal({
+            open: true,
+            title: 'Confirm Delete',
+            message: 'Delete video and its thumbnail?',
+            confirmAction: async () => {
+                try {
+                    // Delete from storage if it's a storage URL
+                    if (video.thumbnailUrl && video.thumbnailUrl.includes('firebasestorage.googleapis.com')) {
+                        try {
+                            const fileRef = ref(storage, video.thumbnailUrl);
+                            await deleteObject(fileRef);
+                        } catch (storageErr) {
+                            console.error('Storage delete error:', storageErr);
+                        }
                     }
+                    await deleteDoc(doc(db, 'bitcoin_videos', video.id));
+                } catch (err) {
+                    console.error('Delete error:', err);
                 }
-                await deleteDoc(doc(db, 'bitcoin_videos', video.id));
-            } catch (err) {
-                console.error('Delete error:', err);
             }
-        }
+        });
     };
 
     const resetForm = () => {
@@ -313,8 +331,21 @@ const UploadBitcoinVideos = () => {
                 ))}
             </div>
 
-            <StatusModal open={modal.open} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false })} />
-            <ProcessingOverlay isVisible={isSubmitting} />
+            {modal.open && modal.confirmAction && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                  <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+                    <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+                    <p className="text-gray-400">{modal.message}</p>
+                    <div className="flex gap-3 justify-end">
+                      <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                      <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
+              <ProcessingOverlay isVisible={isSubmitting} />
         </div>
     );
 };

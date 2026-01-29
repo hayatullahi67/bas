@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
+import StatusModal from '../../dashboard/components/StatusModal';
 
 const ContactForm = ({ onSubmitCallback }) => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
 
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    alert('Thank you for your message! We\'ll get back to you soon.');
+    setModal({ open: true, title: 'Thanks', message: "Thank you for your message! We'll get back to you soon." });
     setFormData({ name: '', email: '', subject: '', message: '' });
     if (onSubmitCallback) onSubmitCallback(formData);
   };
@@ -17,6 +20,7 @@ const ContactForm = ({ onSubmitCallback }) => {
   };
 
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label htmlFor="name" className="block text-sm font-semibold text-gray-300 mb-2">Your Name</label>
@@ -47,6 +51,8 @@ const ContactForm = ({ onSubmitCallback }) => {
         Send Message
       </button>
     </form>
+    <StatusModal open={modal.open} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false })} />
+    </>
   );
 };
 

@@ -175,37 +175,50 @@ const UploadCommunities = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (community) => {
-        if (!window.confirm('Are you sure you want to delete this community and its logo?')) return;
-
-        try {
-            // Delete from storage if it's a storage URL
-            if (community.logo && community.logo.includes('firebasestorage.googleapis.com')) {
+    const handleDelete = (community) => {
+        setModal({
+            open: true,
+            title: 'Confirm Delete',
+            message: 'Are you sure you want to delete this community and its logo?',
+            confirmAction: async () => {
                 try {
-                    const fileRef = ref(storage, community.logo);
-                    await deleteObject(fileRef);
-                } catch (storageErr) {
-                    console.error('Storage delete error:', storageErr);
+                    // Delete from storage if it's a storage URL
+                    if (community.logo && community.logo.includes('firebasestorage.googleapis.com')) {
+                        try {
+                            const fileRef = ref(storage, community.logo);
+                            await deleteObject(fileRef);
+                        } catch (storageErr) {
+                            console.error('Storage delete error:', storageErr);
+                        }
+                    }
+                    await deleteDoc(doc(db, 'communities', community.id));
+                    setModal({ open: true, title: 'Success', message: 'Community deleted successfully!' });
+                    fetchCommunities();
+                } catch (error) {
+                    console.error('Error deleting community:', error);
+                    setModal({ open: true, title: 'Error', message: 'Failed to delete community' });
                 }
             }
-            await deleteDoc(doc(db, 'communities', community.id));
-            setModal({ open: true, title: 'Success', message: 'Community deleted successfully!' });
-            fetchCommunities();
-        } catch (error) {
-            console.error('Error deleting community:', error);
-            setModal({ open: true, title: 'Error', message: 'Failed to delete community' });
-        }
+        });
     };
 
     return (
         <div className="min-h-screen bg-black text-white p-6">
             <ProcessingOverlay isVisible={isSubmitting} />
-            <StatusModal
-                isOpen={modal.open}
-                onClose={() => setModal({ open: false, title: '', message: '' })}
-                title={modal.title}
-                message={modal.message}
-            />
+            {modal.open && modal.confirmAction && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                  <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+                    <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+                    <p className="text-gray-400">{modal.message}</p>
+                    <div className="flex gap-3 justify-end">
+                      <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                      <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
 
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">

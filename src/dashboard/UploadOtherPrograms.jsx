@@ -146,23 +146,28 @@ const UploadOtherPrograms = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (program) => {
-        if (window.confirm('Delete program entry and associated image?')) {
-            try {
-                // Delete from storage if it's a storage URL
-                if (program.image && program.image.includes('firebasestorage.googleapis.com')) {
-                    try {
-                        const fileRef = ref(storage, program.image);
-                        await deleteObject(fileRef);
-                    } catch (storageErr) {
-                        console.error('Storage delete error:', storageErr);
+    const handleDelete = (program) => {
+        setModal({
+            open: true,
+            title: 'Confirm Delete',
+            message: 'Delete program entry and associated image?',
+            confirmAction: async () => {
+                try {
+                    // Delete from storage if it's a storage URL
+                    if (program.image && program.image.includes('firebasestorage.googleapis.com')) {
+                        try {
+                            const fileRef = ref(storage, program.image);
+                            await deleteObject(fileRef);
+                        } catch (storageErr) {
+                            console.error('Storage delete error:', storageErr);
+                        }
                     }
+                    await deleteDoc(doc(db, 'other_programs', program.id));
+                } catch (err) {
+                    console.error('Delete error:', err);
                 }
-                await deleteDoc(doc(db, 'other_programs', program.id));
-            } catch (err) {
-                console.error('Delete error:', err);
             }
-        }
+        });
     };
 
     const resetForm = () => {

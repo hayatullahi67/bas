@@ -8,7 +8,9 @@ import Resources from './pages/Resources';
 import Community from './pages/community';
 import Contact from './pages/Contact';
 import Education from './pages/Education';
-import Admin from './pages/Admin';
+import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 import Dashboard from './dashboard/Dashboard';
 import UploadNews from './dashboard/UploadNews';
 import UploadEvent from './dashboard/UploadEvent';
@@ -17,6 +19,7 @@ import SubmittedStories from './dashboard/SubmittedStories';
 import UploadPrograms from './dashboard/UploadEducationPrograms';
 import UploadOtherPrograms from './dashboard/UploadOtherPrograms';
 import UploadVideos from './dashboard/UploadBitcoinVideos';
+import UploadWhyVideo from './dashboard/UploadWhyBitcoinVideo';
 import UploadResources from './dashboard/UploadBitcoinResources';
 import UploadTestimonials from './dashboard/UploadTestimonials';
 import UploadEducationTestimonials from './dashboard/UploadEducationTestimonials';
@@ -42,8 +45,8 @@ function AppContent() {
         <Route path="/resources" element={<Resources />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/dashboard/*" element={<Dashboard />}>
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/dashboard/*" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
           <Route index element={<UploadNews />} />
           <Route path="upload-news" element={<UploadNews />} />
           <Route path="upload-event" element={<UploadEvent />} />
@@ -58,6 +61,7 @@ function AppContent() {
           <Route path="upload-programs" element={<UploadPrograms />} />
           <Route path="upload-other-programs" element={<UploadOtherPrograms />} />
           <Route path="upload-videos" element={<UploadVideos />} />
+          <Route path="upload-why-video" element={<UploadWhyVideo />} />
           <Route path="upload-resources" element={<UploadResources />} />
         </Route>
       </Routes>
@@ -70,9 +74,11 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <NewsProvider>
-          <AppContent />
-        </NewsProvider>
+        <AuthProvider>
+          <NewsProvider>
+            <AppContent />
+          </NewsProvider>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

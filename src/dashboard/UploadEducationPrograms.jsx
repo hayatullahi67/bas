@@ -147,23 +147,28 @@ const UploadEducationPrograms = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (program) => {
-        if (window.confirm('Delete this program and its associated image?')) {
-            try {
-                // Delete from storage if it's a storage URL
-                if (program.image && program.image.includes('firebasestorage.googleapis.com')) {
-                    try {
-                        const fileRef = ref(storage, program.image);
-                        await deleteObject(fileRef);
-                    } catch (storageErr) {
-                        console.error('Storage delete error:', storageErr);
+    const handleDelete = (program) => {
+        setModal({
+            open: true,
+            title: 'Confirm Delete',
+            message: 'Delete this program and its associated image?',
+            confirmAction: async () => {
+                try {
+                    // Delete from storage if it's a storage URL
+                    if (program.image && program.image.includes('firebasestorage.googleapis.com')) {
+                        try {
+                            const fileRef = ref(storage, program.image);
+                            await deleteObject(fileRef);
+                        } catch (storageErr) {
+                            console.error('Storage delete error:', storageErr);
+                        }
                     }
+                    await deleteDoc(doc(db, 'education_programs', program.id));
+                } catch (err) {
+                    console.error('Delete error:', err);
                 }
-                await deleteDoc(doc(db, 'education_programs', program.id));
-            } catch (err) {
-                console.error('Delete error:', err);
             }
-        }
+        });
     };
 
     const resetForm = () => {
@@ -358,7 +363,20 @@ const UploadEducationPrograms = () => {
                 ))}
             </div>
 
-            <StatusModal open={modal.open} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false })} />
+            {modal.open && modal.confirmAction && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                  <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+                    <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+                    <p className="text-gray-400">{modal.message}</p>
+                    <div className="flex gap-3 justify-end">
+                      <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                      <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
             <ProcessingOverlay isVisible={isSubmitting} />
         </div>
     );

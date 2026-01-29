@@ -187,6 +187,8 @@ const Contact = () => {
   // Define a minimal icon size for the smallest screens (e.g., 18px)
   const MINIMAL_ICON_SIZE = 18;
 
+  const [modal, setModal] = useState({ open: false, title: '', message: '' });
+
   return (
     <div className="pt-16">
       {/* Hero Section */}
@@ -309,7 +311,7 @@ const Contact = () => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      alert('Nostr connection coming soon!');
+                      setModal({ open: true, title: 'Coming Soon', message: 'Nostr connection coming soon!' });
                     }}
                     className="flex items-center p-3 sm:p-4 bg-gray-900 border border-gray-800  hover:border-yellow-500 hover:bg-gray-800 transition-all duration-300 group"
                   >
@@ -355,7 +357,7 @@ const Contact = () => {
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-lg mx-auto"
               onSubmit={(e) => {
                 e.preventDefault();
-                alert('Newsletter signup feature coming soon!');
+                setModal({ open: true, title: 'Coming Soon', message: 'Newsletter signup feature coming soon!' });
               }}
             >
               {/* Reduced default padding on input */}
