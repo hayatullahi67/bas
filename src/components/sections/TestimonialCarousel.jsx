@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import TwitterEmbed from '../TwitterEmbed';
 
 const TestimonialCarousel = ({ testimonials = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -50,24 +51,32 @@ const TestimonialCarousel = ({ testimonials = [] }) => {
       </button>
 
       <div className="overflow-hidden rounded-2xl">
-        <div 
+        <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-        {testimonials.map((testimonial) => (
-          <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-            <div className="max-w-3xl mx-auto p-8 bg-gray-900 border border-gray-800 rounded-xl hover:border-yellow-500 transition-colors duration-300">
-              <div className="flex items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-lg">{testimonial.avatar}</div>
-                <div className="ml-4">
-                  <div className="font-semibold text-white">{testimonial.name}</div>
-                  <div className="text-sm text-gray-400">{testimonial.location}</div>
+          {testimonials.map((testimonial) => (
+            <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
+              {testimonial.twitterLink ? (
+                <div className="max-w-3xl mx-auto rounded-xl overflow-hidden shadow-xl bg-gray-900 border border-gray-800">
+                  <TwitterEmbed tweetUrl={testimonial.twitterLink} />
                 </div>
-              </div>
-              <p className="text-gray-300 leading-relaxed italic text-lg">"{testimonial.text}"</p>
+              ) : (
+                <div className="max-w-3xl mx-auto p-8 bg-gray-900 border border-gray-800 rounded-xl hover:border-yellow-500 transition-colors duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-14 h-14 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-lg">
+                      {testimonial.avatar || (testimonial.name ? testimonial.name[0] : 'U')}
+                    </div>
+                    <div className="ml-4">
+                      <div className="font-semibold text-white">{testimonial.name}</div>
+                      <div className="text-sm text-gray-400">{testimonial.location}</div>
+                    </div>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed italic text-lg">"{testimonial.text}"</p>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
         </div>
       </div>
 

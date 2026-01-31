@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ScrollToTop from '../components/ScrollToTop';
 import CountUp from '../components/ui/CountUp';
@@ -38,20 +38,36 @@ const UpcomingEvent = ({ title, location, date, banner }) => (
 const Community = () => {
   const [events, setEvents] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [search, setSearch] = React.useState('');
 
   React.useEffect(() => {
-    const fetchEvents = async () => {
+    const fetch = async () => {
       try {
-        const data = await eventsService.getUpcomingEvents(4);
-        setEvents(data);
-      } catch (error) {
-        console.error("Error fetching community events:", error);
+        const all = await eventsService.getAllEvents();
+        setEvents(all || []);
+      } catch (err) {
+        console.error('Error loading events:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
+    fetch();
   }, []);
+
+  const filtered = React.useMemo(() => {
+    if (!search) return events;
+    const s = search.trim().toLowerCase();
+    return events.filter(e => {
+      return (
+        (e.eventName && e.eventName.toLowerCase().includes(s)) ||
+        (e.organiser && e.organiser.toLowerCase().includes(s)) ||
+        (e.tags && e.tags.join(' ').toLowerCase().includes(s)) ||
+        (e.city && e.city.toLowerCase().includes(s))
+      );
+    });
+  }, [events, search]);
+
+  const navigate = useNavigate();
 
   return (
     <div className="mt-[75px] pb-32">
@@ -83,101 +99,122 @@ const Community = () => {
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
                 Connect with fellow Africans learning and using Bitcoin. Share experiences, ask questions, and grow together.
               </p>
+
+              <div className="mt-4 flex gap-3">
+                <button onClick={() => { const el = document.getElementById('events'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="px-5 py-3 bg-yellow-500 rounded font-bold">🔍 Explore Events</button>
+                <Link to="/dashboard/upload-event" className="px-5 py-3 border border-yellow-500 text-yellow-500 rounded">➕ Submit an Event</Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <div className="bg-gray-900 p-8 shadow-lg border border-gray-800">
-            <h2 className="text-2xl font-bold mb-2 text-gray-100">Join Our Communities</h2>
-            <p className="text-gray-400 mb-6">Connect with our community on your favorite platforms.</p>
-
-            <div className="flex gap-4">
-              <a
-                className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 bg-yellow-500 text-black font-medium hover:bg-yellow-400 transition"
-                href="#"
-              >
-                <span>Join Telegram</span>
-              </a>
-              <a
-                className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 bg-transparent border border-yellow-500 text-yellow-500 font-medium hover:bg-yellow-500/10 transition"
-                href="#"
-              >
-                <span>Join WhatsApp</span>
-              </a>
-            </div>
-          </div>
+      <div className="max-w-6xl mx-auto px-6 mt-8">
+        <div className="mb-6">
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search by event, organiser, city or tag"
+            className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-gray-200"
+          />
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-gray-900 p-6 shadow-lg border border-gray-800">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-gray-100 flex items-center gap-3">
-                <span className="w-2 h-8 bg-yellow-500 rounded-full"></span>
-                Upcoming Events
-              </h3>
+        <div className="mb-4 text-sm text-gray-400">{loading ? 'Loading events…' : `${filtered.length} events`}</div>
+
+        {loading ? (
+          <div className="p-8 bg-gray-900 border border-gray-800 rounded text-center">
+            <div className="w-10 h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-gray-400">Loading events…</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-8 bg-gray-900 border border-gray-800 rounded text-center text-gray-400">No events found. Try a different search.</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map(e => (
+              <div
+                key={e.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(ev) => { if (ev.key === 'Enter') { if (e.registrationUrl) window.open(e.registrationUrl, '_blank'); else navigate(`/events/${e.id}`); } }}
+                onClick={() => { if (e.registrationUrl) window.open(e.registrationUrl, '_blank'); else navigate(`/events/${e.id}`); }}
+                className="cursor-pointer bg-gray-900 border border-gray-800  overflow-hidden"
+              >
+                {e.banner && <div className="h-40 overflow-hidden"><img src={e.banner} alt={e.eventName} className="w-full h-full object-cover" /></div>}
+                <div className="p-4">
+                  <div className="text-sm text-gray-400">{e.date} {e.time ? `• ${e.time}` : ''} {e.city ? `• ${e.city}` : ''}</div>
+                  <h4 className="text-lg font-bold text-white mt-2">{e.eventName}</h4>
+                  <p className="text-sm text-gray-400 mt-2 line-clamp-2">{e.venue || (e.format === 'virtual' ? 'Online' : '')}</p>
+
+                  <div className="mt-4 flex items-center gap-3">
+                    {e.registrationUrl && (
+                      <a href={e.registrationUrl} target="_blank" rel="noreferrer" onClick={(ev) => ev.stopPropagation()} className="px-4 py-2 bg-yellow-500 text-black rounded font-bold">Register</a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="max-w-6xl mx-auto mt-12 px-6">
+        <div className="bg-gray-900 border border-gray-800 overflow-hidden shadow-2xl ">
+          {/* Join Conversation Section */}
+          <div className="p-6 md:p-8 text-center border-b border-gray-800/50">
+            <div className="inline-block mb-3 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+              <span className="text-yellow-500 text-[10px] font-bold uppercase tracking-widest">Connect With Us</span>
             </div>
-
-            <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar space-y-4">
-              {loading ? (
-                <div className="py-20 flex flex-col items-center justify-center text-center bg-gray-800/20 border border-gray-800 border-dashed rounded-2xl">
-                  <div className="w-10 h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                  <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Syncing with blockchain events...</p>
-                </div>
-              ) : events.length ? (
-                <div className="grid grid-cols-1 gap-6">
-                  {events.map((e) => (
-                    <UpcomingEvent
-                      key={e.id}
-                      title={e.eventName}
-                      location={`${e.venue}${e.address ? ` • ${e.address}` : ''}`}
-                      date={`${e.date} @ ${e.time}`}
-                      banner={e.banner}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="py-20 text-center bg-gray-800/20 border border-gray-800 border-dashed rounded-2xl">
-                  <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">No upcoming missions scheduled</p>
-                </div>
-              )}
+            <h4 className="text-2xl font-bold text-white mb-3">Join the conversation</h4>
+            <p className="text-gray-400 max-w-xl mx-auto mb-6 text-sm">
+              Join our Telegram channel or WhatsApp group to stay updated and connect with other members across Africa.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
+              <a
+                href=": https://t.me/+KirVlW8gMMtlNDI8"
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-sm transition-all shadow-lg shadow-blue-600/10"
+              >
+                Telegram Channel
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold text-sm transition-all shadow-lg shadow-green-600/10"
+              >
+                WhatsApp Group
+              </a>
             </div>
+            <div className="text-gray-500 text-xs">
+              Want an event featured? <Link to="/dashboard/upload-event" className="text-yellow-500 hover:underline">Submit it here</Link>.
+            </div>
+          </div>
 
-
-            <div className="text-center mt-8 pt-6 border-t border-gray-800">
-              <Link to="#" className="inline-flex items-center gap-2 text-yellow-500 font-bold text-sm hover:text-yellow-400 transition-all uppercase tracking-widest">
-                Full Event Calendar <ArrowRight size={16} />
-              </Link>
+          {/* Stats Section */}
+          <div className="p-6 md:p-8 bg-black/20">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+              <div className="space-y-1">
+                <div className="text-2xl md:text-3xl font-black text-yellow-500"><CountUp end={5240} /></div>
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Active Members</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl md:text-3xl font-black text-yellow-500"><CountUp end={850} suffix="+" /></div>
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Discussions</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl md:text-3xl font-black text-yellow-500"><CountUp end={125} /></div>
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Local Events</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl md:text-3xl font-black text-yellow-500"><CountUp end={28} /></div>
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Countries</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-gray-900 max-w-6xl mx-auto mt-[40px] p-10 shadow-lg border border-gray-800">
-        <h3 className="text-xl font-semibold text-center mb-2 text-gray-100">Growing Together</h3>
-        <p className="text-center text-gray-400 mb-6">Our community impact across Africa</p>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <div className="text-3xl font-bold text-yellow-500"><CountUp end={5240} /></div>
-            <div className="text-sm text-gray-400">Active Members</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-yellow-500"><CountUp end={850} suffix="+" /></div>
-            <div className="text-sm text-gray-400">Discussions</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-yellow-500"><CountUp end={125} /></div>
-            <div className="text-sm text-gray-400">Local Events</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-yellow-500"><CountUp end={28} /></div>
-            <div className="text-sm text-gray-400">Countries</div>
-          </div>
-        </div>
-      </div>
       <ScrollToTop />
     </div>
   );

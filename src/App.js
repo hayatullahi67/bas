@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import EventDetails from './pages/EventDetails';
 import Resources from './pages/Resources';
 import Community from './pages/community';
 import Contact from './pages/Contact';
@@ -40,6 +41,7 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/news" element={<Blog />} />
         <Route path="/news/:slug" element={<BlogPost />} />
+        <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/education" element={<Education />} />
         <Route path="/community" element={<Community />} />
         <Route path="/resources" element={<Resources />} />

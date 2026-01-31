@@ -13,6 +13,7 @@ const UploadEvent = () => {
     time: '',
     description: '',
     banner: '',
+    registrationUrl: '',
     id: null,
   });
   const [events, setEvents] = useState([]);
@@ -111,6 +112,7 @@ const UploadEvent = () => {
         time: formData.time,
         description: formData.description,
         banner: bannerUrl,
+        registrationUrl: formData.registrationUrl || '',
         createdAt: serverTimestamp()
       };
 
@@ -124,7 +126,7 @@ const UploadEvent = () => {
         openModal('Saved', 'Event created and saved to Firebase!');
       }
       // reset form
-      setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', id: null });
+      setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', registrationUrl: '', id: null });
       setImagePreview('');
       setIsEditing(false);
     } catch (err) {
@@ -191,7 +193,7 @@ const UploadEvent = () => {
                 </div>
                 {isEditing && (
                   <button
-                    onClick={() => { setIsEditing(false); setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', id: null }); }}
+                    onClick={() => { setIsEditing(false); setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', registrationUrl: '', id: null }); }}
                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-semibold text-gray-400 hover:text-white transition-all flex items-center gap-2"
                   >
                     Cancel Edit
@@ -265,6 +267,18 @@ const UploadEvent = () => {
                       />
                     </div>
                   </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Event Link (optional)</label>
+                    <input
+                      type="url"
+                      name="registrationUrl"
+                      value={formData.registrationUrl}
+                      onChange={handleChange}
+                      placeholder="https://register.example.com/your-event"
+                      className="w-full px-6 py-4 bg-black/40 border border-white/5 rounded-2xl text-white focus:outline-none focus:border-yellow-500/50 transition-all placeholder:text-gray-700"
+                    />
+                  </div> 
 
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Event Banner Image</label>

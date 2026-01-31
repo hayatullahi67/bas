@@ -13,6 +13,8 @@ const Home = () => {
   const { news: posts, loading } = useNews();
   const [communities, setCommunities] = useState([]);
   const [communitiesLoading, setCommunitiesLoading] = useState(true);
+  const [testimonialsList, setTestimonialsList] = useState([]);
+  const [testimonialsLoading, setTestimonialsLoading] = useState(true);
 
   // Fetch communities from Firebase
   useEffect(() => {
@@ -34,7 +36,25 @@ const Home = () => {
     fetchCommunities();
   }, []);
 
-  // testimonial carousel handled by TestimonialCarousel component
+  // Fetch testimonials from Firebase
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'testimonials'));
+        const testimonialsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTestimonialsList(testimonialsData);
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      } finally {
+        setTestimonialsLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   // Group posts by category for categorized display (dynamic, works with API-shaped data)
   const groupedPosts = useMemo(() => {
@@ -139,7 +159,7 @@ const Home = () => {
       </section>
 
       {/* Testimonials - CAROUSEL */}
-      {/* <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
+      <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -150,9 +170,9 @@ const Home = () => {
             </p>
           </div>
 
-          <TestimonialCarousel testimonials={testimonials} />
+          {!testimonialsLoading && <TestimonialCarousel testimonials={testimonialsList} />}
         </div>
-      </section> */}
+      </section>
 
       {/* Communities Section */}
       <section className="py-20 px-6">

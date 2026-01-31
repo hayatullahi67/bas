@@ -4,7 +4,9 @@ import {
     query,
     getDocs,
     orderBy,
-    limit
+    limit,
+    doc,
+    getDoc
 } from 'firebase/firestore';
 
 const EVENTS_COLLECTION = 'events';
@@ -50,7 +52,20 @@ export const getUpcomingEvents = async (count = 3) => {
     }
 };
 
+export const getEventById = async (id) => {
+    try {
+        const docRef = doc(db, EVENTS_COLLECTION, id);
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) return null;
+        return { id: snap.id, ...snap.data() };
+    } catch (error) {
+        console.error("Error fetching event by id:", error);
+        throw error;
+    }
+};
+
 export const eventsService = {
     getAllEvents,
-    getUpcomingEvents
+    getUpcomingEvents,
+    getEventById
 };
