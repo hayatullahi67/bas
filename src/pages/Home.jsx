@@ -139,7 +139,7 @@ const Home = () => {
       </section>
 
       {/* Testimonials - CAROUSEL */}
-      <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
+      {/* <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -152,7 +152,7 @@ const Home = () => {
 
           <TestimonialCarousel testimonials={testimonials} />
         </div>
-      </section>
+      </section> */}
 
       {/* Communities Section */}
       <section className="py-20 px-6">

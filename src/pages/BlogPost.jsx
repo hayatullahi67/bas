@@ -7,6 +7,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNews } from '../context/NewsContext';
 import StatusModal from '../dashboard/components/StatusModal';
+import { getNewsById } from '../services/newsService';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -17,9 +18,25 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (!newsLoading) {
-      const found = posts.find(p => p.slug === slug);
-      setPost(found);
-      setLoading(false);
+      const found = posts.find(p => p.slug === slug || p.id === slug);
+      if (found) {
+        setPost(found);
+        setLoading(false);
+        return;
+      }
+
+      // If not found in context, attempt to fetch by id from service
+      (async () => {
+        try {
+          const fetched = await getNewsById(slug);
+          setPost(fetched);
+        } catch (err) {
+          console.warn('Could not fetch post by id:', err);
+          setPost(null);
+        } finally {
+          setLoading(false);
+        }
+      })();
     }
   }, [slug, posts, newsLoading]);
 
@@ -73,7 +90,7 @@ const BlogPost = () => {
     <div className="pt-16">
       <ScrollToTop />
       {/* Back Button */}
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-6 py-8">
         <Link
           to="/news"
           className="inline-flex items-center text-gray-400 hover:text-yellow-500 transition-colors duration-200"
@@ -84,7 +101,7 @@ const BlogPost = () => {
       </div>
 
       {/* Article Header */}
-      <article className="max-w-3xl mx-auto px-6 pb-20">
+      <article className="max-w-5xl mx-auto px-6 pb-20">
         {/* Category Badge */}
         <div className="mb-6">
           <span className="inline-block text-sm font-semibold text-black bg-yellow-500 px-4 py-2 rounded-full">
@@ -96,7 +113,7 @@ const BlogPost = () => {
         <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
           {post.title}
         </h1>
-
+        
         {/* Meta Info */}
         <div className="flex flex-wrap items-center justify-between gap-6 mb-12 p-6 bg-gray-900/50 border border-gray-800 rounded-2xl">
           <div className="flex items-center gap-4">
@@ -144,6 +161,10 @@ const BlogPost = () => {
           </div>
         </div>
 
+<p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-6 italic border-l-4 border-yellow-500 pl-6">
+            {post.excerpt}
+          </p>
+
         {/* Featured Image */}
         <div className="mb-12 rounded-xl overflow-hidden">
           <img
@@ -188,9 +209,7 @@ const BlogPost = () => {
 
         {/* Article Content */}
         <div className="prose prose-invert prose-base max-w-none mb-16">
-          <p className="text-xl text-yellow-500/90 font-medium leading-relaxed mb-6 italic border-l-4 border-yellow-500 pl-6">
-            {post.excerpt}
-          </p>
+          
 
           {/* YouTube Video Embed */}
           {post.youtubeUrl && (() => {
@@ -227,6 +246,7 @@ const BlogPost = () => {
         </div>
 
       </article>
+      
 
       {/* Related Posts */}
       {relatedPosts.length > 0 && (

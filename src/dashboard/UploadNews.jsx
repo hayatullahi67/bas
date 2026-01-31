@@ -101,7 +101,10 @@ const UploadNews = () => {
     authorX: '',
     date: new Date().toISOString().split('T')[0],
     readTime: '5 min read',
-    youtubeUrl: ''
+    youtubeUrl: '',
+    // New flags for editorial picks
+    isPopular: false,
+    isTopStory: false
   });
 
   const [imageMode, setImageMode] = useState('url');
@@ -248,10 +251,11 @@ const UploadNews = () => {
 
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: newValue
     }));
 
     // If user manually edits slug, stop auto-updates
@@ -270,7 +274,7 @@ const UploadNews = () => {
     if (name === 'authorImage' && authorImageMode === 'url') {
       setAuthorImagePreview(value);
     }
-  };
+  }; 
 
   const handleContentChange = (content) => {
     setFormData(prev => ({
@@ -562,13 +566,15 @@ const UploadNews = () => {
       authorX: '',
       date: new Date().toISOString().split('T')[0],
       readTime: '5 min read',
-      youtubeUrl: ''
+      youtubeUrl: '',
+      isPopular: false,
+      isTopStory: false
     });
     setImagePreview('');
     setAuthorImagePreview('');
     setIsEditing(false);
     setCurrentPost(null);
-  };
+  }; 
 
   return (
     <div className="min-h-screen pb-12">
@@ -810,6 +816,31 @@ const UploadNews = () => {
               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
               placeholder="Brief summary of the article..."
             />
+          </div>
+
+          {/* Editorial Picks: Popular / Top Story */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                name="isPopular"
+                checked={formData.isPopular}
+                onChange={handleInputChange}
+                className="w-4 h-4 rounded"
+              />
+              <span className="text-sm text-gray-300">Mark as <strong className="text-yellow-500">Popular Post</strong></span>
+            </label>
+
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                name="isTopStory"
+                checked={formData.isTopStory}
+                onChange={handleInputChange}
+                className="w-4 h-4 rounded"
+              />
+              <span className="text-sm text-gray-300">Mark as <strong className="text-yellow-500">Top Story</strong></span>
+            </label>
           </div>
 
           {/* YouTube Video URL (Optional) */}

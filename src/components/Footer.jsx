@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Twitter, Facebook, Youtube } from 'lucide-react';
+import { useNews } from '../context/NewsContext';
 
 
 
@@ -104,6 +105,7 @@ const PostCard = ({ title, author, image, link }) => (
 
 
 const Footer = () => {
+  const { news } = useNews();
 
   return (
     <footer className="bg-black border-t-8 border-yellow-500">
@@ -116,15 +118,21 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Popular Posts</h2>
             <div className="space-y-4">
-              {mockPopularPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  title={post.title}
-                  author={post.author}
-                  image={post.image}
-                  link={post.link}
-                />
-              ))}
+              {(() => {
+                const popularList = (news || []).filter(p => p.isPopular).slice(0, 6);
+                if (popularList.length === 0) {
+                  return <p className="text-gray-500 italic text-sm">Popular posts will be uploaded soon.</p>;
+                }
+                return popularList.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    title={post.title}
+                    author={post.author}
+                    image={post.image}
+                    link={`/news/${post.id}`}
+                  />
+                ));
+              })()}
             </div>
           </div>
 
@@ -132,15 +140,21 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Top Stories</h2>
             <div className="space-y-4">
-              {mockTopStories.map((post) => (
-                <PostCard
-                  key={post.id + 'ts'}
-                  title={post.title}
-                  author={post.author}
-                  image={post.image}
-                  link={post.link}
-                />
-              ))}
+              {(() => {
+                const topList = (news || []).filter(p => p.isTopStory).slice(0, 6);
+                if (topList.length === 0) {
+                  return <p className="text-gray-500 italic text-sm">Top stories will be uploaded soon.</p>;
+                }
+                return topList.map((post) => (
+                  <PostCard
+                    key={post.id + 'ts'}
+                    title={post.title}
+                    author={post.author}
+                    image={post.image}
+                    link={`/news/${post.id}`}
+                  />
+                ));
+              })()}
             </div>
           </div>
 

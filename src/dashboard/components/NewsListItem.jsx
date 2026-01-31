@@ -19,6 +19,14 @@ const NewsListItem = ({ post, onView, onEdit, onDelete }) => {
                         <span className="text-xs text-gray-500">{post.date}</span>
                         <span className="text-xs text-gray-500">•</span>
                         <span className="text-xs text-gray-500">{post.author}</span>
+
+                        {/* Editorial badges */}
+                        {post.isPopular && (
+                          <span className="ml-2 text-[10px] font-black text-black bg-yellow-300 px-2 py-1 rounded uppercase">Popular</span>
+                        )}
+                        {post.isTopStory && (
+                          <span className="ml-2 text-[10px] font-black text-white bg-red-600 px-2 py-1 rounded uppercase">Top Story</span>
+                        )}
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-500 transition-colors">
                         {post.title}
