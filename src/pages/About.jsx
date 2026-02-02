@@ -53,7 +53,7 @@ const About = () => {
           <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
             {/* Left: Text content */}
             <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
-              <div className="inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+              <div className="hidden sm:inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
                 <span className="text-yellow-500 text-sm font-semibold">2+ Years of Proof-of-Quality-Works</span>
               </div>
 
@@ -68,14 +68,14 @@ const About = () => {
               <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
                 <Link
                   to="/donate"
-                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-2 sm:py-3 bg-yellow-500 text-black font-bold text-base sm:text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
                 >
                   Donate
                   <ArrowRight className="ml-2" size={18} />
                 </Link>
                 <Link
                   to="/contact"
-                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg  hover:bg-yellow-500 hover:text-black transition-all duration-200"
+                  className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-2 sm:py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-base sm:text-lg  hover:bg-yellow-500 hover:text-black transition-all duration-200"
                 >
                   Contact Us
                 </Link>
@@ -348,8 +348,8 @@ const About = () => {
                   Support Our Work
                 </Link>
 
-                <Link to="/community" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-                  Join the Community
+                <Link to="/events" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
+                  Join Our Events
                 </Link>
               </div>
             </div>

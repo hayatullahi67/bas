@@ -108,12 +108,15 @@ export const newsService = {
     /**
      * Subscribe to latest news (fetch only what you need first)
      */
-    subscribeToNews: (callback, limitCount = 10) => {
-        const q = query(
+    subscribeToNews: (callback, limitCount = null) => {
+        let q = query(
             newsCollectionRef,
-            orderBy('date', 'desc'),
-            limit(limitCount)
+            orderBy('date', 'desc')
         );
+
+        if (limitCount) {
+            q = query(q, limit(limitCount));
+        }
 
         return onSnapshot(q, (snapshot) => {
             const items = snapshot.docs.map(doc => ({

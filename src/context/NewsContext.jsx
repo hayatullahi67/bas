@@ -12,49 +12,19 @@ export const NewsProvider = ({ children }) => {
     const [lastVisibleDoc, setLastVisibleDoc] = useState(null);
 
     useEffect(() => {
-        console.log('Initializing NewsContext synchronization with paging...');
+        console.log('Initializing NewsContext synchronization...');
         const unsubscribe = newsService.subscribeToNews((items) => {
             setNews(items);
             setLoading(false);
-            // If we got exactly the limit or more, there might be more
-            setHasMore(items.length >= 10);
-            if (items.length > 0) {
-                setLastVisibleDoc(items[items.length - 1]);
-            }
-        }, 10);
+        });
 
         return () => unsubscribe();
     }, []);
 
-    const loadMore = useCallback(async () => {
-        if (loadingMore || !hasMore || !lastVisibleDoc) return;
-
-        setLoadingMore(true);
-        try {
-            const moreNews = await newsService.loadMoreNews(lastVisibleDoc, 10);
-
-            if (moreNews.length > 0) {
-                setNews(prev => [...prev, ...moreNews]);
-                setLastVisibleDoc(moreNews[moreNews.length - 1]);
-                setHasMore(moreNews.length >= 10);
-            } else {
-                setHasMore(false);
-            }
-        } catch (err) {
-            console.error('Error loading more news:', err);
-            setError(err);
-        } finally {
-            setLoadingMore(false);
-        }
-    }, [lastVisibleDoc, loadingMore, hasMore]);
-
     const value = {
         news,
         loading,
-        loadingMore,
         error,
-        hasMore,
-        loadMore,
         getPostBySlug: (slug) => news.find(p => p.slug === slug)
     };
 

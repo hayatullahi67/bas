@@ -47,10 +47,10 @@ const EventDetails = () => {
                 <h2 className="text-2xl font-bold text-red-500 mb-4">Oops!</h2>
                 <p className="text-gray-400 mb-6">{error || 'Event not found'}</p>
                 <button
-                    onClick={() => navigate('/community')}
+                    onClick={() => navigate('/events')}
                     className="px-6 py-2 bg-yellow-500 text-black font-bold rounded hover:bg-yellow-400 transition-colors"
                 >
-                    Back to Community
+                    Back to Events
                 </button>
             </div>
         );

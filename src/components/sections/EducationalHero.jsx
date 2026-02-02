@@ -27,7 +27,7 @@ const EducationalHero = () => {
         <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
           {/* Left: Text content */}
           <div className="w-full lg:w-1/2 text-left mt-12 md:mt-10 lg:text-left">
-            <div className="inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+            <div className="hidden sm:inline-block  mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
               <span className="text-yellow-500 text-sm font-semibold">Learn From Anywhere In The World</span>
             </div>
 
@@ -44,12 +44,12 @@ const EducationalHero = () => {
               Everything you need to start your Bitcoin journey. Guides, tools, and trusted resources to help you learn and grow.
             </p>
 
-            <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
-              <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+            <div className="flex sm:flex-row gap-3 justify-start mb-6 w-full max-w-lg">
+              <button className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
                 Explore Bitcoin Programs
                 <ArrowRight className="ml-2" size={18} />
               </button>
-              <button className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg  hover:bg-yellow-500 hover:text-black transition-all duration-200">
+              <button className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-sm sm:text-base hover:bg-yellow-500 hover:text-black transition-all duration-200">
                 Explore Bitcoin Resources
               </button>
             </div>

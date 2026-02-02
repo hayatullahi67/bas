@@ -43,7 +43,7 @@ function AppContent() {
         <Route path="/news/:slug" element={<BlogPost />} />
         <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/education" element={<Education />} />
-        <Route path="/community" element={<Community />} />
+        <Route path="/events" element={<Community />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/contact" element={<Contact />} />

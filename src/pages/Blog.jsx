@@ -50,7 +50,7 @@ const quillSizeStyles = `
 `;
 
 const Blog = () => {
-  const { news: posts, loading, loadMore, loadingMore, hasMore } = useNews();
+  const { news: posts, loading } = useNews();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -333,12 +333,17 @@ const Blog = () => {
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          {selectedCategory === 'All' ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-400 mt-6 font-medium animate-pulse">Syncing with Bitcoin Pulse...</p>
+            </div>
+          ) : selectedCategory === 'All' ? (
             // Render categorized sections (Home-style) when 'All' is selected
             categoriesToShow.map((cat) => {
-              const posts = (groupedPosts[cat] || []).slice(0, 3);
+              const posts = (groupedPosts[cat] || []);
               if (!posts || posts.length === 0) return null;
               return (
                 <div key={cat} className="mb-16">
@@ -353,30 +358,6 @@ const Blog = () => {
             </div>
           ) : (
             <PostsGrid posts={filteredPosts} />
-          )}
-
-          {/* Load More Button */}
-          {hasMore && selectedCategory !== 'All' && (
-            <div className="mt-16 text-center">
-              <button
-                onClick={loadMore}
-                disabled={loadingMore}
-                className="group relative inline-flex items-center gap-3 px-12 py-5 bg-gray-900 border border-gray-800 text-white font-black uppercase tracking-widest text-xs hover:border-yellow-500/50 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                {loadingMore ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Synchronizing...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Load More Stories</span>
-                    <PlusCircle size={14} className="text-yellow-500 group-hover:rotate-90 transition-transform duration-500" />
-                  </>
-                )}
-              </button>
-            </div>
           )}
         </div>
       </section>

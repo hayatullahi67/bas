@@ -23,14 +23,14 @@ const Resources = () => {
       {/* Hero Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-gray-900/30 to-transparent">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+          <div className="hidden sm:inline-block mb-6 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
             <span className="text-yellow-500 text-sm font-semibold">Learning Resources</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-black mb-6">
             Bitcoin <span className="text-yellow-500">Resources</span>
           </h1>
           <p className="text-xl text-gray-300 leading-relaxed">
-            Everything you need to start your Bitcoin journey. Guides, tools, and trusted resources 
+            Everything you need to start your Bitcoin journey. Guides, tools, and trusted resources
             to help you learn and grow.
           </p>
         </div>
@@ -123,7 +123,7 @@ const Resources = () => {
 
           <div className="mt-8 p-6 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
             <p className="text-gray-300 text-center">
-              <strong className="text-yellow-500">Security Tip:</strong> Always download wallets from official websites. 
+              <strong className="text-yellow-500">Security Tip:</strong> Always download wallets from official websites.
               Never share your seed phrase with anyone, and always keep backups in a secure location.
             </p>
           </div>
