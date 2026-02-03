@@ -3,6 +3,7 @@ import { Edit, Trash2, Save, Users, Upload } from 'lucide-react';
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 
 const UploadEducationTestimonials = () => {
   const [formData, setFormData] = useState({
@@ -102,7 +103,7 @@ const UploadEducationTestimonials = () => {
     setIsSubmitting(true);
     try {
       let imageUrl = formData.image;
-      
+
       // Upload image if it's a Blob
       if (imageUrl instanceof Blob) {
         const storageRef = ref(storage, `educationTestimonials/image_${Date.now()}`);
@@ -131,11 +132,11 @@ const UploadEducationTestimonials = () => {
 
         await updateDoc(doc(db, 'educationTestimonials', formData.id), payload);
         setTestimonials(prev => prev.map(t => t.id === formData.id ? { ...t, ...payload, id: formData.id } : t));
-        openModal('Updated', 'Education testimonial updated successfully.');
+        toast.success('Education testimonial updated successfully.');
       } else {
         const docRef = await addDoc(collection(db, 'educationTestimonials'), payload);
         setTestimonials(prev => [{ ...payload, id: docRef.id }, ...prev]);
-        openModal('Saved', 'Education testimonial created and saved to Firebase!');
+        toast.success('Education testimonial created and saved to Firebase!');
       }
 
       // reset form
@@ -145,7 +146,7 @@ const UploadEducationTestimonials = () => {
       setIsEditing(false);
     } catch (err) {
       console.error('Error saving testimonial:', err);
-      openModal('Error', 'Error saving testimonial: ' + (err.message || 'unknown'));
+      toast.error('Error saving testimonial: ' + (err.message || 'unknown'));
     } finally {
       setIsSubmitting(false);
     }
@@ -257,18 +258,16 @@ const UploadEducationTestimonials = () => {
                 <button
                   type="button"
                   onClick={() => setImageMode('url')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                    imageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
-                  }`}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
+                    }`}
                 >
                   URL
                 </button>
                 <button
                   type="button"
                   onClick={() => setImageMode('file')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                    imageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
-                  }`}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
+                    }`}
                 >
                   Upload
                 </button>

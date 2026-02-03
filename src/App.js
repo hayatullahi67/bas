@@ -17,6 +17,7 @@ import UploadNews from './dashboard/UploadNews';
 import UploadEvent from './dashboard/UploadEvent';
 import UploadCommunities from './dashboard/UploadCommunities';
 import SubmittedStories from './dashboard/SubmittedStories';
+import SubmittedEvents from './dashboard/SubmittedEvents';
 import UploadPrograms from './dashboard/UploadEducationPrograms';
 import UploadOtherPrograms from './dashboard/UploadOtherPrograms';
 import UploadVideos from './dashboard/UploadBitcoinVideos';
@@ -52,6 +53,7 @@ function AppContent() {
           <Route index element={<UploadNews />} />
           <Route path="upload-news" element={<UploadNews />} />
           <Route path="upload-event" element={<UploadEvent />} />
+          <Route path="submitted-events" element={<SubmittedEvents />} />
           <Route path="upload-communities" element={<UploadCommunities />} />
           <Route path="submitted-stories" element={<SubmittedStories />} />
           <Route path="upload-programs" element={<UploadPrograms />} />
@@ -72,6 +74,8 @@ function AppContent() {
   );
 }
 
+import { Toaster } from './components/ui/sonner';
+
 function App() {
   return (
     <div className="App">
@@ -79,6 +83,7 @@ function App() {
         <AuthProvider>
           <NewsProvider>
             <AppContent />
+            <Toaster />
           </NewsProvider>
         </AuthProvider>
       </BrowserRouter>

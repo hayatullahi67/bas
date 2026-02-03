@@ -3,6 +3,7 @@ import { PlusCircle, Edit, Trash2, Save, X, Sparkles, Globe, Image as ImageIcon,
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 import StatusModal from './components/StatusModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 
@@ -134,16 +135,17 @@ const UploadCommunities = () => {
                     createdAt: currentCommunity.createdAt
                 });
                 setModal({ open: true, title: 'Success', message: 'Community updated successfully!' });
+                toast.success('Community updated successfully!');
             } else {
                 await addDoc(collection(db, 'communities'), communityData);
-                setModal({ open: true, title: 'Success', message: 'Community added successfully!' });
+                toast.success('Community added successfully!');
             }
 
             resetForm();
             fetchCommunities();
         } catch (error) {
             console.error('Error saving community:', error);
-            setModal({ open: true, title: 'Error', message: 'Failed to save community. Please try again.' });
+            toast.error('Failed to save community. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -192,11 +194,11 @@ const UploadCommunities = () => {
                         }
                     }
                     await deleteDoc(doc(db, 'communities', community.id));
-                    setModal({ open: true, title: 'Success', message: 'Community deleted successfully!' });
+                    toast.success('Community deleted successfully!');
                     fetchCommunities();
                 } catch (error) {
                     console.error('Error deleting community:', error);
-                    setModal({ open: true, title: 'Error', message: 'Failed to delete community' });
+                    toast.error('Failed to delete community');
                 }
             }
         });
@@ -207,18 +209,18 @@ const UploadCommunities = () => {
             <ProcessingOverlay isVisible={isSubmitting} />
             {modal.open && modal.confirmAction && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                  <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
-                    <h2 className="text-xl font-bold text-white">{modal.title}</h2>
-                    <p className="text-gray-400">{modal.message}</p>
-                    <div className="flex gap-3 justify-end">
-                      <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-                      <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                    <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+                        <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+                        <p className="text-gray-400">{modal.message}</p>
+                        <div className="flex gap-3 justify-end">
+                            <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                            <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              )}
+            )}
 
-              <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
+            <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
 
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">

@@ -3,6 +3,7 @@ import { PlusCircle, Edit, Trash2, Save, X, BookOpen, Clock, Tag, Sparkles, Uplo
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 import StatusModal from './components/StatusModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 
@@ -113,27 +114,15 @@ const UploadEducationPrograms = () => {
 
             if (isEditing && currentProgram) {
                 await updateDoc(doc(db, 'education_programs', currentProgram.id), payload);
-                setModal({
-                    open: true,
-                    title: 'Updated',
-                    message: 'The education program has been updated successfully.'
-                });
+                toast.success('The education program has been updated successfully.');
             } else {
                 await addDoc(collection(db, 'education_programs'), { ...payload, createdAt: serverTimestamp() });
-                setModal({
-                    open: true,
-                    title: 'Published',
-                    message: 'New education program has been published.'
-                });
+                toast.success('New education program has been published.');
             }
             resetForm();
         } catch (err) {
             console.error('Error:', err);
-            setModal({
-                open: true,
-                title: 'Error',
-                message: 'Failed to save the program.'
-            });
+            toast.error('Failed to save the program.');
         } finally {
             setIsSubmitting(false);
         }
@@ -365,18 +354,18 @@ const UploadEducationPrograms = () => {
 
             {modal.open && modal.confirmAction && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                  <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
-                    <h2 className="text-xl font-bold text-white">{modal.title}</h2>
-                    <p className="text-gray-400">{modal.message}</p>
-                    <div className="flex gap-3 justify-end">
-                      <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-                      <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                    <div className="bg-[#0A0A0A] border border-white/10 rounded-xl max-w-sm w-full p-6 space-y-4">
+                        <h2 className="text-xl font-bold text-white">{modal.title}</h2>
+                        <p className="text-gray-400">{modal.message}</p>
+                        <div className="flex gap-3 justify-end">
+                            <button onClick={() => setModal({ open: false, title: '', message: '', confirmAction: null })} className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
+                            <button onClick={() => { modal.confirmAction(); setModal({ open: false, title: '', message: '', confirmAction: null }); }} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Delete</button>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              )}
+            )}
 
-              <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
+            <StatusModal open={modal.open && !modal.confirmAction} title={modal.title} message={modal.message} onClose={() => setModal({ ...modal, open: false, confirmAction: null })} />
             <ProcessingOverlay isVisible={isSubmitting} />
         </div>
     );

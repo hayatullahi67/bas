@@ -3,6 +3,7 @@ import { Edit, Trash2, Save, Twitter, Heart, Link as LinkIcon } from 'lucide-rea
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 
 const UploadTestimonials = () => {
   const MAX_TEXT_LENGTH = 280; // Character limit for testimonial text
@@ -149,11 +150,11 @@ const UploadTestimonials = () => {
 
         await updateDoc(doc(db, 'testimonials', formData.id), payload);
         setTestimonials(prev => prev.map(t => t.id === formData.id ? { ...t, ...payload, id: formData.id } : t));
-        openModal('Updated', 'Testimonial updated successfully.');
+        toast.success('Testimonial updated successfully.');
       } else {
         const docRef = await addDoc(collection(db, 'testimonials'), payload);
         setTestimonials(prev => [{ ...payload, id: docRef.id }, ...prev]);
-        openModal('Saved', 'Testimonial created and saved to Firebase!');
+        toast.success('Testimonial created and saved to Firebase!');
       }
 
       // reset form
@@ -163,7 +164,7 @@ const UploadTestimonials = () => {
       setIsEditing(false);
     } catch (err) {
       console.error('Error saving testimonial:', err);
-      openModal('Error', 'Error saving testimonial: ' + (err.message || 'unknown'));
+      toast.error('Error saving testimonial: ' + (err.message || 'unknown'));
     } finally {
       setIsSubmitting(false);
     }
@@ -261,8 +262,8 @@ const UploadTestimonials = () => {
               <div className="flex justify-between items-center mb-2">
                 <label className="block text-sm font-medium text-white">Testimonial Text</label>
                 <span className={`text-xs ${formData.text.length > MAX_TEXT_LENGTH ? 'text-red-500 font-bold' :
-                    formData.text.length > MAX_TEXT_LENGTH * 0.9 ? 'text-yellow-500' :
-                      'text-gray-500'
+                  formData.text.length > MAX_TEXT_LENGTH * 0.9 ? 'text-yellow-500' :
+                    'text-gray-500'
                   }`}>
                   {formData.text.length}/{MAX_TEXT_LENGTH}
                 </span>

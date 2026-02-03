@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Search, Calendar, Clock, MapPin, Box, Ticket } from 'lucide-react';
+import { ArrowRight, Search, Calendar, Clock, MapPin, Box, Ticket, X as CloseIcon, Save } from 'lucide-react';
 import ScrollToTop from '../components/ScrollToTop';
 import CountUp from '../components/ui/CountUp';
 import { eventsService } from '../services/eventsService';
+import { toast } from 'sonner';
+import { db, storage } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const UpcomingEvent = ({ title, location, date, banner }) => (
   <div className="mb-6 bg-gray-900 border border-gray-800 hover:border-yellow-500 transition-all duration-300 group overflow-hidden">
@@ -39,6 +43,20 @@ const Community = () => {
   const [events, setEvents] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState('');
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitFormData, setSubmitFormData] = useState({
+    eventName: '',
+    venue: '',
+    address: '',
+    date: '',
+    time: '',
+    description: '',
+    banner: '',
+    registrationUrl: '',
+  });
+  const [imageMode, setImageMode] = useState('url');
+  const [imagePreview, setImagePreview] = useState('');
 
   React.useEffect(() => {
     const fetch = async () => {
@@ -68,6 +86,95 @@ const Community = () => {
   }, [events, search]);
 
   const navigate = useNavigate();
+
+  const compressImage = (file, maxWidth = 1200) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      setSubmitting(true);
+      const compressedBlob = await compressImage(file);
+      setSubmitFormData(prev => ({ ...prev, banner: compressedBlob }));
+      setImagePreview(URL.createObjectURL(compressedBlob));
+    } catch (err) {
+      console.error('Image compression error', err);
+      toast.error('Failed to process image');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSubmitEvent = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      let bannerUrl = submitFormData.banner;
+      if (bannerUrl instanceof Blob) {
+        const storageRef = ref(storage, `submittedEvents/banner_${Date.now()}`);
+        await uploadBytes(storageRef, bannerUrl);
+        bannerUrl = await getDownloadURL(storageRef);
+      }
+
+      const payload = {
+        eventName: submitFormData.eventName,
+        venue: submitFormData.venue,
+        address: submitFormData.address,
+        date: submitFormData.date,
+        time: submitFormData.time,
+        description: submitFormData.description,
+        banner: bannerUrl || '',
+        registrationUrl: submitFormData.registrationUrl || '',
+        submittedAt: serverTimestamp(),
+        status: 'pending'
+      };
+
+      await addDoc(collection(db, 'submittedEvents'), payload);
+
+      // Reset form
+      setSubmitFormData({
+        eventName: '',
+        venue: '',
+        address: '',
+        date: '',
+        time: '',
+        description: '',
+        banner: '',
+        registrationUrl: '',
+      });
+      setImagePreview('');
+      setShowSubmitModal(false);
+      toast.success('Event submitted successfully! Our team will review it shortly.');
+    } catch (err) {
+      console.error('Error submitting event:', err);
+      toast.error('Failed to submit event. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="mt-[75px] pb-32">
@@ -246,7 +353,7 @@ const Community = () => {
               </a>
             </div>
             <div className="text-gray-500 text-xs">
-              Want an event featured? <Link to="/dashboard/upload-event" className="text-yellow-500 hover:underline">Submit it here</Link>.
+              Want an event featured? <button onClick={() => setShowSubmitModal(true)} className="text-yellow-500 hover:underline cursor-pointer">Submit it here</button>.
             </div>
           </div>
 
@@ -273,6 +380,191 @@ const Community = () => {
           </div>
         </div>
       </div>
+
+      {/* Event Submission Modal */}
+      {showSubmitModal && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
+          <div className="relative bg-[#0A0A0A] border border-white/10 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[#0A0A0A] border-b border-white/10 p-6 flex items-center justify-between z-10">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Submit Your Event</h2>
+                <p className="text-sm text-gray-400 mt-1">Share your Bitcoin event with the community</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowSubmitModal(false);
+                  setSubmitFormData({
+                    eventName: '',
+                    venue: '',
+                    address: '',
+                    date: '',
+                    time: '',
+                    description: '',
+                    banner: '',
+                    registrationUrl: '',
+                  });
+                  setImagePreview('');
+                }}
+                className="p-2 hover:bg-white/5 rounded-full transition-colors"
+              >
+                <CloseIcon size={24} className="text-gray-400" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitEvent} className="p-6 space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Event Name *</label>
+                <input
+                  type="text"
+                  value={submitFormData.eventName}
+                  onChange={(e) => setSubmitFormData(prev => ({ ...prev, eventName: e.target.value }))}
+                  required
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                  placeholder="e.g., Lagos Bitcoin Meetup"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">Venue Name *</label>
+                  <input
+                    type="text"
+                    value={submitFormData.venue}
+                    onChange={(e) => setSubmitFormData(prev => ({ ...prev, venue: e.target.value }))}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                    placeholder="e.g., Innovation Hub"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">Physical Address *</label>
+                  <input
+                    type="text"
+                    value={submitFormData.address}
+                    onChange={(e) => setSubmitFormData(prev => ({ ...prev, address: e.target.value }))}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                    placeholder="e.g., 123 Freedom Way"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">Date *</label>
+                  <input
+                    type="date"
+                    value={submitFormData.date}
+                    onChange={(e) => setSubmitFormData(prev => ({ ...prev, date: e.target.value }))}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">Time *</label>
+                  <input
+                    type="text"
+                    value={submitFormData.time}
+                    onChange={(e) => setSubmitFormData(prev => ({ ...prev, time: e.target.value }))}
+                    required
+                    placeholder="e.g., 6:00 PM"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Event Description *</label>
+                <textarea
+                  value={submitFormData.description}
+                  onChange={(e) => setSubmitFormData(prev => ({ ...prev, description: e.target.value }))}
+                  required
+                  rows="4"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none resize-none placeholder-gray-500"
+                  placeholder="Tell everyone what this event is about..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Event Banner Image *</label>
+                <div className="flex gap-2 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setImageMode('url')}
+                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'url' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
+                      }`}
+                  >
+                    URL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageMode('file')}
+                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${imageMode === 'file' ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-400'
+                      }`}
+                  >
+                    Upload
+                  </button>
+                </div>
+
+                {imageMode === 'url' ? (
+                  <input
+                    type="url"
+                    value={submitFormData.banner instanceof Blob ? '' : submitFormData.banner}
+                    onChange={(e) => setSubmitFormData(prev => ({ ...prev, banner: e.target.value }))}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                    placeholder="https://example.com/banner.jpg"
+                  />
+                ) : (
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-yellow-500 file:text-black file:cursor-pointer"
+                  />
+                )}
+
+                {imagePreview && (
+                  <div className="mt-4 rounded-lg overflow-hidden border border-white/10 h-32">
+                    <img src={imagePreview} className="w-full h-full object-cover" alt="Preview" />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Registration Link (Optional)</label>
+                <input
+                  type="url"
+                  value={submitFormData.registrationUrl}
+                  onChange={(e) => setSubmitFormData(prev => ({ ...prev, registrationUrl: e.target.value }))}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:border-yellow-500 focus:outline-none placeholder-gray-500"
+                  placeholder="https://register.example.com/your-event"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 text-black font-bold rounded-xl hover:bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <Save size={18} />
+                  {submitting ? 'Submitting...' : 'Submit Event'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSubmitModal(false)}
+                  className="px-6 py-3 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-700 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <ScrollToTop />
     </div>

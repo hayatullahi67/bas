@@ -21,6 +21,7 @@ import {
 const sidebarItems = [
   { name: 'News & Stories', path: '/dashboard/upload-news', icon: Newspaper },
   { name: 'Events Manager', path: '/dashboard/upload-event', icon: Calendar },
+  { name: 'Submitted Events', path: '/dashboard/submitted-events', icon: MessageSquare },
   { name: 'Communities', path: '/dashboard/upload-communities', icon: Globe },
   { name: 'Submitted Stories', path: '/dashboard/submitted-stories', icon: MessageSquare },
   { name: 'Edu Programs', path: '/dashboard/upload-programs', icon: BookOpen },

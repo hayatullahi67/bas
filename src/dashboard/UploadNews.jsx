@@ -4,6 +4,7 @@ import { categories } from '../mock';
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 import { useNews } from '../context/NewsContext';
 import StatusModal from './components/StatusModal';
 import NewsPreviewModal from './components/NewsPreviewModal';
@@ -274,7 +275,7 @@ const UploadNews = () => {
     if (name === 'authorImage' && authorImageMode === 'url') {
       setAuthorImagePreview(value);
     }
-  }; 
+  };
 
   const handleContentChange = (content) => {
     setFormData(prev => ({
@@ -350,15 +351,15 @@ const UploadNews = () => {
               e.preventDefault(); // Prevent default base64 paste
               const file = items[i].getAsFile();
               if (file) {
-                 // Prevent huge pastes
-                 if (file.size > 10 * 1024 * 1024) {
-                    setModal({
-                      open: true,
-                      title: 'Paste Failed',
-                      message: 'Image is too large (max 10MB).'
-                    });
-                    return;
-                 }
+                // Prevent huge pastes
+                if (file.size > 10 * 1024 * 1024) {
+                  setModal({
+                    open: true,
+                    title: 'Paste Failed',
+                    message: 'Image is too large (max 10MB).'
+                  });
+                  return;
+                }
                 await handleImageUpload(file, quill);
               }
               return;
@@ -369,7 +370,7 @@ const UploadNews = () => {
 
       quill.root.removeEventListener('paste', handlePaste); // Cleanup potential duplicates
       quill.root.addEventListener('paste', handlePaste);
-      
+
       // Return cleanup function for this specific attachment
       return () => {
         quill.root.removeEventListener('paste', handlePaste);
@@ -464,41 +465,21 @@ const UploadNews = () => {
 
         await updateDoc(postRef, finalPayload);
 
-        setTimeout(() => {
-          setModal({
-            open: true,
-            title: 'Changes Saved',
-            message: 'The article has been updated successfully and is now live.'
-          });
-        }, 300);
+        toast.success('The article has been updated successfully and is now live.');
       } else {
         if (!finalPayload.image) {
-          setModal({
-            open: true,
-            title: 'Media Required',
-            message: 'Please provide a featured image URL or upload a local file to proceed.'
-          });
+          toast.error('Please provide a featured image URL or upload a local file to proceed.');
           setIsSubmitting(false);
           return;
         }
         await addDoc(collection(db, 'news'), { ...finalPayload, createdAt: serverTimestamp() });
 
-        setTimeout(() => {
-          setModal({
-            open: true,
-            title: 'Story Published',
-            message: 'Your news article has been successfully published and is now live for the community.'
-          });
-        }, 300);
+        toast.success('Your news article has been successfully published and is now live for the community.');
       }
       resetForm();
     } catch (err) {
       console.error('Publication Error:', err);
-      setModal({
-        open: true,
-        title: 'Action Failed',
-        message: 'We encountered an unexpected issue. Please ensure your connection is stable and try again.'
-      });
+      toast.error('We encountered an unexpected issue. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -527,16 +508,16 @@ const UploadNews = () => {
           // Delete images from Storage if they exist
           const deleteStorageFile = async (url) => {
             if (!url) return;
-            
+
             try {
               // Only attempt deletion for Firebase Storage URLs
               if (url.includes('firebasestorage.googleapis.com')) {
-                 const fileRef = ref(storage, url);
-                 await deleteObject(fileRef);
+                const fileRef = ref(storage, url);
+                await deleteObject(fileRef);
               }
             } catch (storageErr) {
-               // Log but don't stop the main deletion process
-               console.warn('Could not delete file from storage (might already be gone):', url, storageErr);
+              // Log but don't stop the main deletion process
+              console.warn('Could not delete file from storage (might already be gone):', url, storageErr);
             }
           };
 
@@ -544,9 +525,9 @@ const UploadNews = () => {
           if (post.authorImage) await deleteStorageFile(post.authorImage);
 
           await deleteDoc(doc(db, 'news', post.id));
-          setModal({ open: true, title: 'Deleted', message: 'Blog post deleted successfully.' });
+          toast.success('Blog post deleted successfully.');
         } catch (err) {
-          setModal({ open: true, title: 'Error', message: 'Error deleting: ' + (err.message || 'unknown') });
+          toast.error('Error deleting: ' + (err.message || 'unknown'));
         }
       }
     });
@@ -574,7 +555,7 @@ const UploadNews = () => {
     setAuthorImagePreview('');
     setIsEditing(false);
     setCurrentPost(null);
-  }; 
+  };
 
   return (
     <div className="min-h-screen pb-12">

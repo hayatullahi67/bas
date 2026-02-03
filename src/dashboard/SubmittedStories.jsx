@@ -3,6 +3,7 @@ import { MessageSquare, CheckCircle, XCircle, Trash2, Eye, Calendar, User, Clock
 import { db, storage } from '../firebase';
 import { collection, getDocs, deleteDoc, addDoc, doc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject, uploadString } from 'firebase/storage';
+import { toast } from 'sonner';
 import StatusModal from './components/StatusModal';
 import ProcessingOverlay from './components/ProcessingOverlay';
 
@@ -78,12 +79,12 @@ const SubmittedStories = () => {
           // 2. Delete from 'submitted_stories'
           await deleteDoc(doc(db, 'submitted_stories', story.id));
 
-          setModal({ open: true, title: 'Success', message: 'Story approved and published successfully!' });
+          toast.success('Story approved and published successfully!');
           setSelectedStory(null);
           fetchStories();
         } catch (error) {
           console.error('Error approving story:', error);
-          setModal({ open: true, title: 'Error', message: 'Failed to approve story.' });
+          toast.error('Failed to approve story.');
         } finally {
           setIsProcessing(false);
         }
@@ -115,12 +116,12 @@ const SubmittedStories = () => {
           if (story.authorImage) await deleteStorageFile(story.authorImage);
 
           await deleteDoc(doc(db, 'submitted_stories', story.id));
-          setModal({ open: true, title: 'Success', message: 'Submission deleted successfully.' });
+          toast.success('Submission deleted successfully.');
           if (selectedStory?.id === story.id) setSelectedStory(null);
           fetchStories();
         } catch (error) {
           console.error('Error deleting submission:', error);
-          setModal({ open: true, title: 'Error', message: 'Failed to delete submission.' });
+          toast.error('Failed to delete submission.');
         } finally {
           setIsProcessing(false);
         }

@@ -3,6 +3,7 @@ import { PlusCircle, Edit, Trash2, Save, Calendar, Clock, MapPin } from 'lucide-
 import { db, storage } from '../firebase';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { toast } from 'sonner';
 
 const UploadEvent = () => {
   const [formData, setFormData] = useState({
@@ -119,11 +120,11 @@ const UploadEvent = () => {
       if (isEditing && formData.id) {
         await updateDoc(doc(db, 'events', formData.id), payload);
         setEvents(prev => prev.map(ev => ev.id === formData.id ? { ...ev, ...payload, id: formData.id } : ev));
-        openModal('Updated', 'Event updated successfully.');
+        toast.success('Event updated successfully.');
       } else {
         const ref = await addDoc(collection(db, 'events'), payload);
         setEvents(prev => [{ ...payload, id: ref.id }, ...prev]);
-        openModal('Saved', 'Event created and saved to Firebase!');
+        toast.success('Event created and saved to Firebase!');
       }
       // reset form
       setFormData({ eventName: '', venue: '', address: '', date: '', time: '', description: '', banner: '', registrationUrl: '', id: null });
@@ -131,7 +132,7 @@ const UploadEvent = () => {
       setIsEditing(false);
     } catch (err) {
       console.error('Error saving event:', err);
-      openModal('Error', 'Error saving event: ' + (err.message || 'unknown'));
+      toast.error('Error saving event: ' + (err.message || 'unknown'));
     } finally {
       setIsSubmitting(false);
     }
@@ -278,7 +279,7 @@ const UploadEvent = () => {
                       placeholder="https://register.example.com/your-event"
                       className="w-full px-6 py-4 bg-black/40 border border-white/5 rounded-2xl text-white focus:outline-none focus:border-yellow-500/50 transition-all placeholder:text-gray-700"
                     />
-                  </div> 
+                  </div>
 
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 ml-1">Event Banner Image</label>
