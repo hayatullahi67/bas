@@ -93,7 +93,7 @@ const Community = () => {
               </div>
 
               <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
-                <span>Explore </span> <br className="sm:hidden" /> <span>Bitcoin </span> <br className="sm:hidden" /> <span>Events </span> <br className="" /> <span className="text-[#FAD604]">Across Africa</span>
+                <span>Explore </span> <br className="" /> <span>Bitcoin </span> <br className="sm:hidden" /> <span>Events </span> <br className="" /> <span className="text-[#FAD604]">Across Africa</span>
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">

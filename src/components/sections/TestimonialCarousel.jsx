@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import TwitterEmbed from '../TwitterEmbed';
+import { ArrowLeft, ArrowRight, Twitter, Quote } from 'lucide-react';
 
 const TestimonialCarousel = ({ testimonials = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -19,7 +18,7 @@ const TestimonialCarousel = ({ testimonials = [] }) => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [isPaused, testimonials]);
@@ -28,67 +27,99 @@ const TestimonialCarousel = ({ testimonials = [] }) => {
 
   return (
     <div
-      className="relative  md:w-[40%] m-[auto] overflow-visible"
+      className="relative max-w-5xl mx-auto px-4 py-12"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onKeyDown={(e) => { if (e.key === 'ArrowLeft') prevTestimonial(); if (e.key === 'ArrowRight') nextTestimonial(); }}
       tabIndex={0}
     >
-      <button
-        onClick={prevTestimonial}
-        aria-label="Previous testimonial"
-        className="absolute -left-6 md:-left-10 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-gray-800/70 hover:bg-yellow-500 flex items-center justify-center text-white transition-colors duration-200 shadow-lg"
-      >
-        <ArrowRight className="rotate-180" size={18} />
-      </button>
-
-      <button
-        onClick={nextTestimonial}
-        aria-label="Next testimonial"
-        className="absolute -right-6 md:-right-10 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-gray-800/70 hover:bg-yellow-500 flex items-center justify-center text-white transition-colors duration-200 shadow-lg"
-      >
-        <ArrowRight size={18} />
-      </button>
-
-      <div className="overflow-hidden rounded-2xl">
+      {/* Carousel Container */}
+      <div className="overflow-hidden">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-              {testimonial.twitterLink ? (
-                <div className="max-w-3xl mx-auto rounded-xl overflow-hidden shadow-xl bg-gray-900 border border-gray-800">
-                  <TwitterEmbed tweetUrl={testimonial.twitterLink} />
-                </div>
-              ) : (
-                <div className="max-w-3xl mx-auto p-8 bg-gray-900 border border-gray-800 rounded-xl hover:border-yellow-500 transition-colors duration-300">
-                  <div className="flex items-center mb-6">
-                    <div className="w-14 h-14 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-lg">
-                      {testimonial.avatar || (testimonial.name ? testimonial.name[0] : 'U')}
+          {testimonials.map((testimonial, i) => (
+            <div key={testimonial.id} className="w-full flex-shrink-0 px-4 flex justify-center">
+              {/* Fixed Width Card - Matching Education Testimonials */}
+              <div className={`relative p-8 rounded-3xl border transition-all duration-500 w-full max-w-lg bg-[#111111] ${i === currentIndex ? 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'border-white/5 opacity-40 scale-95'
+                }`}>
+                {/* Background Quote Icon */}
+                <Quote className="absolute top-8 right-8 w-10 h-10 text-yellow-500/10" strokeWidth={3} />
+
+                <a
+                  href={testimonial.twitterLink || '#'}
+                  target={testimonial.twitterLink ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
+                  className={`block ${testimonial.twitterLink ? 'cursor-pointer' : 'cursor-default'}`}
+                >
+                  {/* User Info */}
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex-shrink-0 flex items-center justify-center text-black font-extrabold text-xl shadow-lg overflow-hidden">
+                      {testimonial.image ? (
+                        <img
+                          src={testimonial.image}
+                          alt={testimonial.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        testimonial.avatar || (testimonial.name ? testimonial.name[0] : 'U')
+                      )}
                     </div>
-                    <div className="ml-4">
-                      <div className="font-semibold text-white">{testimonial.name}</div>
-                      <div className="text-sm text-gray-400">{testimonial.location}</div>
+                    <div>
+                      <h4 className="font-bold text-lg leading-none text-white">{testimonial.name || 'Anonymous'}</h4>
+                      <p className="text-[10px] text-yellow-500 font-bold mt-1 tracking-widest">{testimonial.role || testimonial.location || 'Movement Member'}</p>
                     </div>
                   </div>
-                  <p className="text-gray-300 leading-relaxed italic text-lg">"{testimonial.text}"</p>
-                </div>
-              )}
+
+                  {/* Testimonial Text */}
+                  <p className="text-gray-400 text-lg leading-relaxed italic mb-6">
+                    "{testimonial.text || 'Success Story on X'}"
+                  </p>
+
+                  {/* X Link Badge */}
+                  {testimonial.twitterLink && (
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/5 text-yellow-500 text-xs font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-all duration-300">
+                      <Twitter size={14} />
+                      Verify on X
+                    </div>
+                  )}
+                </a>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="flex justify-center gap-2 mt-8">
-        {testimonials.map((_, index) => (
+      {/* Navigation Controls - Matching Education Style */}
+      <div className="flex flex-col items-center mt-12 gap-6">
+        {/* Pagination Dots */}
+        <div className="flex gap-2">
+          {testimonials.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-10 bg-yellow-500' : 'w-2 bg-white/20'}`}
+            />
+          ))}
+        </div>
+
+        {/* Arrow Buttons */}
+        <div className="flex gap-4">
           <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-yellow-500 w-8' : 'bg-gray-700 hover:bg-gray-600'}`}
-            aria-label={`Go to testimonial ${index + 1}`}
-          />
-        ))}
+            onClick={prevTestimonial}
+            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
+            aria-label="Previous testimonial"
+          >
+            <ArrowLeft className="w-5 h-5 transition-transform group-active:scale-90" />
+          </button>
+          <button
+            onClick={nextTestimonial}
+            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-yellow-500 hover:text-black hover:border-yellow-500 transition-all group"
+            aria-label="Next testimonial"
+          >
+            <ArrowRight className="w-5 h-5 transition-transform group-active:scale-90" />
+          </button>
+        </div>
       </div>
     </div>
   );

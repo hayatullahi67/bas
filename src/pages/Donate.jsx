@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+import { ShieldCheck, BookOpen, Users, Heart, Zap } from 'lucide-react';
 import ScrollToTop from '../components/ScrollToTop';
 
 const Donate = () => {
@@ -53,28 +54,28 @@ const Donate = () => {
       <p className="text-center text-gray-300 mb-8 max-w-2xl mx-auto">Your donations help us produce educational content and support Bitcoin adoption across Africa. Choose a payment option below.</p> */}
 
         {/* Tabs */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div className="bg-gray-900 border border-gray-800  overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between px-4 py-3 border-b border-gray-800">
             <nav role="tablist" className="flex gap-2">
               <button
                 role="tab"
                 aria-selected={activeTab === 'geyser'}
                 onClick={() => setActiveTab('geyser')}
-                className={`px-4 py-2 rounded-md text-sm font-semibold ${activeTab === 'geyser' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
+                className={`px-4 py-2  text-sm font-semibold ${activeTab === 'geyser' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
                 Geyser
               </button>
               <button
                 role="tab"
                 aria-selected={activeTab === 'btcpay'}
                 onClick={() => setActiveTab('btcpay')}
-                className={`px-4 py-2 rounded-md text-sm font-semibold ${activeTab === 'btcpay' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
+                className={`px-4 py-2  text-sm font-semibold ${activeTab === 'btcpay' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
                 BTCPay Server
               </button>
               <button
                 role="tab"
                 aria-selected={activeTab === 'info'}
                 onClick={() => setActiveTab('info')}
-                className={`px-4 py-2 rounded-md text-sm font-semibold ${activeTab === 'info' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
+                className={`px-4 py-2 text-sm font-semibold ${activeTab === 'info' ? 'bg-yellow-500 text-black' : 'text-gray-300 hover:bg-gray-800'}`}>
                 Static QR Codes
               </button>
             </nav>
@@ -149,7 +150,7 @@ const Donate = () => {
             {activeTab === 'info' && (
               <div className="flex flex-col items-center">
                 <h2 className="text-xl font-bold mb-4">Static QR Code</h2>
-                <p className="text-sm text-gray-400 mb-4 text-center">Scan the QR code below to donate. If you don't see the image, ensure the file is located at <code className="text-xs">/assets/qrrcode.png</code>.</p>
+                <p className="text-sm text-gray-400 mb-4 text-center">Scan the QR code below to donate. </p>
                 <div className="w-full flex justify-center">
                   <img
                     src="/assets/qrcode.jpg"
@@ -163,34 +164,52 @@ const Donate = () => {
         </div>
       </div>
 
-      <section className="max-w-6xl mx-auto bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white py-16 sm:py-20 md:py-24 px-6 sm:px-10">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white border border-gray-700 shadow-2xl rounded-[none] overflow-hidden hover:shadow-yellow-500/20 transition-shadow duration-300">
-            <CardHeader className=" pb-6 pt-8">
-              <CardTitle className="text-4xl sm:text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent leading-tight">
-                How To Donate
-              </CardTitle>
-            </CardHeader>
-            <CardContent className=" px-8 pb-8">
-              <p className="text-xl sm:text-xl md:text-xl font-light mb-8 max-w-3xl  text-gray-300 leading-relaxed">
-                Choose your preferred Bitcoin payment option above.
-              </p>
-              <p className="text-xl sm:text-xl md:text-xl font-light max-w-3xl  text-gray-300 leading-relaxed">
-                All contributions are secure, transparent, and go directly to
-                community work, education and our efforts to drive Bitcoin
-                Adoption across Africa.
-              </p>
+      <section className="bg-black py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 mb-6">
+              <span className="text-yellow-500 text-sm font-bold tracking-widest uppercase">Transparency & Impact</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Where your sats go</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+              All contributions are directly allocated to mission-critical operations. We maintain lean overheads to maximize impact on the ground.
+            </p>
+          </div>
 
-              <div className="mt-8 text-left max-w-3xl mx-auto border-t border-gray-700 pt-6">
-                <h3 className="text-xl font-bold text-yellow-500 mb-4">Where donations go</h3>
-                <ul className="list-disc list-inside text-gray-300 text-lg sm:text-xl font-light space-y-2">
-                  <li>BAS coordination & ops</li>
-                  <li>Content & storytelling</li>
-                  <li>Community support (Ikorodu, alumni, education pilots)</li>
-                </ul>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-gray-900 border border-gray-800 p-8  hover:border-yellow-500/30 transition-colors group">
+              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                <Zap size={24} />
               </div>
-            </CardContent>
-          </Card>
+              <h3 className="text-xl font-bold text-white mb-3">Ops & Coordination</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Running the platform, organizing monthly meetups, and coordinating volunteers across 5+ African cities.
+              </p>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-gray-900 border border-gray-800 p-8  hover:border-yellow-500/30 transition-colors group">
+              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                <BookOpen size={24} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Content & Education</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Producing high-quality documentaries, translating resources, and funding educational workshops for new users.
+              </p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-gray-900 border border-gray-800 p-8  hover:border-yellow-500/30 transition-colors group">
+              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                <Users size={24} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Community Support</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Direct support for local chapters including Ikorodu, alumni networks, and university pilot programs.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
       <ScrollToTop />
