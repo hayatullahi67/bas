@@ -26,9 +26,9 @@ const ProgramCard = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-orange-600  blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
             <div className="relative h-[500px]  overflow-hidden border border-white/10">
               <img
-                src="https://images.unsplash.com/photo-1591115765373-520b7a217294?q=80&w=2070&auto=format&fit=crop"
+                src="/assets/basplaceholder.jfif"
                 alt="Bitcoin Educator"
-                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full  grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8">
                 <p className="text-yellow-500 font-medium tracking-widest uppercase text-xs">Community Led</p>

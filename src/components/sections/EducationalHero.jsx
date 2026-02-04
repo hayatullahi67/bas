@@ -91,7 +91,7 @@ const EducationalHero = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
+        {/* <div className="grid grid-cols-2 max-sm:hidden sm:grid-cols-4 gap-6 mt-6 max-w-md mx-auto lg:mx-0">
           <div>
             <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={2} suffix="+" enableScrollSpy /></div>
             <div className="text-gray-400 text-sm">Years Teaching</div>
@@ -108,7 +108,7 @@ const EducationalHero = () => {
             <div className="text-3xl md:text-4xl font-bold text-yellow-500 mb-1"><CountUp end={100} suffix="%" enableScrollSpy /></div>
             <div className="text-gray-400 text-sm">Free Education</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
