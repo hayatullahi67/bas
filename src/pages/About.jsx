@@ -1,4 +1,4 @@
-import { Calendar, Users, Target, Heart, ArrowRight } from 'lucide-react';
+import { Calendar, Users, Target, Heart, ArrowRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ScrollToTop from '../components/ScrollToTop';
@@ -314,46 +314,101 @@ const About = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Kept your gradient background and border style */}
-          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-8 md:p-12">
+      {/* Professional CTA Section */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-500/5 blur-[120px] rounded-full -z-10" />
 
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-              Join The Movement
-            </h2>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-block mb-4 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full"
+            >
+              <span className="text-yellow-500 text-sm font-bold uppercase tracking-widest">Join The Movement</span>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-black mb-6 text-white"
+            >
+              Ready to Shape the <br className="hidden md:block" />
+              <span className="text-yellow-500">Future of Africa?</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-400 max-w-2xl mx-auto"
+            >
+              Whether you're a beginner or a builder, there's a place for you in the Bitcoin revolution.
+            </motion.p>
+          </div>
 
-            <div className="space-y-6">
-              <p className="text-lg text-gray-300">
-                Whether you're a beginner, a student, a merchant, a builder, or a passionate Bitcoiner:
-              </p>
-
-              <p className="text-xl font-bold text-white">
-                You are welcome here.
-              </p>
-
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Start learning, contribute to circular economies, or support our work as we continue
-                empowering communities — one person, one story, one sats transaction at a time.
-              </p>
-
-              {/* Link List Section */}
-              <div className="flex flex-col sm:flex-col gap-4 pt-4">
-                <Link to="/education" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-yellow-500 text-black font-bold text-lg hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
-                  Start Your Bitcoin Journey
-                  <ArrowRight className="ml-2" size={18} />
-                </Link>
-
-                <Link to="/donate" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-                  Support Our Work
-                </Link>
-
-                <Link to="/events" className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-lg hover:bg-yellow-500 hover:text-black transition-all duration-200">
-                  Join Our Events
-                </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1: Education */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="group bg-gray-900/50 border border-white/5 p-8  hover:border-yellow-500/30 transition-all duration-500 flex flex-col h-full"
+            >
+              <div className="w-14 h-14 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <BookOpen className="text-yellow-500" size={28} />
               </div>
-            </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Learn Bitcoin</h3>
+              <p className="text-gray-400 mb-8 flex-grow leading-relaxed">
+                Start your journey with our free comprehensive Bitcoin programs. Master the fundamentals of sound money.
+              </p>
+              <Link to="/education" className="inline-flex items-center text-yellow-500 font-bold hover:gap-3 transition-all">
+                Get Started <ArrowRight className="ml-2" size={20} />
+              </Link>
+            </motion.div>
 
+            {/* Card 2: Support */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group bg-gray-900/50 border border-white/5 p-8  hover:border-yellow-500/30 transition-all duration-500 flex flex-col h-full"
+            >
+              <div className="w-14 h-14 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Heart className="text-yellow-500" size={28} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Support Our Work</h3>
+              <p className="text-gray-400 mb-8 flex-grow leading-relaxed">
+                Your contributions help us reach more communities and provide free Bitcoin education across Africa.
+              </p>
+              <Link to="/donate" className="inline-flex items-center text-yellow-500 font-bold hover:gap-3 transition-all">
+                Donate Now <ArrowRight className="ml-2" size={20} />
+              </Link>
+            </motion.div>
+
+            {/* Card 3: Community */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="group bg-gray-900/50 border border-white/5 p-8  hover:border-yellow-500/30 transition-all duration-500 flex flex-col h-full"
+            >
+              <div className="w-14 h-14 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Users className="text-yellow-500" size={28} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Join Our Events</h3>
+              <p className="text-gray-400 mb-8 flex-grow leading-relaxed">
+                Connect with local Bitcoiners. Discover meetups, workshops, and conferences happening near you.
+              </p>
+              <Link to="/events" className="inline-flex items-center text-yellow-500 font-bold hover:gap-3 transition-all">
+                Find Meetups <ArrowRight className="ml-2" size={20} />
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

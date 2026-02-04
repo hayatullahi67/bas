@@ -336,7 +336,7 @@ const Community = () => {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
               <a
-                href=": https://t.me/+KirVlW8gMMtlNDI8"
+                href="https://t.me/+KirVlW8gMMtlNDI8"
                 target="_blank"
                 rel="noreferrer"
                 className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black rounded-lg font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
@@ -344,7 +344,7 @@ const Community = () => {
                 Telegram Channel
               </a>
               <a
-                href="#"
+                href="https://chat.whatsapp.com/Ckny9TqxoWDJJ6MQlX5VpL"
                 target="_blank"
                 rel="noreferrer"
                 className="px-6 py-2.5 border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black rounded-lg font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
