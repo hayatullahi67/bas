@@ -23,7 +23,7 @@ export default function BitcoinResources() {
   if (loading || resources.length === 0) return null;
 
   return (
-    <section className="bg-black text-white py-16">
+    <section id="bitcoin-resources" className="bg-black text-white py-16">
       <div className="container mx-auto px-6">
 
         <div className="mb-6">

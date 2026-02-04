@@ -65,7 +65,7 @@ const About = () => {
                 Our journey began with a simple belief: everyone deserves access to financial freedom.
               </p>
 
-              <div className="flex  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
+              <div className="flex mt-5  sm:flex-row gap-4 justify-start mb-6 w-full max-w-md">
                 <Link
                   to="/donate"
                   className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-2 sm:py-3 bg-yellow-500 text-black font-bold text-base sm:text-lg  hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"

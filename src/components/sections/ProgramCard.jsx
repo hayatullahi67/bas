@@ -1,9 +1,25 @@
 import React from 'react';
 import { ArrowRight, Users, GraduationCap, Briefcase, Globe, Zap, User } from 'lucide-react';
-
 import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
 
 const ProgramCard = () => {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // Offset for fixed header
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const stats = [
     { label: 'Registrations', value: 250, suffix: '+', icon: <Users className="w-4 h-4" /> },
     { label: 'Alumni', value: 100, suffix: '+', icon: <GraduationCap className="w-4 h-4" /> },
@@ -26,7 +42,7 @@ const ProgramCard = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-orange-600  blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
             <div className="relative h-[500px]  overflow-hidden border border-white/10">
               <img
-                src="/assets/basplaceholder.jfif"
+                src="/assets/basplaceholder.png"
                 alt="Bitcoin Educator"
                 className="w-full h-full  grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
               />
@@ -58,13 +74,16 @@ const ProgramCard = () => {
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-4">
-              <button className="group relative px-8 py-4 bg-yellow-500 text-black font-bold  flex items-center gap-2 hover:bg-yellow-400 transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)]">
+              <button
+                onClick={() => scrollToSection('education-programs')}
+                className="group relative px-8 py-4 bg-yellow-500 text-black font-bold  flex items-center gap-2 hover:bg-yellow-400 transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)]"
+              >
                 Join Next Diploma
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold  hover:bg-white/10 transition-all backdrop-blur-sm">
+              <Link to="/events" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold  hover:bg-white/10 transition-all backdrop-blur-sm">
                 View Meetups
-              </button>
+              </Link>
             </div>
 
             {/* Redesigned Stats Grid */}

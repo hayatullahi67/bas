@@ -37,7 +37,7 @@ const Hero = () => {
               Driving Bitcoin Adoption Through Education, Community Building, and Real Stories!
             </p>
 
-            <div className="flex sm:flex-row gap-3 justify-start mb-6 w-full max-w-lg">
+            <div className="flex sm:flex-row mt-5 gap-3 justify-start mb-6 w-full max-w-lg">
               <Link
                 to="/news"
                 className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"

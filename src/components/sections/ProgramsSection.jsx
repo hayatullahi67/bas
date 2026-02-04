@@ -46,7 +46,7 @@ const BitcoinPrograms = () => {
   if (programs.length === 0) return null;
 
   return (
-    <section className="py-20 bg-black text-white px-6">
+    <section id="education-programs" className="py-20 bg-black text-white px-6">
       <div className="max-w-7xl mx-auto">
 
         <div className="mb-12">

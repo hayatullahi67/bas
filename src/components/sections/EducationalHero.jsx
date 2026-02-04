@@ -6,6 +6,22 @@ import { ArrowRight, Send } from 'lucide-react';
 import CountUp from 'react-countup';
 
 const EducationalHero = () => {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // Offset for fixed header
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section id="hero" className="relative   flex items-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -32,24 +48,32 @@ const EducationalHero = () => {
             </div>
 
             <div className="space-y-2">
-              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold  leading-tight">
                 Study <span className="text-[#FAD604]">Bitcoin.</span>
-              </h1>
-              <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+                <br/>
                 Study Freedom!
               </h1>
+              {/* <h1 className="text-5xl sm:text-7xl md:text-6xl lg:text-7xl md:font-extrabold mb-4 leading-tight">
+                Study Freedom!
+              </h1> */}
             </div>
 
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+            <p className="text-lg mt-5 md:text-xl text-gray-300 mb-8 max-w-2xl">
               Everything you need to start your Bitcoin journey. Guides, tools, and trusted resources to help you learn and grow.
             </p>
 
-            <div className="flex sm:flex-row gap-3 justify-start mb-6 w-full max-w-lg">
-              <button className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50">
+            <div className="flex sm:flex-row gap-3 mt-5 justify-start mb-6 w-full max-w-lg">
+              <button
+                onClick={() => scrollToSection('education-programs')}
+                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+              >
                 Explore Bitcoin Programs
                 <ArrowRight className="ml-2" size={18} />
               </button>
-              <button className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-sm sm:text-base hover:bg-yellow-500 hover:text-black transition-all duration-200">
+              <button
+                onClick={() => scrollToSection('bitcoin-resources')}
+                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-sm sm:text-base hover:bg-yellow-500 hover:text-black transition-all duration-200"
+              >
                 Explore Bitcoin Resources
               </button>
             </div>
