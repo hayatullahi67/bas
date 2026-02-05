@@ -40,14 +40,14 @@ const Hero = () => {
             <div className="flex sm:flex-row mt-5 gap-3 justify-start mb-6 w-full max-w-lg">
               <Link
                 to="/news"
-                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-4 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
               >
                 View Stories
                 <ArrowRight className="ml-2" size={18} />
               </Link>
               <Link
                 to="/education"
-                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-sm sm:text-base hover:bg-yellow-500 hover:text-black transition-all duration-200"
+                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-4 sm:py-2.5 bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold text-sm sm:text-base hover:bg-yellow-500 hover:text-black transition-all duration-200"
               >
                 Study Bitcoin
               </Link>

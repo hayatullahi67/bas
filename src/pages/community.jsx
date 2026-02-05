@@ -334,12 +334,15 @@ const Community = () => {
             <p className="text-gray-400 max-w-xl mx-auto mb-6 text-sm">
               Add your event to our directory to reach thousands of builders, educators, and enthusiasts across the continent.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
+             <div className="text-gray-500 text-xs">
+              Want an event featured? <button onClick={() => setShowSubmitModal(true)} className="text-yellow-500 hover:underline cursor-pointer">Submit it here</button>.
+            </div>
+            <div className="flex flex-wrap mt-3 items-center justify-center gap-3 mb-5">
               <a
                 href="https://t.me/+KirVlW8gMMtlNDI8"
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black rounded-lg font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
+                className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black  font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
               >
                 Telegram Channel
               </a>
@@ -347,14 +350,12 @@ const Community = () => {
                 href="https://chat.whatsapp.com/Ckny9TqxoWDJJ6MQlX5VpL"
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-2.5 border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black rounded-lg font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
+                className="px-6 py-2.5 border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black  font-bold text-sm transition-all shadow-lg shadow-yellow-500/10"
               >
                 WhatsApp Group
               </a>
             </div>
-            <div className="text-gray-500 text-xs">
-              Want an event featured? <button onClick={() => setShowSubmitModal(true)} className="text-yellow-500 hover:underline cursor-pointer">Submit it here</button>.
-            </div>
+           
           </div>
 
           {/* Stats Section */}
