@@ -65,7 +65,7 @@ const EducationalHero = () => {
             <div className="flex sm:flex-row gap-3 mt-5 justify-start mb-6 w-full max-w-lg">
               <button
                 onClick={() => scrollToSection('education-programs')}
-                className="inline-flex w-full sm:w-auto items-center justify-center px-4 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
+                className="inline-flex w-full sm:w-auto items-center justify-center px-2 py-2 sm:py-2.5 bg-yellow-500 text-black font-bold text-sm sm:text-base hover:bg-yellow-400 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-yellow-500/50"
               >
                 Explore Bitcoin Programs
                 <ArrowRight className="ml-2" size={18} />

@@ -217,7 +217,7 @@ const Footer = () => {
                 <li><Link to="/privacy" className="hover:text-yellow-500 uppercase">PRIVACY POLICY</Link></li>
               </ul>
               <p className="mt-2 text-xs text-gray-500">
-                © Bitcoin Africa Story, 2025. All Rights Reserved.
+                © Bitcoin Africa Story, 2026. All Rights Reserved.
               </p>
             </div>
           </div>
