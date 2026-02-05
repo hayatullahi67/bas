@@ -1,83 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Twitter, Facebook, Youtube } from 'lucide-react';
 import { useNews } from '../context/NewsContext';
+import { useMemo } from 'react';
 
 
 
-// --- 1. POPULAR POSTS MOCK DATA (Focus on Market/Tech) ---
-const mockPopularPosts = [
-  {
-    id: 1,
-    title: 'Bitcoin Price Plunges Below $90,000 as Hawkish Fed Rate Cut Kills Market Sentiment.',
-    author: 'SURBHI KHANNA',
-    image: 'https://images.pexels.com/photos/7567442/pexels-photo-7567442.jpeg?auto=compress&cs=tinysrgb&w=200',
-    link: '/post/bitcoin-slips-fed-cautions'
-  },
-  {
-    id: 2,
-    title: 'Fed Rate Cut Exposes Bitcoin\'s Inflation Hedge Problem, Analysts Weigh In on Identity Crisis.',
-    author: 'CHARLES LLOYD BOVAIRD II',
-    image: 'https://images.unsplash.com/photo-1590086782792-42dd2350140d?auto=format&fit=crop&w=200&q=60',
-    link: '/post/bitcoin-all-time-high'
-  },
-  {
-    id: 3,
-    title: 'Lightning Labs Integrates Spark to Accelerate Bitcoin Rewards and Self-Custody.',
-    author: 'JOSHUA DE VOS',
-    image: 'https://images.pexels.com/photos/6770774/pexels-photo-6770774.jpeg?auto=compress&cs=tinysrgb&w=200',
-    link: '/post/lightning-network-spark'
-  },
-];
 
-
-// --- 2. TOP STORIES MOCK DATA (Focus on Global/Institutional) ---
-const mockTopStories = [
-  {
-    id: 4,
-    title: 'Crypto Adoption in Africa Is Exploding: Can Mobile-First Solutions Lead the Charge?',
-    author: 'LYN ALDEN',
-    image: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?auto=format&fit=crop&w=200&q=60',
-    link: '/post/africa-financial-solutions'
-  },
-  {
-    id: 5,
-    title: 'Bitwise\'s $1.25B Index Fund Uplists to NYSE Arca, Signaling Massive Institutional Shift.',
-    author: 'ALEXANDER DIMITRI',
-    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=200&q=60',
-    link: '/post/bitwise-etf-uplisting'
-  },
-  {
-    id: 6,
-    title: 'Suspected Private Key Leak Leads to $1.1 Million Loss Across Multiple EVM Chains.',
-    author: 'ZACH XBT',
-    image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=200&q=60',
-    link: '/post/private-key-leak'
-  },
-];
-
-
-// Mock data for categories (Unchanged)
-// const mockCategories = [
-//   { name: 'NEWS', link: '/category/news' },
-//   { name: 'BITCOIN', link: '/category/bitcoin' },
-//   { name: 'GUIDES', link: '/category/guides' },
-//   { name: 'TECHNICAL', link: '/category/technical' },
-//   { name: 'ARTICLES', link: '/category/articles' },
-//   { name: 'BUSINESS', link: '/category/business' },
-//   { name: 'AFRICA BITCOIN STORIES', link: '/category/africa-bitcoin-stories' },
-// ];
-
-// Mock data for categories with post counts
-const mockCategories = [
-  { name: 'BUSINESS', link: '/category/business', count: 4267 },
-  { name: 'CULTURE', link: '/category/culture', count: 3558 },
-  { name: 'MARKETS', link: '/category/markets', count: 2295 },
-  { name: 'TECHNICAL', link: '/category/technical', count: 1321 },
-  { name: 'NEWS', link: '/category/news', count: 726 },
-  { name: 'INDUSTRY EVENTS', link: '/category/industry-events', count: 364 },
-  { name: 'PRESS RELEASES', link: '/category/press-releases', count: 285 },
-  { name: 'LEGAL', link: '/category/legal', count: 201 },
-]
 
 
 // Reusable Post Card component (Unchanged)
@@ -106,6 +34,27 @@ const PostCard = ({ title, author, image, link }) => (
 
 const Footer = () => {
   const { news } = useNews();
+
+  // Dynamic Categories Logic
+  const categories = useMemo(() => {
+    if (!news || news.length === 0) return [];
+
+    const counts = {};
+    news.forEach(post => {
+      if (post.category) {
+        counts[post.category] = (counts[post.category] || 0) + 1;
+      }
+    });
+
+    return Object.entries(counts)
+      .map(([name, count]) => ({
+        name,
+        count,
+        link: `/category/${name.toLowerCase().replace(/\s+/g, '-')}`
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8); // UI Limit as requested
+  }, [news]);
 
   return (
     <footer className="bg-black border-t-8 border-yellow-500">
@@ -162,29 +111,26 @@ const Footer = () => {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-yellow-500 uppercase tracking-wider">Categories</h2>
             <ul className="space-y-2">
-              {/* {mockCategories.map((category) => (
-                <li key={category.name}>
-                  <Link 
-                    to={category.link} 
-                    className="text-gray-300 text-base uppercase hover:text-yellow-500 transition-colors duration-200"
+              {categories.length === 0 ? (
+                <p className="text-gray-500 italic text-sm">No categories found.</p>
+              ) : (
+                categories.map((category) => (
+                  <li
+                    key={category.name}
+                    className="flex items-center justify-between py-1 "
                   >
-                    {category.name}
-                  </Link>
-                </li>
-              ))} */}
-              {mockCategories.map((category, index) => (
-                <li
-                  key={category.name}
-                  className="flex items-center justify-between py-1 "
-                >
-                  <span className="text-white text-base font-medium uppercase hover:text-yellow-500 cursor-pointer transition-colors duration-200">
-                    {category.name}
-                  </span>
-                  <span className="text-white ">
-                    {category.count}
-                  </span>
-                </li>
-              ))}
+                    <Link
+                      to={`/news?category=${category.name}`}
+                      className="text-white text-base font-medium uppercase hover:text-yellow-500 cursor-pointer transition-colors duration-200"
+                    >
+                      {category.name}
+                    </Link>
+                    <span className="text-white ">
+                      {category.count}
+                    </span>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </div>
